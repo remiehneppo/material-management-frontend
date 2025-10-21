@@ -1,4 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Material Management Frontend
+
+This is a material management frontend application built with [Next.js](https://nextjs.org), TypeScript, and Tailwind CSS.
+
+## Tech Stack
+
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe JavaScript
+- **Tailwind CSS** - Utility-first CSS framework
+- **ESLint** - Code linting
+- **PostCSS** - CSS processing
 
 ## Getting Started
 
