@@ -7,8 +7,30 @@ This is a material management frontend application built with [Next.js](https://
 - **Next.js 15** - React framework with App Router
 - **TypeScript** - Type-safe JavaScript
 - **Tailwind CSS** - Utility-first CSS framework
+- **Axios** - HTTP client for API requests
 - **ESLint** - Code linting
 - **PostCSS** - CSS processing
+
+## API Integration
+
+The application includes comprehensive API services for backend integration:
+
+- **Authentication Service** - Login, logout, token refresh
+- **Equipment Machinery Service** - CRUD operations for equipment
+- **Maintenance Service** - Maintenance records management
+- **Materials Profile Service** - Materials estimation and profiles
+- **Material Request Service** - Request creation, filtering, and export
+
+### API Configuration
+
+Set the backend API URL in your environment file:
+
+```bash
+# .env.local
+NEXT_PUBLIC_API_URL=http://localhost:8088/api/v1
+```
+
+For detailed API usage examples, see [API_USAGE.md](./API_USAGE.md)
 
 ## Getting Started
 

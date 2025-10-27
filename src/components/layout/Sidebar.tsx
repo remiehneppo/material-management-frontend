@@ -10,8 +10,10 @@ import {
   ChartBarIcon,
   UserGroupIcon,
   UserIcon,
-  CogIcon 
+  CogIcon,
+  ArrowRightOnRectangleIcon
 } from "@heroicons/react/24/outline";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 const navigation = [
   { name: "Tổng quan", href: "/", icon: HomeIcon },
@@ -26,6 +28,13 @@ const navigation = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+      await logout();
+    }
+  };
 
   return (
     <div className="fixed inset-y-0 left-0 z-50 w-64 bg-cyan-400 overflow-y-auto">
@@ -64,6 +73,17 @@ export default function Sidebar() {
           })}
         </ul>
       </nav>
+
+      {/* Logout Button */}
+      <div className="absolute bottom-16 left-4 right-4">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-sm font-medium text-white hover:bg-cyan-300 hover:text-cyan-800 transition-colors"
+        >
+          <ArrowRightOnRectangleIcon className="w-5 h-5 flex-shrink-0" />
+          <span>Đăng xuất</span>
+        </button>
+      </div>
 
       {/* Footer Link */}
       <div className="absolute bottom-4 left-4 right-4">
