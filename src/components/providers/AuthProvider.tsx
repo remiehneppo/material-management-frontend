@@ -45,17 +45,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [router]);
 
   useEffect(() => {
-    // Redirect logic
+    // Redirect logic - only run automatic redirects if not just logged in
     if (!isLoading) {
       const isPublicRoute = publicRoutes.includes(pathname);
       
       if (!isAuthenticated && !isPublicRoute) {
         // User is not authenticated and trying to access protected route
         router.push('/login');
-      } else if (isAuthenticated && pathname === '/login') {
-        // User is authenticated but on login page, redirect to dashboard
-        router.push('/');
       }
+      // Remove automatic redirect from login to dashboard here
+      // as it's now handled in the login function
     }
   }, [isAuthenticated, isLoading, pathname, router]);
 
@@ -76,6 +75,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await authService.login({ username, password });
       if (response.status) {
         setIsAuthenticated(true);
+        // Force immediate redirect to dashboard
+        setTimeout(() => {
+          router.push('/');
+        }, 100); // Small delay to ensure state is updated
         return true;
       }
       return false;

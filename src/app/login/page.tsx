@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { authService } from '@/services';
+import { useAuth } from '@/components/providers/AuthProvider';
 
 export default function LoginPage() {
   const [credentials, setCredentials] = useState({
@@ -11,7 +10,7 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,18 +18,19 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await authService.login(credentials);
+      const success = await login(credentials.username, credentials.password);
       
-      if (response.status) {
-        // Redirect to dashboard after successful login
-        router.push('/');
+      if (success) {
+        // Login successful, AuthProvider will handle redirect automatically
+        console.log('Login successful');
+        // Keep loading state until redirect happens
       } else {
-        setError(response.message || 'Đăng nhập thất bại');
+        setError('Tên đăng nhập hoặc mật khẩu không đúng');
+        setLoading(false);
       }
     } catch (err) {
       setError('Có lỗi xảy ra. Vui lòng thử lại.');
       console.error('Login error:', err);
-    } finally {
       setLoading(false);
     }
   };
@@ -52,7 +52,7 @@ export default function LoginPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
             Hệ thống quản lý vật tư
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
