@@ -2,11 +2,12 @@
 export { apiClient } from './apiClient';
 
 // Services
-export { authService, AuthService } from './authService';
-export { equipmentMachineryService, EquipmentMachineryService } from './equipmentMachineryService';
-export { maintenanceService, MaintenanceService } from './maintenanceService';
-export { materialsProfileService, MaterialsProfileService } from './materialsProfileService';
-export { materialRequestService, MaterialRequestService } from './materialRequestService';
+export { default as authService } from './authService';
+export { default as equipmentMachineryService } from './equipmentMachineryService';
+export { default as maintenanceService } from './maintenanceService';
+export { default as materialRequestService } from './materialRequestService';
+export { default as materialsProfileService } from './materialsProfileService';
+export { default as userService } from './userService';
 
 // Types
 export type * from '../types/api';

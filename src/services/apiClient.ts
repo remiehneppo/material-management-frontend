@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 class ApiClient {
   private client: AxiosInstance;
   private baseURL: string;
+  private onUnauthorized?: () => void;
 
   constructor() {
     this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8088/api/v1';
@@ -12,10 +13,16 @@ class ApiClient {
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
+      withCredentials: false, // Explicitly set for CORS
     });
 
     this.setupInterceptors();
+  }
+
+  public setUnauthorizedCallback(callback: () => void) {
+    this.onUnauthorized = callback;
   }
 
   private setupInterceptors() {
@@ -35,8 +42,25 @@ class ApiClient {
 
     // Response interceptor to handle token refresh
     this.client.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        // Log response for debugging
+        console.log('API Response:', {
+          url: response.config.url,
+          method: response.config.method,
+          status: response.status,
+          data: response.data
+        });
+        return response;
+      },
       async (error) => {
+        console.error('API Error:', {
+          url: error.config?.url,
+          method: error.config?.method,
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message
+        });
+
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
@@ -52,9 +76,16 @@ class ApiClient {
               return this.client(originalRequest);
             }
           } catch {
+            // Clear tokens and notify unauthorized callback
             this.clearTokens();
-            // Redirect to login page
-            window.location.href = '/login';
+            if (this.onUnauthorized) {
+              this.onUnauthorized();
+            } else {
+              // Fallback to direct redirect
+              if (typeof window !== 'undefined') {
+                window.location.href = '/login';
+              }
+            }
           }
         }
 

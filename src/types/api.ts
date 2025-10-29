@@ -20,6 +20,30 @@ export interface RefreshRequest {
   refresh_token: string;
 }
 
+
+// User Types
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  full_name: string;
+  workspace_role: string;
+  workspace: string;
+  created_at: number;
+  updated_at: number;
+}
+
+export interface UserProfileUpdate {
+    full_name?: string;
+    workspace?: string;
+    workspace_role?: string;
+}
+
+export interface UserChangePassword {
+  old_password: string;
+  new_password: string;
+}
+
 // Equipment Machinery Types
 export interface EquipmentMachinery {
   id: string;

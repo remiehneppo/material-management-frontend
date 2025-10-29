@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { authService } from '@/services';
+import { apiClient } from '@/services/apiClient';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -34,8 +35,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Set up unauthorized callback for apiClient
+    apiClient.setUnauthorizedCallback(() => {
+      setIsAuthenticated(false);
+      router.push('/login');
+    });
+
     checkAuth();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     // Redirect logic
