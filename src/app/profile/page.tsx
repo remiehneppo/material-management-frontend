@@ -3,13 +3,12 @@
 import { useState, useEffect } from 'react';
 import { userService } from '@/services';
 import type { User } from '@/types/api';
+import DashboardLayout from '@/components/layout/DashboardLayout';
 import { 
   UserIcon,
   EnvelopeIcon,
-  PhoneIcon,
   BuildingOfficeIcon,
   CalendarIcon,
-  CheckCircleIcon,
   XCircleIcon,
   PencilIcon
 } from '@heroicons/react/24/outline';
@@ -82,46 +81,52 @@ export default function ProfilePage() {
 
   if (loading && !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
-          <p className="mt-4 text-gray-600">Đang tải thông tin...</p>
+      <DashboardLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+            <p className="mt-4 text-gray-600">Đang tải thông tin...</p>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   if (error && !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <XCircleIcon className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Có lỗi xảy ra</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={fetchUserProfile}
-            className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors"
-          >
-            Thử lại
-          </button>
+      <DashboardLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <XCircleIcon className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Có lỗi xảy ra</h2>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <button 
+              onClick={fetchUserProfile}
+              className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors"
+            >
+              Thử lại
+            </button>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <UserIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Không tìm thấy thông tin người dùng</p>
+      <DashboardLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <UserIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">Không tìm thấy thông tin người dùng</p>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <DashboardLayout>
       <div className="max-w-4xl mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
@@ -333,7 +338,7 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
 
