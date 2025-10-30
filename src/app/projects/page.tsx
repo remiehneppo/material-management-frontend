@@ -3,10 +3,10 @@ import Header from "@/components/layout/Header";
 
 export default function ProjectsPage() {
   const projects = [
-    { id: 1, name: "Dự án xây dựng A", status: "Đang thực hiện", progress: 75, startDate: "2024-01-15", manager: "Nguyễn Văn A" },
-    { id: 2, name: "Dự án xây dựng B", status: "Hoàn thành", progress: 100, startDate: "2023-12-01", manager: "Trần Thị B" },
-    { id: 3, name: "Dự án xây dựng C", status: "Chuẩn bị", progress: 25, startDate: "2024-02-01", manager: "Lê Văn C" },
-    { id: 4, name: "Dự án xây dựng D", status: "Tạm dừng", progress: 45, startDate: "2024-01-20", manager: "Phạm Thị D" },
+    { id: 1, project: "Dự án A", project_code: "P001", maintenance_number: "1", maintenance_tier: "SCCN", year: 2024 },
+    { id: 2, project: "Dự án B", project_code: "P002", maintenance_number: "2", maintenance_tier: "SCCN", year: 2024 },
+    { id: 3, project: "Dự án C", project_code: "P003", maintenance_number: "3", maintenance_tier: "SCCV", year: 2024 },
+    { id: 4, project: "Dự án D", project_code: "P004", maintenance_number: "4", maintenance_tier: "SCCN", year: 2024 },
   ];
 
   return (
@@ -16,27 +16,26 @@ export default function ProjectsPage() {
         {/* Action Bar */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex space-x-4">
-            <button className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors">
+            {/* <button className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors">
               + Thêm dự án mới
             </button>
             <button className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
               Xuất báo cáo
-            </button>
+            </button> */}
           </div>
-          <div className="flex space-x-2">
+            <div className="flex space-x-2">
             <input
               type="text"
               placeholder="Tìm kiếm dự án..."
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium placeholder:text-gray-500"
             />
-            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
-              <option>Tất cả trạng thái</option>
-              <option>Đang thực hiện</option>
-              <option>Hoàn thành</option>
-              <option>Chuẩn bị</option>
-              <option>Tạm dừng</option>
+            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium">
+              <option>Tất cả các cấp</option>
+              <option>SCCĐ</option>
+              <option>SCCN</option>
+              <option>SCCV</option>
             </select>
-          </div>
+            </div>
         </div>
 
         {/* Projects Grid */}
@@ -44,8 +43,8 @@ export default function ProjectsPage() {
           {projects.map((project) => (
             <div key={project.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">{project.name}</h3>
-                <span className={`px-2 py-1 text-xs rounded-full ${
+                <h3 className="text-lg font-semibold text-gray-900">{project.project}</h3>
+                {/* <span className={`px-2 py-1 text-xs rounded-full ${
                   project.status === "Hoàn thành" 
                     ? "bg-green-100 text-green-800"
                     : project.status === "Đang thực hiện"
@@ -55,29 +54,25 @@ export default function ProjectsPage() {
                     : "bg-red-100 text-red-800"
                 }`}>
                   {project.status}
-                </span>
+                </span> */}
               </div>
               
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Quản lý:</span>
-                  <span className="text-gray-900">{project.manager}</span>
+                  <span className="text-gray-500">Mã hiệu:</span>
+                  <span className="text-gray-900">{project.project_code}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Ngày bắt đầu:</span>
-                  <span className="text-gray-900">{project.startDate}</span>
+                  <span className="text-gray-500">Cấp dự án:</span>
+                  <span className="text-gray-900">{project.maintenance_tier}</span>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Tiến độ:</span>
-                    <span className="text-gray-900">{project.progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-cyan-500 h-2 rounded-full transition-all duration-300" 
-                      style={{ width: `${project.progress}%` }}
-                    ></div>
-                  </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Lần thứ:</span>
+                  <span className="text-gray-900">{project.maintenance_number}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Năm thực hiện:</span>
+                  <span className="text-gray-900">{project.year}</span>
                 </div>
               </div>
               
