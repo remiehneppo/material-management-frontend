@@ -2,7 +2,8 @@ import { apiClient } from './apiClient';
 import type { 
   ApiResponse, 
   MaterialsProfile,
-  UploadMaterialsEstimateRequest
+  UploadMaterialsEstimateRequest,
+  PaginatedResponse
 } from '../types/api';
 
 export interface MaterialsProfileFilterParams {
@@ -84,6 +85,16 @@ export class MaterialsProfileService {
    */
   async getByEquipmentMachineryName(equipmentMachineryName: string): Promise<ApiResponse<MaterialsProfile[]>> {
     return this.filter({ equipment_machinery_name: equipmentMachineryName });
+  }
+
+  async paginate(page: number, pageSize: number): Promise<PaginatedResponse<MaterialsProfile[]>> {
+    const response = await apiClient.get<PaginatedResponse<MaterialsProfile[]>>('/materials-profiles', {
+      params: {
+        page,
+        pageSize
+      }
+    });
+    return response.data;
   }
 }
 

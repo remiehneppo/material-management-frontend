@@ -1,14 +1,186 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
-import Header from "@/components/layout/Header";
+import DashboardLayout from '@/components/layout/DashboardLayout';
+import Header from '@/components/layout/Header';
+import React from 'react';
+import { AlignedMaterial, Material } from '@/types/api';
+
+
 
 export default function MaterialsPage() {
+  // Function to align materials for comparison
+  const alignMaterials = (estimate: any, reality: any): AlignedMaterial[] => {
+    const allMaterials = new Set([
+      ...Object.keys(estimate.consumable_supplies),
+      ...Object.keys(estimate.replacement_materials),
+      ...Object.keys(reality.consumable_supplies),
+      ...Object.keys(reality.replacement_materials),
+    ]);
+
+    return Array.from(allMaterials).map(materialName => {
+      const estimateConsumable = estimate.consumable_supplies[materialName];
+      const estimateReplacement = estimate.replacement_materials[materialName];
+      const realityConsumable = reality.consumable_supplies[materialName];
+      const realityReplacement = reality.replacement_materials[materialName];
+
+      const estimateItem = estimateConsumable || estimateReplacement;
+      const realityItem = realityConsumable || realityReplacement;
+
+      return {
+        name: materialName,
+        estimate: estimateItem || null,
+        reality: realityItem || null,
+      };
+    });
+  };
+
   const materials = [
-    { id: 1, name: "Xi măng PCB30", category: "Xi măng", unit: "bao", quantity: 150, minStock: 50, price: 85000, supplier: "Công ty Xi măng ABC" },
-    { id: 2, name: "Thép CT3", category: "Thép", unit: "kg", quantity: 2500, minStock: 1000, price: 18000, supplier: "Thép Hòa Phát" },
-    { id: 3, name: "Gạch nung đỏ", category: "Gạch", unit: "viên", quantity: 5000, minStock: 2000, price: 1200, supplier: "Gạch Tân Phú" },
-    { id: 4, name: "Cát xây dựng", category: "Cát", unit: "m³", quantity: 85, minStock: 30, price: 350000, supplier: "Cát Sỏi Miền Nam" },
-    { id: 5, name: "Đá 1x2", category: "Đá", unit: "m³", quantity: 42, minStock: 20, price: 420000, supplier: "Đá Tân Uyên" },
-    { id: 6, name: "Sơn nước ngoại thất", category: "Sơn", unit: "thùng", quantity: 15, minStock: 10, price: 850000, supplier: "Sơn Jotun" },
+    {
+      id: 1,
+      project: 'Dự án A',
+      project_code: 'P001',
+      maintenance_tier: 'SCCN',
+      maintenance_number: '1',
+      year: 2024,
+      sector: 'Cơ khí',
+      equipment_machinery: 'Cụm Máy bơm',
+      index_path: '1',
+      estimate: {
+        consumable_supplies: {
+        
+        },
+        replacement_materials: {
+          
+        },
+      },
+      reality: {
+        consumable_supplies: {
+        
+        },
+        replacement_materials: {
+      
+        },
+      },
+    },
+    {
+      id: 2,
+      project: 'Dự án A',
+      project_code: 'P001',
+      maintenance_tier: 'SCCN',
+      maintenance_number: '1',
+      year: 2024,
+      sector: 'Cơ khí',
+      equipment_machinery: 'Máy bơm',
+      index_path: '1.1',
+      estimate: {
+        consumable_supplies: {
+          Axeton: {
+            name: 'Axeton',
+            unit: 'lít',
+            quantity: 0.5,
+          },
+          'Bút bi': {
+            name: 'Bút bi',
+            unit: 'cái',
+            quantity: 2,
+          },
+          'Bút đánh dấu Maker (đỏ - xanh - đen)': {
+            name: 'Bút đánh dấu Maker (đỏ - xanh - đen)',
+            unit: 'cái',
+            quantity: 12,
+          },
+        },
+        replacement_materials: {
+          'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A': {
+            name: 'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A',
+            unit: 'm',
+            quantity: 15,
+          },
+          'Điện trở Д2М4': {
+            name: 'Điện trở Д2М4',
+            unit: 'cái',
+            quantity: 6,
+          },
+        },
+      },
+      reality: {
+        consumable_supplies: {
+          Axeton: {
+            name: 'Axeton',
+            unit: 'lít',
+            quantity: 0.5,
+          },
+          'Bút bi': {
+            name: 'Bút bi',
+            unit: 'cái',
+            quantity: 1,
+          },
+        },
+        replacement_materials: {
+          'Điện trở Д2М4': {
+            name: 'Điện trở Д2М4',
+            unit: 'cái',
+            quantity: 6,
+          },
+        },
+      },
+    },
+    {
+      id: 3,
+      project: 'Dự án A',
+      project_code: 'P001',
+      maintenance_tier: 'SCCN',
+      maintenance_number: '1',
+      year: 2024,
+      sector: 'Cơ khí',
+      equipment_machinery: 'Máy khoan',
+      index_path: '2',
+      estimate: {
+        consumable_supplies: {
+          Axeton: {
+            name: 'Axeton',
+            unit: 'lít',
+            quantity: 2,
+          },
+          'Bút bi': {
+            name: 'Bút bi',
+            unit: 'cái',
+            quantity: 2,
+          },
+        },
+        replacement_materials: {
+          'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A': {
+            name: 'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A',
+            unit: 'm',
+            quantity: 25,
+          },
+          'Điện trở Д2М4': {
+            name: 'Điện trở Д2М4',
+            unit: 'cái',
+            quantity: 12,
+          },
+        },
+      },
+      reality: {
+        consumable_supplies: {
+          Axeton: {
+            name: 'Axeton',
+            unit: 'lít',
+            quantity: 2,
+          },
+        },
+        replacement_materials: {
+          'Điện trở Д2М4': {
+            name: 'Điện trở Д2М4',
+            unit: 'cái',
+            quantity: 20,
+          },
+          'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A': {
+            name: 'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A',
+            unit: 'm',
+            quantity: 15,
+          },
+        },
+      },
+    },
   ];
 
   return (
@@ -54,55 +226,111 @@ export default function MaterialsPage() {
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center">
               <div className="p-2 bg-blue-100 rounded-lg">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                <svg
+                  className="w-5 h-5 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  />
                 </svg>
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-500">Tổng vật tư</p>
-                <p className="text-xl font-semibold text-gray-900">{materials.length}</p>
+                <p className="text-xl font-semibold text-gray-900">
+                  {materials.length}
+                </p>
               </div>
             </div>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center">
               <div className="p-2 bg-green-100 rounded-lg">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
-              <div className="ml-3">
+              {/* <div className="ml-3">
                 <p className="text-sm font-medium text-gray-500">Đủ tồn kho</p>
-                <p className="text-xl font-semibold text-gray-900">{materials.filter(m => m.quantity > m.minStock).length}</p>
-              </div>
+                <p className="text-xl font-semibold text-gray-900">
+                  {materials.filter((m) => m.quantity > m.minStock).length}
+                </p>
+              </div> */}
             </div>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
-                <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                <svg
+                  className="w-5 h-5 text-yellow-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
                 </svg>
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Cần nhập thêm</p>
-                <p className="text-xl font-semibold text-gray-900">{materials.filter(m => m.quantity <= m.minStock).length}</p>
-              </div>
+              {/* <div className="ml-3">
+                <p className="text-sm font-medium text-gray-500">
+                  Cần nhập thêm
+                </p>
+                <p className="text-xl font-semibold text-gray-900">
+                  {materials.filter((m) => m.quantity <= m.minStock).length}
+                </p>
+              </div> */}
             </div>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center">
               <div className="p-2 bg-purple-100 rounded-lg">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                <svg
+                  className="w-5 h-5 text-purple-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                  />
                 </svg>
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Tổng giá trị</p>
-                <p className="text-xl font-semibold text-gray-900">
-                  {(materials.reduce((sum, m) => sum + m.quantity * m.price, 0) / 1000000).toFixed(1)}M
+              {/* <div className="ml-3">
+                <p className="text-sm font-medium text-gray-500">
+                  Tổng giá trị
                 </p>
-              </div>
+                <p className="text-xl font-semibold text-gray-900">
+                  {(
+                    materials.reduce(
+                      (sum, m) => sum + m.quantity * m.price,
+                      0
+                    ) / 1000000
+                  ).toFixed(1)}
+                  M
+                </p>
+              </div> */}
             </div>
           </div>
         </div>
@@ -111,61 +339,272 @@ export default function MaterialsPage() {
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vật tư</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số lượng</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Đơn giá</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nhà cung cấp</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
-                </tr>
-              </thead>
+                <thead className="bg-gray-50">
+                  <tr className="border-b border-gray-300">
+                    <th
+                      rowSpan={2}
+                      className="px-3 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-12"
+                    >
+                      TT
+                    </th>
+                    <th
+                      rowSpan={2}
+                      className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 min-w-[200px]"
+                    >
+                      Thiết bị
+                    </th>
+                    <th
+                      colSpan={3}
+                      className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300"
+                    >
+                      Vật tư dự toán
+                    </th>
+                    <th
+                      colSpan={3}
+                      className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300"
+                    >
+                      Vật tư thực tế
+                    </th>
+                    <th
+                      rowSpan={2}
+                      className="px-3 py-3 text-center text-xs font-medium text-black uppercase tracking-wider w-24"
+                    >
+                      Trạng thái
+                    </th>
+                  </tr>
+                  <tr className="border-b border-gray-300">
+                    <th className="px-4 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 min-w-[150px]">
+                      Tên vật tư
+                    </th>
+                    <th className="px-2 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-16">
+                      ĐVT
+                    </th>
+                    <th className="px-2 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-16">
+                      SL
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 min-w-[150px]">
+                      Tên vật tư
+                    </th>
+                    <th className="px-2 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-16">
+                      ĐVT
+                    </th>
+                    <th className="px-2 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-16">
+                      SL
+                    </th>
+                  </tr>
+                </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {materials.map((material) => (
+                
+                {materials.map((material) => {
+                  const alignedMaterials = alignMaterials(material.estimate, material.reality);
+                  
+                  // Separate consumable and replacement materials
+                  const consumableMaterials = alignedMaterials.filter(item => 
+                  (item.estimate && material.estimate.consumable_supplies[item.name]) ||
+                  (item.reality && material.reality.consumable_supplies[item.name])
+                  );
+                  
+                  const replacementMaterials = alignedMaterials.filter(item => 
+                  (item.estimate && material.estimate.replacement_materials[item.name]) ||
+                  (item.reality && material.reality.replacement_materials[item.name])
+                  );
+                  
+                  return (
                   <tr key={material.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{material.name}</div>
-                        <div className="text-sm text-gray-500">ID: {material.id}</div>
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">
+                      {material.index_path}
                       </div>
+                    </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
-                        {material.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {material.quantity.toLocaleString()} {material.unit}
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">
+                      {material.equipment_machinery}
                       </div>
-                      <div className="text-xs text-gray-500">
-                        Tối thiểu: {material.minStock} {material.unit}
+                      <div className="text-sm text-gray-500">
+                      ID: {material.id}
                       </div>
+                      
+                      <div className="text-sm text-gray-500">
+                      Ngành: {material.sector}
+                      </div>
+                    </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {material.price.toLocaleString()} ₫/{material.unit}
+                    <td className="px-4 py-4">
+                    <div className="space-y-2">
+                      {consumableMaterials.length > 0 && (
+                      <div className="text-sm font-bold uppercase text-black border-b border-gray-100 pb-1">
+                        Vật tư tiêu hao
+                      </div>
+                      )}
+                      {consumableMaterials.map((item, idx) => (
+                      <div key={`consumable-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.estimate?.name || ''}
+                      </div>
+                      ))}
+                      {replacementMaterials.length > 0 && (
+                      <div className="text-sm font-bold uppercase text-black border-b border-gray-100 pb-1">
+                        Vật tư thay thế
+                      </div>
+                      )}
+                      {replacementMaterials.map((item, idx) => (
+                      <div key={`replacement-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.estimate?.name || ''}
+                      </div>
+                      ))}
+                    </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {material.supplier}
+                    <td className="px-2 py-4 text-center">
+                    <div className="space-y-2">
+                      {consumableMaterials.length > 0 && (
+                      <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                      </div>
+                      )}
+                      {consumableMaterials.map((item, idx) => (
+                      <div key={`consumable-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.estimate?.unit || ''}
+                      </div>
+                      ))}
+                      {replacementMaterials.length > 0 && (
+                      <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                      </div>
+                      )}
+                      {replacementMaterials.map((item, idx) => (
+                      <div key={`replacement-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.estimate?.unit || ''}
+                      </div>
+                      ))}
+                    </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        material.quantity > material.minStock
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}>
-                        {material.quantity > material.minStock ? "Đủ tồn kho" : "Cần nhập thêm"}
-                      </span>
+                    <td className="px-2 py-4 text-center">
+                    <div className="space-y-2">
+                      {consumableMaterials.length > 0 && (
+                      <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                      </div>
+                      )}
+                      {consumableMaterials.map((item, idx) => (
+                      <div key={`consumable-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.estimate?.quantity || ''}
+                      </div>
+                      ))}
+                      {replacementMaterials.length > 0 && (
+                      <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                      </div>
+                      )}
+                      {replacementMaterials.map((item, idx) => (
+                      <div key={`replacement-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.estimate?.quantity || ''}
+                      </div>
+                      ))}
+                    </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <button className="text-cyan-600 hover:text-cyan-900">Xem</button>
-                      <button className="text-indigo-600 hover:text-indigo-900">Sửa</button>
-                      <button className="text-red-600 hover:text-red-900">Xóa</button>
+                    <td className="px-4 py-4">
+                    <div className="space-y-2">
+                      {consumableMaterials.length > 0 && (
+                      <div className="text-sm font-bold uppercase text-black border-b border-gray-100 pb-1">
+                        Vật tư tiêu hao
+                      </div>
+                      )}
+                      {consumableMaterials.map((item, idx) => (
+                      <div key={`consumable-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.reality?.name || ''}
+                      </div>
+                      ))}
+                      {replacementMaterials.length > 0 && (
+                      <div className="text-sm font-bold uppercase text-black border-b border-gray-100 pb-1">
+                        Vật tư thay thế
+                      </div>
+                      )}
+                      {replacementMaterials.map((item, idx) => (
+                      <div key={`replacement-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.reality?.name || ''}
+                      </div>
+                      ))}
+                    </div>
+                    </td>
+                    <td className="px-2 py-4 text-center">
+                    <div className="space-y-2">
+                      {consumableMaterials.length > 0 && (
+                      <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                      </div>
+                      )}
+                      {consumableMaterials.map((item, idx) => (
+                      <div key={`consumable-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.reality?.unit || ''}
+                      </div>
+                      ))}
+                      {replacementMaterials.length > 0 && (
+                      <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                      </div>
+                      )}
+                      {replacementMaterials.map((item, idx) => (
+                      <div key={`replacement-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.reality?.unit || ''}
+                      </div>
+                      ))}
+                    </div>
+                    </td>
+                    <td className="px-2 py-4 text-center">
+                    <div className="space-y-2">
+                      {consumableMaterials.length > 0 && (
+                      <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                      </div>
+                      )}
+                      {consumableMaterials.map((item, idx) => (
+                      <div key={`consumable-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.reality?.quantity || ''}
+                      </div>
+                      ))}
+                      {replacementMaterials.length > 0 && (
+                      <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                      </div>
+                      )}
+                      {replacementMaterials.map((item, idx) => (
+                      <div key={`replacement-${idx}`} className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        {item.reality?.quantity || ''}
+                      </div>
+                      ))}
+                    </div>
+                    </td>
+                    <td className="px-2 py-4 text-center">
+                      <div className="space-y-2">
+                      {consumableMaterials.length > 0 && (
+                        <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        </div>
+                      )}
+                      {consumableMaterials.map((item, idx) => {
+                        const estimateQty = item.estimate?.quantity || 0;
+                        const realityQty = item.reality?.quantity || 0;
+                        const diff = estimateQty - realityQty;
+                        const diffColor = diff > 0 ? 'text-green-600' : diff < 0 ? 'text-orange-500' : 'text-gray-900';
+                        return (
+                        <div key={`consumable-${idx}`} className={`text-sm font-medium border-b border-gray-100 pb-1 min-h-[20px] ${diffColor}`}>
+                          {diff !== 0 ? (diff > 0 ? `+${diff}` : diff) : ''}
+                        </div>
+                        );
+                      })}
+                      {replacementMaterials.length > 0 && (
+                        <div className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-1 min-h-[20px]">
+                        </div>
+                      )}
+                      {replacementMaterials.map((item, idx) => {
+                        const estimateQty = item.estimate?.quantity || 0;
+                        const realityQty = item.reality?.quantity || 0;
+                        const diff = estimateQty - realityQty;
+                        const diffColor = diff > 0 ? 'text-green-600' : diff < 0 ? 'text-orange-500' : 'text-gray-900';
+                        return (
+                        <div key={`replacement-${idx}`} className={`text-sm font-medium border-b border-gray-100 pb-1 min-h-[20px] ${diffColor}`}>
+                          {diff !== 0 ? (diff > 0 ? `+${diff}` : diff) : ''}
+                        </div>
+                        );
+                      })}
+                      </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

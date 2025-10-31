@@ -5,6 +5,17 @@ export interface ApiResponse<T = unknown> {
   data?: T;
 }
 
+export interface PaginatedResponse<T = unknown> {
+    status: boolean;
+    message: string;
+    data: {
+        items: T[];
+        total: number;
+        page: number;
+        limit: number;
+    };
+}
+
 // Authentication Types
 export interface LoginRequest {
   username: string;
@@ -90,6 +101,12 @@ export interface Material {
   name: string;
   quantity: number;
   unit: string;
+}
+
+export interface AlignedMaterial {
+  name: string;
+  estimate: Material | null;
+  reality: Material | null;
 }
 
 export interface MaterialsForEquipment {
