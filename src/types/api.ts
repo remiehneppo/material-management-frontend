@@ -117,10 +117,13 @@ export interface MaterialsForEquipment {
 // Materials Profile Types
 export interface MaterialsProfile {
   id: string;
-  equipment_machinery_id: string;
-  maintenance_instance_id: string;
+  index_path: string;
+  equipment_machinery: string;
+  maintenance_number: string;
+  maintenance_tier: string;
+  project: string;
+  project_code: string;
   sector: string;
-  index: number;
   estimate: MaterialsForEquipment;
   reality: MaterialsForEquipment;
 }

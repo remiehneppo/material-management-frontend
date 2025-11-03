@@ -1,11 +1,16 @@
+'use client';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import Header from '@/components/layout/Header';
-import React from 'react';
-import { AlignedMaterial, Material } from '@/types/api';
+import React, { useEffect, useState } from 'react';
+import { AlignedMaterial, Material, MaterialsProfile } from '@/types/api';
+import {materialsProfileService} from '@/services/materialsProfileService';
 
 
 
 export default function MaterialsPage() {
+  const [materialProfiles, setMaterialProfiles] = useState<MaterialsProfile[] | null>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   // Function to align materials for comparison
   const alignMaterials = (estimate: any, reality: any): AlignedMaterial[] => {
     const allMaterials = new Set([
@@ -32,156 +37,22 @@ export default function MaterialsPage() {
     });
   };
 
-  const materials = [
-    {
-      id: 1,
-      project: 'Dự án A',
-      project_code: 'P001',
-      maintenance_tier: 'SCCN',
-      maintenance_number: '1',
-      year: 2024,
-      sector: 'Cơ khí',
-      equipment_machinery: 'Cụm Máy bơm',
-      index_path: '1',
-      estimate: {
-        consumable_supplies: {
-        
-        },
-        replacement_materials: {
-          
-        },
-      },
-      reality: {
-        consumable_supplies: {
-        
-        },
-        replacement_materials: {
-      
-        },
-      },
-    },
-    {
-      id: 2,
-      project: 'Dự án A',
-      project_code: 'P001',
-      maintenance_tier: 'SCCN',
-      maintenance_number: '1',
-      year: 2024,
-      sector: 'Cơ khí',
-      equipment_machinery: 'Máy bơm',
-      index_path: '1.1',
-      estimate: {
-        consumable_supplies: {
-          Axeton: {
-            name: 'Axeton',
-            unit: 'lít',
-            quantity: 0.5,
-          },
-          'Bút bi': {
-            name: 'Bút bi',
-            unit: 'cái',
-            quantity: 2,
-          },
-          'Bút đánh dấu Maker (đỏ - xanh - đen)': {
-            name: 'Bút đánh dấu Maker (đỏ - xanh - đen)',
-            unit: 'cái',
-            quantity: 12,
-          },
-        },
-        replacement_materials: {
-          'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A': {
-            name: 'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A',
-            unit: 'm',
-            quantity: 15,
-          },
-          'Điện trở Д2М4': {
-            name: 'Điện trở Д2М4',
-            unit: 'cái',
-            quantity: 6,
-          },
-        },
-      },
-      reality: {
-        consumable_supplies: {
-          Axeton: {
-            name: 'Axeton',
-            unit: 'lít',
-            quantity: 0.5,
-          },
-          'Bút bi': {
-            name: 'Bút bi',
-            unit: 'cái',
-            quantity: 1,
-          },
-        },
-        replacement_materials: {
-          'Điện trở Д2М4': {
-            name: 'Điện trở Д2М4',
-            unit: 'cái',
-            quantity: 6,
-          },
-        },
-      },
-    },
-    {
-      id: 3,
-      project: 'Dự án A',
-      project_code: 'P001',
-      maintenance_tier: 'SCCN',
-      maintenance_number: '1',
-      year: 2024,
-      sector: 'Cơ khí',
-      equipment_machinery: 'Máy khoan',
-      index_path: '2',
-      estimate: {
-        consumable_supplies: {
-          Axeton: {
-            name: 'Axeton',
-            unit: 'lít',
-            quantity: 2,
-          },
-          'Bút bi': {
-            name: 'Bút bi',
-            unit: 'cái',
-            quantity: 2,
-          },
-        },
-        replacement_materials: {
-          'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A': {
-            name: 'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A',
-            unit: 'm',
-            quantity: 25,
-          },
-          'Điện trở Д2М4': {
-            name: 'Điện trở Д2М4',
-            unit: 'cái',
-            quantity: 12,
-          },
-        },
-      },
-      reality: {
-        consumable_supplies: {
-          Axeton: {
-            name: 'Axeton',
-            unit: 'lít',
-            quantity: 2,
-          },
-        },
-        replacement_materials: {
-          'Điện trở Д2М4': {
-            name: 'Điện trở Д2М4',
-            unit: 'cái',
-            quantity: 20,
-          },
-          'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A': {
-            name: 'Dây dẫn bọc cách điện nhiều sợi chịu dòng 5A',
-            unit: 'm',
-            quantity: 15,
-          },
-        },
-      },
-    },
-  ];
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+    const fetchData = async () => {
+    try {
+      // Fetch material profiles here
+      setLoading(true);
+      const response = await materialsProfileService.paginate(1, 10);
+      console.log('Fetched material profiles:', response.data.items);
+      setMaterialProfiles(response.data.items ? response.data.items : null);
+    } catch (e) {
+      setError('Failed to load material profiles.');
+    }
+  }
+
 
   return (
     <DashboardLayout>
@@ -243,7 +114,7 @@ export default function MaterialsPage() {
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-500">Tổng vật tư</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {materials.length}
+                  {materialProfiles?.length ?? 0}
                 </p>
               </div>
             </div>
@@ -395,18 +266,18 @@ export default function MaterialsPage() {
                 </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 
-                {materials.map((material) => {
+                {materialProfiles?.map((material) => {
                   const alignedMaterials = alignMaterials(material.estimate, material.reality);
                   
                   // Separate consumable and replacement materials
                   const consumableMaterials = alignedMaterials.filter(item => 
-                  (item.estimate && material.estimate.consumable_supplies[item.name]) ||
-                  (item.reality && material.reality.consumable_supplies[item.name])
+                  (item.estimate && material.estimate?.consumable_supplies?.[item.name]) ||
+                  (item.reality && material.reality?.consumable_supplies?.[item.name])
                   );
                   
                   const replacementMaterials = alignedMaterials.filter(item => 
-                  (item.estimate && material.estimate.replacement_materials[item.name]) ||
-                  (item.reality && material.reality.replacement_materials[item.name])
+                  (item.estimate && material.estimate?.replacement_materials?.[item.name]) ||
+                  (item.reality && material.reality?.replacement_materials?.[item.name])
                   );
                   
                   return (

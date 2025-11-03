@@ -87,13 +87,14 @@ export class MaterialsProfileService {
     return this.filter({ equipment_machinery_name: equipmentMachineryName });
   }
 
-  async paginate(page: number, pageSize: number): Promise<PaginatedResponse<MaterialsProfile[]>> {
-    const response = await apiClient.get<PaginatedResponse<MaterialsProfile[]>>('/materials-profiles', {
+  async paginate(page: number, pageSize: number): Promise<PaginatedResponse<MaterialsProfile>> {
+    const response = await apiClient.get<PaginatedResponse<MaterialsProfile>>('/materials-profiles/paginated', {
       params: {
         page,
         pageSize
       }
     });
+    console.log('Paginated Materials Profiles Response:', response.data);
     return response.data;
   }
 }
