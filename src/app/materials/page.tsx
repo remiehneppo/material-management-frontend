@@ -210,56 +210,56 @@ export default function MaterialsPage() {
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto max-h-[calc(100vh-100px)] overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50 sticky top-0 z-10">
-                  <tr className="border-b border-gray-300">
+                <thead className="bg-blue-500 sticky top-0 z-10">
+                  <tr className="border-b border-gray-600">
                     <th
                       rowSpan={2}
-                      className="px-3 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-12"
+                      className="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-12"
                     >
                       TT
                     </th>
                     <th
                       rowSpan={2}
-                      className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 min-w-[200px]"
+                      className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 min-w-[200px]"
                     >
                       Thiết bị
                     </th>
                     <th
                       colSpan={3}
-                      className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300"
+                      className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600"
                     >
                       Vật tư dự toán
                     </th>
                     <th
                       colSpan={3}
-                      className="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300"
+                      className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600"
                     >
                       Vật tư thực tế
                     </th>
                     <th
                       rowSpan={2}
-                      className="px-3 py-3 text-center text-xs font-medium text-black uppercase tracking-wider w-24"
+                      className="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider w-24"
                     >
                       Trạng thái
                     </th>
                   </tr>
-                  <tr className="border-b border-gray-300">
-                    <th className="px-4 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 min-w-[150px]">
+                  <tr className="border-b border-gray-600">
+                    <th className="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 min-w-[150px]">
                       Tên vật tư
                     </th>
-                    <th className="px-2 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-16">
+                    <th className="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-16">
                       ĐVT
                     </th>
-                    <th className="px-2 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-16">
+                    <th className="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-16">
                       SL
                     </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 min-w-[150px]">
+                    <th className="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 min-w-[150px]">
                       Tên vật tư
                     </th>
-                    <th className="px-2 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-16">
+                    <th className="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-16">
                       ĐVT
                     </th>
-                    <th className="px-2 py-3 text-center text-xs font-medium text-black uppercase tracking-wider border-r border-gray-300 w-16">
+                    <th className="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-16">
                       SL
                     </th>
                   </tr>
