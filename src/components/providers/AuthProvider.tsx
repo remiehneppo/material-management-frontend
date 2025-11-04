@@ -37,7 +37,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     // Set up unauthorized callback for apiClient
     apiClient.setUnauthorizedCallback(() => {
+      console.log('Session expired - redirecting to login');
       setIsAuthenticated(false);
+      
+      // Show notification to user
+      if (typeof window !== 'undefined') {
+        // You can replace this with a toast notification library if available
+        const message = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+        
+        // Try to use a toast if available, otherwise use alert
+        if (window.alert) {
+          window.alert(message);
+        }
+      }
+      
       router.push('/login');
     });
 

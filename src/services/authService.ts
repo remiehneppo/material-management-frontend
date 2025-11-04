@@ -42,20 +42,21 @@ export class AuthService {
   /**
    * Refresh access token
    * POST /auth/refresh
+   * Note: This is now handled automatically by the API client interceptor
+   * This method is kept for manual refresh if needed
    */
   async refreshToken(refreshRequest: RefreshRequest): Promise<ApiResponse<LoginResponse>> {
-    // const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh', refreshRequest);
+    const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh', refreshRequest);
     
-    // // Update stored tokens after successful refresh
-    // if (response.data.status && response.data.data) {
-    //   apiClient.setTokens(
-    //     response.data.data.access_token,
-    //     response.data.data.refresh_token
-    //   );
-    // }
+    // Update stored tokens after successful refresh
+    if (response.data.status && response.data.data) {
+      apiClient.setTokens(
+        response.data.data.access_token,
+        response.data.data.refresh_token
+      );
+    }
     
-    // return response.data;
-    throw new Error('Not implemented');
+    return response.data;
   }
 
   /**
