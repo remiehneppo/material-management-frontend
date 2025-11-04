@@ -4,6 +4,7 @@ import Header from '@/components/layout/Header';
 import React, { useEffect, useState } from 'react';
 import { AlignedMaterial, MaterialsProfile } from '@/types/api';
 import {materialsProfileService, MaterialsProfileFilterParams} from '@/services/materialsProfileService';
+import UploadEstimateModal from '@/components/materials/UploadEstimateModal';
 
 // Constants for filters
 const SECTORS = {
@@ -39,6 +40,9 @@ export default function MaterialsPage() {
     equipment_machinery_name: ''
   });
   const [isFiltering, setIsFiltering] = useState(false);
+  
+  // Modal state
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   
   // Function to align materials for comparison
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -136,20 +140,38 @@ export default function MaterialsPage() {
         {/* Action Bar */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex space-x-4">
-            <button className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors">
-              + Thêm vật tư
+            <button 
+              onClick={() => setIsUploadModalOpen(true)}
+              className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors flex items-center space-x-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <span>Cập nhật dự toán</span>
             </button>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+            {/* <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
               Nhập kho
             </button>
             <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
               Xuất kho
-            </button>
-            <button className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
-              Xuất báo cáo
+            </button> */}
+            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Xuất báo cáo</span>
             </button>
           </div>
         </div>
+
+        {/* Upload Modal */}
+        <UploadEstimateModal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          onSuccess={() => {
+            fetchData(); // Reload data after successful upload
+          }}
+        />
 
         {/* Filter Section */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">
