@@ -164,87 +164,87 @@ export default function MaterialsPage() {
               </span>
             )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Sector Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ngành
+              Ngành
               </label>
               <select
-                value={filters.sector}
-                onChange={(e) => handleFilterChange('sector', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              value={filters.sector}
+              onChange={(e) => handleFilterChange('sector', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
               >
-                <option value="">Tất cả ngành</option>
-                {Object.values(SECTORS).map((sector) => (
-                  <option key={sector} value={sector}>
-                    {sector}
-                  </option>
-                ))}
+              <option value="">Tất cả ngành</option>
+              {Object.values(SECTORS).map((sector) => (
+                <option key={sector} value={sector}>
+                {sector}
+                </option>
+              ))}
               </select>
             </div>
 
             {/* Project Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dự án
+              Dự án
               </label>
               <input
-                type="text"
-                value={filters.project}
-                onChange={(e) => handleFilterChange('project', e.target.value)}
-                placeholder="Nhập tên dự án..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              type="text"
+              value={filters.project}
+              onChange={(e) => handleFilterChange('project', e.target.value)}
+              placeholder="Nhập tên dự án..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
               />
             </div>
 
             {/* Maintenance Tier Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Cấp sửa chữa
+              Cấp sửa chữa
               </label>
               <select
-                value={filters.maintenance_tier}
-                onChange={(e) => handleFilterChange('maintenance_tier', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              value={filters.maintenance_tier}
+              onChange={(e) => handleFilterChange('maintenance_tier', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
               >
-                <option value="">Tất cả cấp</option>
-                {Object.values(MAINTENANCE_TIERS).map((tier) => (
-                  <option key={tier} value={tier}>
-                    {tier}
-                  </option>
-                ))}
+              <option value="">Tất cả cấp</option>
+              {Object.values(MAINTENANCE_TIERS).map((tier) => (
+                <option key={tier} value={tier}>
+                {tier}
+                </option>
+              ))}
               </select>
             </div>
 
             {/* Maintenance Number Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Lần sửa chữa
+              Lần sửa chữa
               </label>
               <input
-                type="text"
-                value={filters.maintenance_number}
-                onChange={(e) => handleFilterChange('maintenance_number', e.target.value)}
-                placeholder="Nhập lần sửa chữa..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              type="text"
+              value={filters.maintenance_number}
+              onChange={(e) => handleFilterChange('maintenance_number', e.target.value)}
+              placeholder="Nhập lần sửa chữa..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
               />
             </div>
 
             {/* Equipment Name Filter */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tên thiết bị
+              Tên thiết bị
               </label>
               <input
-                type="text"
-                value={filters.equipment_machinery_name}
-                onChange={(e) => handleFilterChange('equipment_machinery_name', e.target.value)}
-                placeholder="Nhập tên thiết bị..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              type="text"
+              value={filters.equipment_machinery_name}
+              onChange={(e) => handleFilterChange('equipment_machinery_name', e.target.value)}
+              placeholder="Nhập tên thiết bị..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
               />
             </div>
-          </div>
+            </div>
 
           {/* Filter Action Buttons */}
           <div className="flex space-x-4 mt-4">
@@ -310,7 +310,7 @@ export default function MaterialsPage() {
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Tổng vật tư</p>
+                <p className="text-sm font-medium text-gray-500">Tổng số trang thiết bị</p>
                 <p className="text-xl font-semibold text-gray-900">
                   {materialProfiles?.length ?? 0}
                 </p>
@@ -334,12 +334,16 @@ export default function MaterialsPage() {
                   />
                 </svg>
               </div>
-              {/* <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Đủ tồn kho</p>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-500">Tổng số vật tư dự toán</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {materials.filter((m) => m.quantity > m.minStock).length}
+                  {materialProfiles?.reduce((sum, profile) => {
+                    const consumableCount = profile.estimate?.consumable_supplies ? Object.keys(profile.estimate.consumable_supplies).length : 0;
+                    const replacementCount = profile.estimate?.replacement_materials ? Object.keys(profile.estimate.replacement_materials).length : 0;
+                    return sum + consumableCount + replacementCount;
+                  }, 0)}
                 </p>
-              </div> */}
+              </div>
             </div>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
@@ -359,14 +363,22 @@ export default function MaterialsPage() {
                   />
                 </svg>
               </div>
-              {/* <div className="ml-3">
+              <div className="ml-3">
                 <p className="text-sm font-medium text-gray-500">
-                  Cần nhập thêm
+                  Tổng số vật tư vượt dự toán
                 </p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {materials.filter((m) => m.quantity <= m.minStock).length}
+                  {materialProfiles?.reduce((count, profile) => {
+                    const alignedMaterials = alignMaterials(profile.estimate, profile.reality);
+                    const overBudgetCount = alignedMaterials.filter((item) => {
+                      const estimateQty = item.estimate ? item.estimate.quantity : 0;
+                      const realityQty = item.reality ? item.reality.quantity : 0;
+                      return realityQty > estimateQty;
+                    });
+                    return count + overBudgetCount.length;
+                  }, 0)}
                 </p>
-              </div> */}
+              </div>
             </div>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
