@@ -2,16 +2,46 @@
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import Header from '@/components/layout/Header';
 import React, { useEffect, useState } from 'react';
-import { AlignedMaterial, Material, MaterialsProfile } from '@/types/api';
-import {materialsProfileService} from '@/services/materialsProfileService';
+import { AlignedMaterial, MaterialsProfile } from '@/types/api';
+import {materialsProfileService, MaterialsProfileFilterParams} from '@/services/materialsProfileService';
 
+// Constants for filters
+const SECTORS = {
+  MECHANICAL: "Cơ khí",
+  WEAPONS: "Vũ khí",
+  HULL: "Vỏ Tàu",
+  DOCK: "Đà đốc",
+  ELECTRONICS: "Điện tàu",
+  PROPULSION: "Động lực",
+  VALVE_PIPE: "Van ống",
+  ELECTRONICS_TACTICAL: "KT-ĐT",
+  DECORATIVE: "Trang trí",
+  ELECTRICAL: "Cơ điện"
+};
 
+const MAINTENANCE_TIERS = {
+  DOCK: "SCCĐ",
+  SMALL: "SCCN",
+  MEDIUM: "SCCV"
+};
 
 export default function MaterialsPage() {
   const [materialProfiles, setMaterialProfiles] = useState<MaterialsProfile[] | null>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Filter states
+  const [filters, setFilters] = useState<MaterialsProfileFilterParams>({
+    sector: '',
+    project: '',
+    maintenance_tier: '',
+    maintenance_number: '',
+    equipment_machinery_name: ''
+  });
+  const [isFiltering, setIsFiltering] = useState(false);
+  
   // Function to align materials for comparison
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const alignMaterials = (estimate: any, reality: any): AlignedMaterial[] => {
     const allMaterials = new Set([
       ...Object.keys(estimate.consumable_supplies),
@@ -39,19 +69,64 @@ export default function MaterialsPage() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-    const fetchData = async () => {
+  const fetchData = async () => {
     try {
-      // Fetch material profiles here
       setLoading(true);
-      const response = await materialsProfileService.paginate(1, 10);
-      console.log('Fetched material profiles:', response.data.items);
-      setMaterialProfiles(response.data.items ? response.data.items : null);
-    } catch (e) {
-      setError('Failed to load material profiles.');
+      setError(null);
+      
+      // Check if any filter is applied
+      const hasFilters = Object.values(filters).some(value => value && value.trim() !== '');
+      
+      if (hasFilters) {
+        // Use filter API
+        const cleanFilters = Object.fromEntries(
+          Object.entries(filters).filter(([, value]) => value && value.trim() !== '')
+        ) as MaterialsProfileFilterParams;
+        
+        const response = await materialsProfileService.filter(cleanFilters);
+        console.log('Filtered material profiles:', response.data);
+        setMaterialProfiles(response.data || []);
+      } else {
+        // Use paginate API
+        const response = await materialsProfileService.paginate(1, 10);
+        console.log('Paginated material profiles:', response.data.items);
+        setMaterialProfiles(response.data.items || []);
+      }
+    } catch (error) {
+      console.error('Failed to load material profiles:', error);
+      setError('Không thể tải dữ liệu vật tư.');
+      setMaterialProfiles([]);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
+  const handleFilterChange = (key: keyof MaterialsProfileFilterParams, value: string) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const handleApplyFilter = () => {
+    setIsFiltering(true);
+    fetchData();
+  };
+
+  const handleClearFilter = () => {
+    setFilters({
+      sector: '',
+      project: '',
+      maintenance_tier: '',
+      maintenance_number: '',
+      equipment_machinery_name: ''
+    });
+    setIsFiltering(false);
+    setTimeout(() => fetchData(), 0);
+  };
 
 
   return (
@@ -74,25 +149,148 @@ export default function MaterialsPage() {
               Xuất báo cáo
             </button>
           </div>
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              placeholder="Tìm kiếm vật tư..."
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            />
-            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
-              <option>Tất cả danh mục</option>
-              <option>Xi măng</option>
-              <option>Thép</option>
-              <option>Gạch</option>
-              <option>Cát</option>
-              <option>Đá</option>
-              <option>Sơn</option>
-            </select>
+        </div>
+
+        {/* Filter Section */}
+        <div className="bg-white rounded-lg shadow p-4 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Bộ lọc</h3>
+            {isFiltering && (
+              <span className="text-sm text-blue-600 flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+                </svg>
+                Đang lọc
+              </span>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {/* Sector Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Ngành
+              </label>
+              <select
+                value={filters.sector}
+                onChange={(e) => handleFilterChange('sector', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              >
+                <option value="">Tất cả ngành</option>
+                {Object.values(SECTORS).map((sector) => (
+                  <option key={sector} value={sector}>
+                    {sector}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Project Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Dự án
+              </label>
+              <input
+                type="text"
+                value={filters.project}
+                onChange={(e) => handleFilterChange('project', e.target.value)}
+                placeholder="Nhập tên dự án..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
+            </div>
+
+            {/* Maintenance Tier Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Cấp sửa chữa
+              </label>
+              <select
+                value={filters.maintenance_tier}
+                onChange={(e) => handleFilterChange('maintenance_tier', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              >
+                <option value="">Tất cả cấp</option>
+                {Object.values(MAINTENANCE_TIERS).map((tier) => (
+                  <option key={tier} value={tier}>
+                    {tier}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Maintenance Number Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Lần sửa chữa
+              </label>
+              <input
+                type="text"
+                value={filters.maintenance_number}
+                onChange={(e) => handleFilterChange('maintenance_number', e.target.value)}
+                placeholder="Nhập lần sửa chữa..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
+            </div>
+
+            {/* Equipment Name Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tên thiết bị
+              </label>
+              <input
+                type="text"
+                value={filters.equipment_machinery_name}
+                onChange={(e) => handleFilterChange('equipment_machinery_name', e.target.value)}
+                placeholder="Nhập tên thiết bị..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
+            </div>
+          </div>
+
+          {/* Filter Action Buttons */}
+          <div className="flex space-x-4 mt-4">
+            <button
+              onClick={handleApplyFilter}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span>Áp dụng</span>
+            </button>
+            <button
+              onClick={handleClearFilter}
+              className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors flex items-center space-x-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Xóa bộ lọc</span>
+            </button>
           </div>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+            <span className="ml-3 text-gray-600">Đang tải dữ liệu...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center">
+              <svg className="w-6 h-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-red-700">{error}</span>
+            </div>
+          </div>
+        )}
+
         {/* Quick Stats */}
+        {!loading && !error && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center">
@@ -205,8 +403,10 @@ export default function MaterialsPage() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Materials Table */}
+        {!loading && !error && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto max-h-[calc(100vh-100px)] overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -554,6 +754,7 @@ export default function MaterialsPage() {
             </table>
           </div>
         </div>
+        )}
       </div>
     </DashboardLayout>
   );

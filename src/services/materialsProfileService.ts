@@ -20,7 +20,7 @@ export class MaterialsProfileService {
    * GET /materials-profiles
    */
   async filter(params: MaterialsProfileFilterParams = {}): Promise<ApiResponse<MaterialsProfile[]>> {
-    const response = await apiClient.get<ApiResponse<MaterialsProfile[]>>('/materials-profiles', {
+    const response = await apiClient.get<ApiResponse<MaterialsProfile[]>>('/materials-profiles/', {
       params
     });
     return response.data;
