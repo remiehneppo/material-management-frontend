@@ -52,8 +52,8 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
       const selectedFile = e.target.files[0];
       
       // Validate file type
-      if (!selectedFile.name.endsWith('.xlsx') && !selectedFile.name.endsWith('.xls')) {
-        setError('Chỉ chấp nhận file Excel (.xlsx, .xls)');
+      if (!selectedFile.name.endsWith('.xlsx')) {
+        setError('Chỉ chấp nhận file Excel (.xlsx)');
         return;
       }
       
@@ -169,13 +169,13 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                         {file ? file.name : 'Chọn file hoặc kéo thả vào đây'}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        Định dạng: .xlsx, .xls
+                        Định dạng: .xlsx
                       </p>
                     </div>
                     <input
                       type="file"
                       className="hidden"
-                      accept=".xlsx,.xls"
+                      accept=".xlsx"
                       onChange={handleFileChange}
                       disabled={uploading}
                     />
@@ -194,7 +194,7 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                   onChange={(e) => handleInputChange('project', e.target.value)}
                   placeholder="Nhập tên dự án..."
                   disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
                 />
               </div>
 
@@ -207,7 +207,7 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                   value={formData.maintenance_tier}
                   onChange={(e) => handleInputChange('maintenance_tier', e.target.value)}
                   disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium"
                 >
                   <option value="">Chọn cấp sửa chữa</option>
                   {Object.values(MAINTENANCE_TIERS).map((tier) => (
@@ -229,7 +229,7 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                   onChange={(e) => handleInputChange('maintenance_number', e.target.value)}
                   placeholder="Nhập lần sửa chữa (vd: 1, 2, 3...)"
                   disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
                 />
               </div>
 
@@ -244,7 +244,7 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                   onChange={(e) => handleInputChange('sheet_name', e.target.value)}
                   placeholder="Nhập tên sheet trong file Excel..."
                   disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
                 />
               </div>
 
@@ -257,7 +257,7 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                   value={formData.sector}
                   onChange={(e) => handleInputChange('sector', e.target.value)}
                   disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium"
                 >
                   <option value="">Chọn ngành</option>
                   {Object.values(SECTORS).map((sector) => (
