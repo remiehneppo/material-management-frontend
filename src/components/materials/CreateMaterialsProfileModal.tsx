@@ -130,7 +130,7 @@ export default function CreateMaterialsProfileModal({
 
     try {
       const response = await materialsProfileService.create({
-        maintenance_id: formData.maintenance_id,
+        maintenance_instance_id: formData.maintenance_id,
         equipment_machinery_id: formData.equipment_machinery_id,
         index_path: formData.index_path.trim(),
         sector: formData.sector,

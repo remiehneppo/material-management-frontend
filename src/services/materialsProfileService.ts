@@ -8,11 +8,9 @@ import type {
 } from '../types/api';
 
 export interface MaterialsProfileFilterParams {
+  maintenance_ids?: string[];
+  equipment_machinery_ids?: string[];
   sector?: string;
-  project?: string;
-  maintenance_tier?: string;
-  maintenance_number?: string;
-  equipment_machinery_name?: string;
 }
 
 export class MaterialsProfileService {
@@ -27,8 +25,8 @@ export class MaterialsProfileService {
    * GET /materials-profiles
    */
   async filter(params: MaterialsProfileFilterParams = {}): Promise<ApiResponse<MaterialsProfile[]>> {
-    const response = await apiClient.get<ApiResponse<MaterialsProfile[]>>('/materials-profiles/', {
-      params
+    const response = await apiClient.post<ApiResponse<MaterialsProfile[]>>('/materials-profiles/', {
+      ...params
     });
     return response.data;
   }
@@ -71,27 +69,6 @@ export class MaterialsProfileService {
    */
   async getBySector(sector: string): Promise<ApiResponse<MaterialsProfile[]>> {
     return this.filter({ sector });
-  }
-
-  /**
-   * Get materials profiles by project
-   */
-  async getByProject(project: string): Promise<ApiResponse<MaterialsProfile[]>> {
-    return this.filter({ project });
-  }
-
-  /**
-   * Get materials profiles by maintenance tier
-   */
-  async getByMaintenanceTier(maintenanceTier: string): Promise<ApiResponse<MaterialsProfile[]>> {
-    return this.filter({ maintenance_tier: maintenanceTier });
-  }
-
-  /**
-   * Get materials profiles by equipment machinery name
-   */
-  async getByEquipmentMachineryName(equipmentMachineryName: string): Promise<ApiResponse<MaterialsProfile[]>> {
-    return this.filter({ equipment_machinery_name: equipmentMachineryName });
   }
 
   async paginate(page: number, pageSize: number): Promise<PaginatedResponse<MaterialsProfile>> {
