@@ -65,7 +65,6 @@ export interface EquipmentMachinery {
 export interface CreateEquipmentMachineryReq {
   name: string;
   sector: string;
-  order: number;
 }
 
 export interface EquipmentMachineryFilter {
@@ -126,6 +125,14 @@ export interface MaterialsProfile {
   sector: string;
   estimate: MaterialsForEquipment;
   reality: MaterialsForEquipment;
+}
+
+export interface CreateMaterialsProfileReq {
+  maintenance_instance_id: string;
+  equipment_machinery_id: string;
+  index_path: string;
+  sector: string;
+  estimate: MaterialsForEquipment;
 }
 
 // Material Request Types
