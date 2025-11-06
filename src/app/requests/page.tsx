@@ -1,8 +1,50 @@
+"use client";
+
+import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Header from "@/components/layout/Header";
+import RequestDetailModal from "@/components/requests/RequestDetailModal";
+
+interface Material {
+  name: string;
+  unit: string;
+  quantity: number;
+}
+
+interface EquipmentMaterials {
+  equipment_machinery_name: string;
+  consumable_supplies: Record<string, Material>;
+  replacement_materials: Record<string, Material>;
+}
+
+interface Request {
+  id: string;
+  project: string;
+  maintenance_tier: string;
+  maintenance_number: string;
+  year: number;
+  sector: string;
+  description: string;
+  materials_for_equipment: Record<string, EquipmentMaterials>;
+  requested_by: string;
+  requested_at: number;
+  num_of_request: number;
+}
 
 export default function RequestsPage() {
-  const requests = [
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewDetail = (request: Request) => {
+    setSelectedRequest(request);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRequest(null);
+  };
+  const requests: Request[] = [
     { 
       id: "690b51613fc7e1236bdb63e4", 
       project: "T5",
@@ -38,8 +80,7 @@ export default function RequestsPage() {
               "quantity": 1
             }
           }
-        },
-        
+        }
       },
       requested_by: "tranbao",
       requested_at: 1729238400,
@@ -81,7 +122,38 @@ export default function RequestsPage() {
             }
           }
         },
-        
+         "68ff87babb369dc54f8cd2cdb": {
+          equipment_machinery_name: "Thiết bị Тest 3",
+          consumable_supplies: {
+            "Băng keo giấy 5cm": {
+              "name": "Băng keo giấy 5cm",
+              "unit": "cuộn",
+              "quantity": 10
+            },
+            "Khẩu trang hoạt tính": {
+              "name": "Khẩu trang hoạt tính",
+              "unit": "cái",
+              "quantity": 10
+            }
+          },
+          replacement_materials: {
+            "Cầu chì 27B, 3A": {
+              "name": "Cầu chì 27B, 3A",
+              "unit": "cái",
+              "quantity": 3
+            },
+            "Đầu cos tròn Ø6": {
+              "name": "Đầu cos tròn Ø6",
+              "unit": "bịch",
+              "quantity": 1
+            },
+            "Đầu cos tròn Ø2": {
+              "name": "Đầu cos tròn Ø2",
+              "unit": "bịch",
+              "quantity": 1
+            }
+          }
+        }
       },
       requested_by: "tranbao",
       requested_at: 1729238400,
@@ -238,7 +310,10 @@ export default function RequestsPage() {
                       Xuất kho
                     </button>
                   )} */}
-                  <button className="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600 transition-colors">
+                  <button 
+                    onClick={() => handleViewDetail(request)}
+                    className="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600 transition-colors"
+                  >
                     Chi tiết
                   </button>
                 </div>
@@ -284,6 +359,13 @@ export default function RequestsPage() {
           </div>
         )}
       </div>
+
+      {/* Request Detail Modal */}
+      <RequestDetailModal
+        request={selectedRequest}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </DashboardLayout>
   );
 }
