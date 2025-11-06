@@ -4,48 +4,89 @@ import Header from "@/components/layout/Header";
 export default function RequestsPage() {
   const requests = [
     { 
-      id: "REQ001", 
-      project: "Dự án xây dựng A", 
-      requester: "Nguyễn Văn A", 
-      date: "2024-10-20", 
-      status: "Chờ duyệt",
-      items: [
-        { name: "Xi măng PCB30", quantity: 50, unit: "bao" },
-        { name: "Thép CT3", quantity: 100, unit: "kg" }
-      ]
+      id: "690b51613fc7e1236bdb63e4", 
+      project: "T5",
+      maintenance_tier: "SCCN", 
+      maintenance_number: "1",
+      year: 2025,
+      sector: "Vũ khí", 
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae eros leo. Nulla a ornare mauris. Integer ornare ligula arcu.",
+      materials_for_equipment: {
+        "68ff87babb369dc54f8cdcdb": {
+          equipment_machinery_name: "Thiết bị Тest 1",
+          consumable_supplies: {
+            "Băng keo giấy 5cm": {
+              "name": "Băng keo giấy 5cm",
+              "unit": "cuộn",
+              "quantity": 10
+            },
+            "Khẩu trang hoạt tính": {
+              "name": "Khẩu trang hoạt tính",
+              "unit": "cái",
+              "quantity": 10
+            }
+          },
+          replacement_materials: {
+            "Cầu chì 27B, 3A": {
+              "name": "Cầu chì 27B, 3A",
+              "unit": "cái",
+              "quantity": 3
+            },
+            "Đầu cos tròn Ø6": {
+              "name": "Đầu cos tròn Ø6",
+              "unit": "bịch",
+              "quantity": 1
+            }
+          }
+        },
+        
+      },
+      requested_by: "tranbao",
+      requested_at: 1729238400,
+      num_of_request: 1
     },
     { 
-      id: "REQ002", 
-      project: "Dự án xây dựng B", 
-      requester: "Trần Thị B", 
-      date: "2024-10-19", 
-      status: "Đã duyệt",
-      items: [
-        { name: "Gạch nung đỏ", quantity: 1000, unit: "viên" },
-        { name: "Cát xây dựng", quantity: 5, unit: "m³" }
-      ]
-    },
-    { 
-      id: "REQ003", 
-      project: "Dự án xây dựng C", 
-      requester: "Lê Văn C", 
-      date: "2024-10-18", 
-      status: "Từ chối",
-      items: [
-        { name: "Đá 1x2", quantity: 10, unit: "m³" }
-      ]
-    },
-    { 
-      id: "REQ004", 
-      project: "Dự án xây dựng D", 
-      requester: "Phạm Thị D", 
-      date: "2024-10-17", 
-      status: "Đã xuất",
-      items: [
-        { name: "Sơn nước ngoại thất", quantity: 5, unit: "thùng" },
-        { name: "Xi măng PCB30", quantity: 30, unit: "bao" }
-      ]
-    },
+      id: "690b51613fc7e1236bdb3364", 
+      project: "T5",
+      maintenance_tier: "SCCN", 
+      maintenance_number: "1",
+      year: 2025,
+      sector: "Vũ khí", 
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt lectus vitae viverra elementum. Aenean iaculis fringilla leo non tempor. Nam a efficitur massa. Etiam sed commodo libero, at sollicitudin ligula. Nam et varius lorem, ac viverra velit. Proin pellentesque urna odio, ut facilisis arcu viverra vel. Quisque quis lacus sagittis, faucibus velit vitae, porttitor diam. ",
+      materials_for_equipment: {
+        "68ff87babb369dc54f8cdcdb": {
+          equipment_machinery_name: "Thiết bị Тest",
+          consumable_supplies: {
+            "Băng keo giấy 5cm": {
+              "name": "Băng keo giấy 5cm",
+              "unit": "cuộn",
+              "quantity": 10
+            },
+            "Khẩu trang hoạt tính": {
+              "name": "Khẩu trang hoạt tính",
+              "unit": "cái",
+              "quantity": 10
+            }
+          },
+          replacement_materials: {
+            "Cầu chì 27B, 3A": {
+              "name": "Cầu chì 27B, 3A",
+              "unit": "cái",
+              "quantity": 3
+            },
+            "Đầu cos tròn Ø6": {
+              "name": "Đầu cos tròn Ø6",
+              "unit": "bịch",
+              "quantity": 1
+            }
+          }
+        },
+        
+      },
+      requested_by: "tranbao",
+      requested_at: 1729238400,
+      num_of_request: 0
+    }
   ];
 
   return (
@@ -106,7 +147,7 @@ export default function RequestsPage() {
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-500">Chờ duyệt</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {requests.filter(r => r.status === "Chờ duyệt").length}
+                  {requests.filter(r => r.num_of_request === 0).length}
                 </p>
               </div>
             </div>
@@ -121,12 +162,12 @@ export default function RequestsPage() {
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-500">Đã duyệt</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {requests.filter(r => r.status === "Đã duyệt").length}
+                  {requests.filter(r => r.num_of_request > 0).length}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-4">
+          {/* <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center">
               <div className="p-2 bg-purple-100 rounded-lg">
                 <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,7 +181,7 @@ export default function RequestsPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Requests List */}
@@ -150,17 +191,15 @@ export default function RequestsPage() {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                   <div className="flex items-center space-x-4 mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900">#{request.id}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">#{`${request.project}/${request.maintenance_tier}/${request.sector}/${request.year}/${request.num_of_request > 0 ? request.num_of_request : ""}`}</h3>
                     <span className={`px-3 py-1 text-sm rounded-full ${
-                      request.status === "Đã duyệt" 
+                      request.num_of_request === 0 
                         ? "bg-green-100 text-green-800"
-                        : request.status === "Chờ duyệt"
+                        : request.num_of_request > 0
                         ? "bg-yellow-100 text-yellow-800"
-                        : request.status === "Đã xuất"
-                        ? "bg-blue-100 text-blue-800"
                         : "bg-red-100 text-red-800"
                     }`}>
-                      {request.status}
+                      {request.num_of_request === 0 ? "Chờ duyệt" : request.num_of_request > 0 ? "Đã duyệt" : "Từ chối"}
                     </span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -169,48 +208,60 @@ export default function RequestsPage() {
                       <p className="font-medium text-gray-900">{request.project}</p>
                     </div>
                     <div>
+                      <span className="text-gray-500">Ngành:</span>
+                      <p className="font-medium text-gray-900">{request.sector}</p>
+                    </div>
+                    <div>
                       <span className="text-gray-500">Người yêu cầu:</span>
-                      <p className="font-medium text-gray-900">{request.requester}</p>
+                      <p className="font-medium text-gray-900">{request.requested_by}</p>
                     </div>
                     <div>
                       <span className="text-gray-500">Ngày tạo:</span>
-                      <p className="font-medium text-gray-900">{request.date}</p>
+                      <p className="font-medium text-gray-900">{new Date(request.requested_at * 1000).toLocaleString('vi-VN')}</p>
                     </div>
                   </div>
                 </div>
+                
                 <div className="flex space-x-2">
-                  {request.status === "Chờ duyệt" && (
+                  {request.num_of_request === 0 && (
                     <>
                       <button className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors">
                         Duyệt
                       </button>
                       <button className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors">
-                        Từ chối
+                        Hủy
                       </button>
                     </>
                   )}
-                  {request.status === "Đã duyệt" && (
+                  {/* {request.status === "Đã duyệt" && (
                     <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors">
                       Xuất kho
                     </button>
-                  )}
+                  )} */}
                   <button className="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600 transition-colors">
                     Chi tiết
                   </button>
                 </div>
               </div>
-              
               <div className="border-t border-gray-100 pt-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Danh sách vật tư:</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {request.items.map((item, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-3">
-                      <p className="font-medium text-gray-900">{item.name}</p>
-                      <p className="text-sm text-gray-600">
-                        Số lượng: {item.quantity.toLocaleString()} {item.unit}
-                      </p>
-                    </div>
-                  ))}
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Nội dung:</h4>
+                  <p className="text-sm text-gray-900">{request.description}</p>
+                </div>
+                
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">Danh sách hạng mục:</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {Object.entries(request.materials_for_equipment).map(([id, item]) => (
+                      <div key={id} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <p className="font-medium text-gray-900 mb-2">{item.equipment_machinery_name}</p>
+                        <div className="flex justify-between text-xs text-gray-600">
+                          <span>VT tiêu hao: <span className="font-semibold text-blue-600">{Object.keys(item.consumable_supplies).length}</span></span>
+                          <span>VT thay thế: <span className="font-semibold text-green-600">{Object.keys(item.replacement_materials).length}</span></span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
