@@ -2,25 +2,13 @@
 
 import React, { useState } from 'react';
 import { materialsProfileService } from '@/services/materialsProfileService';
+import { SECTORS } from '@/types/api';
 
 interface UploadEstimateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
-
-const SECTORS = {
-  MECHANICAL: "Cơ khí",
-  WEAPONS: "Vũ khí",
-  HULL: "Vỏ Tàu",
-  DOCK: "Đà đốc",
-  ELECTRONICS: "Điện tàu",
-  PROPULSION: "Động lực",
-  VALVE_PIPE: "Van ống",
-  ELECTRONICS_TACTICAL: "KT-ĐT",
-  DECORATIVE: "Trang trí",
-  ELECTRICAL: "Cơ điện"
-};
 
 const MAINTENANCE_TIERS = {
   DOCK: "SCCĐ",

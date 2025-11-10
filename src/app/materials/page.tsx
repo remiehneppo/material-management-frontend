@@ -2,7 +2,7 @@
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import Header from '@/components/layout/Header';
 import React, { useEffect, useState } from 'react';
-import { AlignedMaterial, MaterialsProfile, Maintenance, EquipmentMachinery } from '@/types/api';
+import { AlignedMaterial, MaterialsProfile, Maintenance, EquipmentMachinery, SECTORS } from '@/types/api';
 import {
   materialsProfileService,
   MaterialsProfileFilterParams,
@@ -11,19 +11,7 @@ import { maintenanceService, equipmentMachineryService } from '@/services';
 import UploadEstimateModal from '@/components/materials/UploadEstimateModal';
 import CreateMaterialsProfileModal from '@/components/materials/CreateMaterialsProfileModal';
 
-// Constants for filters
-const SECTORS = {
-  MECHANICAL: 'Cơ khí',
-  WEAPONS: 'Vũ khí',
-  HULL: 'Vỏ Tàu',
-  DOCK: 'Đà đốc',
-  ELECTRONICS: 'Điện tàu',
-  PROPULSION: 'Động lực',
-  VALVE_PIPE: 'Van ống',
-  ELECTRONICS_TACTICAL: 'KT-ĐT',
-  DECORATIVE: 'Trang trí',
-  ELECTRICAL: 'Cơ điện',
-};
+
 
 export default function MaterialsPage() {
   const [materialProfiles, setMaterialProfiles] = useState<

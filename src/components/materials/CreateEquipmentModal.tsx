@@ -2,20 +2,7 @@
 
 import { useState } from 'react';
 import { equipmentMachineryService } from '@/services';
-
-// Define sectors
-const SECTORS = {
-  MECHANICAL: 'Cơ khí',
-  WEAPONS: 'Vũ khí',
-  HULL: 'Vỏ Tàu',
-  DOCK: 'Đà đốc',
-  ELECTRONICS: 'Điện tàu',
-  PROPULSION: 'Động lực',
-  VALVE_PIPE: 'Van ống',
-  ELECTRONICS_TACTICAL: 'KT-ĐT',
-  DECORATIVE: 'Trang trí',
-  ELECTRICAL: 'Cơ điện',
-} as const;
+import { SECTORS } from '@/types/api';
 
 interface CreateEquipmentModalProps {
   isOpen: boolean;

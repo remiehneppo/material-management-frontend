@@ -4,6 +4,7 @@ import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Header from "@/components/layout/Header";
 import RequestDetailModal from "@/components/requests/RequestDetailModal";
+import CreateMaterialRequestModal from "@/components/requests/CreateMaterialRequestModal";
 
 interface Material {
   name: string;
@@ -34,6 +35,7 @@ interface Request {
 export default function RequestsPage() {
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleViewDetail = (request: Request) => {
     setSelectedRequest(request);
@@ -43,6 +45,11 @@ export default function RequestsPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedRequest(null);
+  };
+
+  const handleCreateSuccess = () => {
+    // TODO: Reload requests list
+    console.log("Material request created successfully");
   };
   const requests: Request[] = [
     { 
@@ -168,7 +175,10 @@ export default function RequestsPage() {
         {/* Action Bar */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex space-x-4">
-            <button className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors">
+            <button 
+              onClick={() => setIsCreateModalOpen(true)}
+              className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors"
+            >
               + Tạo yêu cầu mới
             </button>
             <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
@@ -365,6 +375,13 @@ export default function RequestsPage() {
         request={selectedRequest}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+      />
+
+      {/* Create Material Request Modal */}
+      <CreateMaterialRequestModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={handleCreateSuccess}
       />
     </DashboardLayout>
   );

@@ -8,20 +8,8 @@ import {
 } from '@/services';
 import CreateEquipmentModal from './CreateEquipmentModal';
 import type { Maintenance, EquipmentMachinery } from '@/types/api';
+import { SECTORS } from '@/types/api';
 
-// Define sectors
-const SECTORS = {
-  MECHANICAL: 'Cơ khí',
-  WEAPONS: 'Vũ khí',
-  HULL: 'Vỏ Tàu',
-  DOCK: 'Đà đốc',
-  ELECTRONICS: 'Điện tàu',
-  PROPULSION: 'Động lực',
-  VALVE_PIPE: 'Van ống',
-  ELECTRONICS_TACTICAL: 'KT-ĐT',
-  DECORATIVE: 'Trang trí',
-  ELECTRICAL: 'Cơ điện',
-} as const;
 
 interface CreateMaterialsProfileModalProps {
   isOpen: boolean;

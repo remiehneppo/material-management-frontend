@@ -14,7 +14,7 @@ export class MaterialRequestService {
    * POST /materials-request
    */
   async create(request: CreateMaterialRequestReq): Promise<ApiResponse<string>> {
-    const response = await apiClient.post<ApiResponse<string>>('/materials-request', request);
+    const response = await apiClient.post<ApiResponse<string>>('/materials-request/', request);
     return response.data;
   }
 

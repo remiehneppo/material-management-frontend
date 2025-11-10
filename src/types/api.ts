@@ -1,4 +1,17 @@
 // API Response Types
+
+export const SECTORS = {
+  MECHANICAL: 'Cơ khí',
+  WEAPONS: 'Vũ khí',
+  HULL: 'Vỏ Tàu',
+  DOCK: 'Đà đốc',
+  ELECTRONICS: 'Điện tàu',
+  PROPULSION: 'Động lực',
+  VALVE_PIPE: 'Van ống',
+  ELECTRONICS_TACTICAL: 'KT-ĐT',
+  DECORATIVE: 'Trang trí',
+  ELECTRICAL: 'Cơ điện',
+};
 export interface ApiResponse<T = unknown> {
   status: boolean;
   message: string;
@@ -148,9 +161,7 @@ export interface MaterialRequest {
 }
 
 export interface CreateMaterialRequestReq {
-  maintenance_number: string;
-  maintenance_tier: string;
-  project: string;
+  maintenance_instance_id: string;
   sector: string;
   materials_for_equipment: Record<string, MaterialsForEquipment>;
   description?: string;
