@@ -48,6 +48,10 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
   const [newMaterialName, setNewMaterialName] = useState("");
   const [newMaterialQuantity, setNewMaterialQuantity] = useState("");
   const [newMaterialUnit, setNewMaterialUnit] = useState("");
+  
+  // For editing quantity from estimate
+  const [editingEstimateMaterial, setEditingEstimateMaterial] = useState<Material | null>(null);
+  const [editQuantity, setEditQuantity] = useState("");
 
 
   useEffect(() => {
@@ -137,30 +141,36 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
     setShowAddMaterialModal(true);
   };
 
-  const handleAddMaterialFromEstimate = (material: Material) => {
-    if (!currentEquipmentId) return;
+  const handleSelectEstimateMaterial = (material: Material) => {
+    setEditingEstimateMaterial(material);
+    setEditQuantity(material.quantity.toString());
+  };
+
+  const handleAddMaterialFromEstimate = () => {
+    if (!currentEquipmentId || !editingEstimateMaterial || !editQuantity) return;
     
     const equipment = selectedEquipments[currentEquipmentId];
     if (!equipment) return;
 
     const updatedEquipment = { ...equipment };
+    const quantity = parseFloat(editQuantity);
     
     if (materialType === "consumable") {
       updatedEquipment.consumable_supplies = {
         ...updatedEquipment.consumable_supplies,
-        [material.name]: {
-          name: material.name,
-          quantity: material.quantity,
-          unit: material.unit
+        [editingEstimateMaterial.name]: {
+          name: editingEstimateMaterial.name,
+          quantity: quantity,
+          unit: editingEstimateMaterial.unit
         }
       };
     } else {
       updatedEquipment.replacement_materials = {
         ...updatedEquipment.replacement_materials,
-        [material.name]: {
-          name: material.name,
-          quantity: material.quantity,
-          unit: material.unit
+        [editingEstimateMaterial.name]: {
+          name: editingEstimateMaterial.name,
+          quantity: quantity,
+          unit: editingEstimateMaterial.unit
         }
       };
     }
@@ -169,6 +179,11 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
       ...selectedEquipments,
       [currentEquipmentId]: updatedEquipment
     });
+    
+    // Reset
+    setEditingEstimateMaterial(null);
+    setEditQuantity("");
+    setShowAddMaterialModal(false);
   };
 
   const handleAddNewMaterial = () => {
@@ -485,9 +500,28 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
                           <div className="space-y-1">
                             {Object.entries(equipment.consumable_supplies).map(([name, material]) => (
                               <div key={name} className="flex items-center justify-between text-sm bg-gray-50 px-3 py-2 rounded">
-                                <span className="text-gray-900">{material.name}</span>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-gray-600">{material.quantity} {material.unit}</span>
+                                <span className="text-gray-900 flex-1">{material.name}</span>
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    type="number"
+                                    value={material.quantity}
+                                    onChange={(e) => {
+                                      const newQuantity = parseFloat(e.target.value) || 0;
+                                      const updatedEquipment = { ...selectedEquipments[equipmentId] };
+                                      updatedEquipment.consumable_supplies = {
+                                        ...updatedEquipment.consumable_supplies,
+                                        [name]: { ...material, quantity: newQuantity }
+                                      };
+                                      setSelectedEquipments({
+                                        ...selectedEquipments,
+                                        [equipmentId]: updatedEquipment
+                                      });
+                                    }}
+                                    className="w-20 px-2 py-1 border border-gray-300 rounded text-center text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                    min="0"
+                                    step="0.01"
+                                  />
+                                  <span className="text-gray-600 w-12">{material.unit}</span>
                                   <button
                                     onClick={() => handleRemoveMaterial(equipmentId, name, "consumable")}
                                     className="text-red-500 hover:text-red-700"
@@ -523,9 +557,28 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
                           <div className="space-y-1">
                             {Object.entries(equipment.replacement_materials).map(([name, material]) => (
                               <div key={name} className="flex items-center justify-between text-sm bg-gray-50 px-3 py-2 rounded">
-                                <span className="text-gray-900">{material.name}</span>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-gray-600">{material.quantity} {material.unit}</span>
+                                <span className="text-gray-900 flex-1">{material.name}</span>
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    type="number"
+                                    value={material.quantity}
+                                    onChange={(e) => {
+                                      const newQuantity = parseFloat(e.target.value) || 0;
+                                      const updatedEquipment = { ...selectedEquipments[equipmentId] };
+                                      updatedEquipment.replacement_materials = {
+                                        ...updatedEquipment.replacement_materials,
+                                        [name]: { ...material, quantity: newQuantity }
+                                      };
+                                      setSelectedEquipments({
+                                        ...selectedEquipments,
+                                        [equipmentId]: updatedEquipment
+                                      });
+                                    }}
+                                    className="w-20 px-2 py-1 border border-gray-300 rounded text-center text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                    min="0"
+                                    step="0.01"
+                                  />
+                                  <span className="text-gray-600 w-12">{material.unit}</span>
                                   <button
                                     onClick={() => handleRemoveMaterial(equipmentId, name, "replacement")}
                                     className="text-red-500 hover:text-red-700"
@@ -627,16 +680,61 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
                 <h4 className="font-medium text-gray-900 mb-3">Chọn từ dự toán</h4>
                 {getCurrentProfileEstimate().length === 0 ? (
                   <p className="text-sm text-gray-500 italic">Không có vật tư trong dự toán</p>
+                ) : editingEstimateMaterial ? (
+                  // Editing quantity for selected estimate material
+                  <div className="space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <h5 className="font-medium text-gray-900">{editingEstimateMaterial.name}</h5>
+                      <button
+                        onClick={() => {
+                          setEditingEstimateMaterial(null);
+                          setEditQuantity("");
+                        }}
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Số lượng yêu cầu <span className="text-red-500">*</span>
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            value={editQuantity}
+                            onChange={(e) => setEditQuantity(e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                            placeholder="0"
+                            min="0"
+                            step="0.01"
+                          />
+                          <span className="text-gray-700 font-medium">{editingEstimateMaterial.unit}</span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Dự toán: {editingEstimateMaterial.quantity} {editingEstimateMaterial.unit}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleAddMaterialFromEstimate}
+                      disabled={!editQuantity || parseFloat(editQuantity) <= 0}
+                      className="w-full bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Thêm vật tư
+                    </button>
+                  </div>
                 ) : (
+                  // List of estimate materials to select
                   <div className="space-y-2 max-h-48 overflow-y-auto">
                     {getCurrentProfileEstimate().map((material, index) => (
                       <div
                         key={index}
                         className="flex items-center justify-between p-3 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          handleAddMaterialFromEstimate(material);
-                          setShowAddMaterialModal(false);
-                        }}
+                        onClick={() => handleSelectEstimateMaterial(material)}
                       >
                         <span className="text-sm text-gray-900">{material.name}</span>
                         <span className="text-sm text-gray-600">{material.quantity} {material.unit}</span>
