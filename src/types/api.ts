@@ -126,6 +126,12 @@ export interface MaterialsForEquipment {
   replacement_materials?: Record<string, Material>;
 }
 
+export interface MaterialsForEquipmentRes {
+  equipment_machinery_name: string;
+  consumable_supplies?: Record<string, Material>;
+  replacement_materials?: Record<string, Material>;
+}
+
 // Materials Profile Types
 export interface MaterialsProfile {
   id: string;
@@ -151,8 +157,11 @@ export interface CreateMaterialsProfileReq {
 // Material Request Types
 export interface MaterialRequest {
   id: string;
-  maintenance_instance_id: string;
-  materials_for_equipment: Record<string, MaterialsForEquipment>;
+  project: string;
+  maintenance_tier: string;
+  maintenance_number: string;
+  year: number;
+  materials_for_equipment: Record<string, MaterialsForEquipmentRes>;
   num_of_request: number;
   requested_at: number;
   requested_by: string;

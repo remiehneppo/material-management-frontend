@@ -1,33 +1,10 @@
 "use client";
 
-interface Material {
-  name: string;
-  unit: string;
-  quantity: number;
-}
-
-interface EquipmentMaterials {
-  equipment_machinery_name: string;
-  consumable_supplies: Record<string, Material>;
-  replacement_materials: Record<string, Material>;
-}
-
-interface Request {
-  id: string;
-  project: string;
-  maintenance_tier: string;
-  maintenance_number: string;
-  year: number;
-  sector: string;
-  description: string;
-  materials_for_equipment: Record<string, EquipmentMaterials>;
-  requested_by: string;
-  requested_at: number;
-  num_of_request: number;
-}
+import { materialRequestService } from "@/services";
+import { MaterialRequest } from "@/types/api";
 
 interface RequestDetailModalProps {
-  request: Request | null;
+  request: MaterialRequest | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -120,17 +97,17 @@ export default function RequestDetailModal({ request, isOpen, onClose }: Request
                     <h4 className="font-semibold text-gray-900 text-lg">{equipment.equipment_machinery_name}</h4>
                     <div className="flex gap-4 mt-2 text-sm">
                       <span className="text-blue-600">
-                        <span className="font-medium">VT tiêu hao:</span> {Object.keys(equipment.consumable_supplies).length}
+                        <span className="font-medium">VT tiêu hao:</span> {Object.keys(equipment.consumable_supplies || {}).length}
                       </span>
                       <span className="text-green-600">
-                        <span className="font-medium">VT thay thế:</span> {Object.keys(equipment.replacement_materials).length}
+                        <span className="font-medium">VT thay thế:</span> {Object.keys(equipment.replacement_materials || {}).length}
                       </span>
                     </div>
                   </div>
 
                   <div className="p-4">
                     {/* Consumable Supplies */}
-                    {Object.keys(equipment.consumable_supplies).length > 0 && (
+                    {Object.keys(equipment.consumable_supplies || {}).length > 0 && (
                       <div className="mb-4">
                         <h5 className="font-medium text-gray-700 mb-3 flex items-center">
                           <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
@@ -147,7 +124,7 @@ export default function RequestDetailModal({ request, isOpen, onClose }: Request
                               </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                              {Object.values(equipment.consumable_supplies).map((material, index) => (
+                              {Object.values(equipment.consumable_supplies ?? {}).map((material, index) => (
                                 <tr key={index} className="hover:bg-gray-50">
                                   <td className="px-4 py-3 text-sm text-gray-900 text-center">{index + 1}</td>
                                   <td className="px-4 py-3 text-sm text-gray-900">{material.name}</td>
@@ -162,7 +139,7 @@ export default function RequestDetailModal({ request, isOpen, onClose }: Request
                     )}
 
                     {/* Replacement Materials */}
-                    {Object.keys(equipment.replacement_materials).length > 0 && (
+                    {Object.keys(equipment.replacement_materials || {}).length > 0 && (
                       <div>
                         <h5 className="font-medium text-gray-700 mb-3 flex items-center">
                           <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
@@ -179,7 +156,7 @@ export default function RequestDetailModal({ request, isOpen, onClose }: Request
                               </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                              {Object.values(equipment.replacement_materials).map((material, index) => (
+                              {Object.values(equipment.replacement_materials ?? {}).map((material, index) => (
                                 <tr key={index} className="hover:bg-gray-50">
                                   <td className="px-4 py-3 text-sm text-gray-900 text-center">{index + 1}</td>
                                   <td className="px-4 py-3 text-sm text-gray-900">{material.name}</td>

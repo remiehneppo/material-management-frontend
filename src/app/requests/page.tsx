@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Header from "@/components/layout/Header";
 import RequestDetailModal from "@/components/requests/RequestDetailModal";
 import CreateMaterialRequestModal from "@/components/requests/CreateMaterialRequestModal";
+import { materialRequestService } from "@/services";
+import { MaterialRequest } from "@/types/api";
 
 interface Material {
   name: string;
@@ -18,26 +20,33 @@ interface EquipmentMaterials {
   replacement_materials: Record<string, Material>;
 }
 
-interface Request {
-  id: string;
-  project: string;
-  maintenance_tier: string;
-  maintenance_number: string;
-  year: number;
-  sector: string;
-  description: string;
-  materials_for_equipment: Record<string, EquipmentMaterials>;
-  requested_by: string;
-  requested_at: number;
-  num_of_request: number;
-}
-
 export default function RequestsPage() {
-  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<MaterialRequest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [requests, setRequests] = useState<MaterialRequest[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleViewDetail = (request: Request) => {
+  const loadRequests = async () => {
+    try {
+      setLoading(true);
+      const response = await materialRequestService.getAll();
+      if (response.data) {
+        setRequests(response.data);
+      }
+    } catch (error) {
+      console.error("Error loading material requests:", error);
+      alert("Không thể tải danh sách yêu cầu vật tư");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRequests();
+  }, []);
+
+  const handleViewDetail = (request: MaterialRequest) => {
     setSelectedRequest(request);
     setIsModalOpen(true);
   };
@@ -48,125 +57,8 @@ export default function RequestsPage() {
   };
 
   const handleCreateSuccess = () => {
-    // TODO: Reload requests list
-    console.log("Material request created successfully");
+    loadRequests();
   };
-  const requests: Request[] = [
-    { 
-      id: "690b51613fc7e1236bdb63e4", 
-      project: "T5",
-      maintenance_tier: "SCCN", 
-      maintenance_number: "1",
-      year: 2025,
-      sector: "Vũ khí", 
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae eros leo. Nulla a ornare mauris. Integer ornare ligula arcu.",
-      materials_for_equipment: {
-        "68ff87babb369dc54f8cdcdb": {
-          equipment_machinery_name: "Thiết bị Тest 1",
-          consumable_supplies: {
-            "Băng keo giấy 5cm": {
-              "name": "Băng keo giấy 5cm",
-              "unit": "cuộn",
-              "quantity": 10
-            },
-            "Khẩu trang hoạt tính": {
-              "name": "Khẩu trang hoạt tính",
-              "unit": "cái",
-              "quantity": 10
-            }
-          },
-          replacement_materials: {
-            "Cầu chì 27B, 3A": {
-              "name": "Cầu chì 27B, 3A",
-              "unit": "cái",
-              "quantity": 3
-            },
-            "Đầu cos tròn Ø6": {
-              "name": "Đầu cos tròn Ø6",
-              "unit": "bịch",
-              "quantity": 1
-            }
-          }
-        }
-      },
-      requested_by: "tranbao",
-      requested_at: 1729238400,
-      num_of_request: 1
-    },
-    { 
-      id: "690b51613fc7e1236bdb3364", 
-      project: "T5",
-      maintenance_tier: "SCCN", 
-      maintenance_number: "1",
-      year: 2025,
-      sector: "Vũ khí", 
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt lectus vitae viverra elementum. Aenean iaculis fringilla leo non tempor. Nam a efficitur massa. Etiam sed commodo libero, at sollicitudin ligula. Nam et varius lorem, ac viverra velit. Proin pellentesque urna odio, ut facilisis arcu viverra vel. Quisque quis lacus sagittis, faucibus velit vitae, porttitor diam. ",
-      materials_for_equipment: {
-        "68ff87babb369dc54f8cdcdb": {
-          equipment_machinery_name: "Thiết bị Тest",
-          consumable_supplies: {
-            "Băng keo giấy 5cm": {
-              "name": "Băng keo giấy 5cm",
-              "unit": "cuộn",
-              "quantity": 10
-            },
-            "Khẩu trang hoạt tính": {
-              "name": "Khẩu trang hoạt tính",
-              "unit": "cái",
-              "quantity": 10
-            }
-          },
-          replacement_materials: {
-            "Cầu chì 27B, 3A": {
-              "name": "Cầu chì 27B, 3A",
-              "unit": "cái",
-              "quantity": 3
-            },
-            "Đầu cos tròn Ø6": {
-              "name": "Đầu cos tròn Ø6",
-              "unit": "bịch",
-              "quantity": 1
-            }
-          }
-        },
-         "68ff87babb369dc54f8cd2cdb": {
-          equipment_machinery_name: "Thiết bị Тest 3",
-          consumable_supplies: {
-            "Băng keo giấy 5cm": {
-              "name": "Băng keo giấy 5cm",
-              "unit": "cuộn",
-              "quantity": 10
-            },
-            "Khẩu trang hoạt tính": {
-              "name": "Khẩu trang hoạt tính",
-              "unit": "cái",
-              "quantity": 10
-            }
-          },
-          replacement_materials: {
-            "Cầu chì 27B, 3A": {
-              "name": "Cầu chì 27B, 3A",
-              "unit": "cái",
-              "quantity": 3
-            },
-            "Đầu cos tròn Ø6": {
-              "name": "Đầu cos tròn Ø6",
-              "unit": "bịch",
-              "quantity": 1
-            },
-            "Đầu cos tròn Ø2": {
-              "name": "Đầu cos tròn Ø2",
-              "unit": "bịch",
-              "quantity": 1
-            }
-          }
-        }
-      },
-      requested_by: "tranbao",
-      requested_at: 1729238400,
-      num_of_request: 0
-    }
-  ];
 
   return (
     <DashboardLayout>
@@ -268,7 +160,16 @@ export default function RequestsPage() {
 
         {/* Requests List */}
         <div className="space-y-4">
-          {requests.map((request) => (
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          ) : requests.length === 0 ? (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+              <p className="text-gray-500">Chưa có yêu cầu vật tư nào</p>
+            </div>
+          ) : (
+            requests.map((request) => (
             <div key={request.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
@@ -350,11 +251,12 @@ export default function RequestsPage() {
                 </div>
               </div>
             </div>
-          ))}
+            ))
+          )}
         </div>
 
-        {/* Empty State */}
-        {requests.length === 0 && (
+        {/* Empty State - Removed as we now handle it inline */}
+        {false && requests.length === 0 && (
           <div className="text-center py-12">
             <div className="mx-auto w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
               <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
