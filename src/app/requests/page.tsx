@@ -242,8 +242,8 @@ export default function RequestsPage() {
                       <div key={id} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
                         <p className="font-medium text-gray-900 mb-2">{item.equipment_machinery_name}</p>
                         <div className="flex justify-between text-xs text-gray-600">
-                          <span>VT tiêu hao: <span className="font-semibold text-blue-600">{Object.keys(item.consumable_supplies).length}</span></span>
-                          <span>VT thay thế: <span className="font-semibold text-green-600">{Object.keys(item.replacement_materials).length}</span></span>
+                          <span>VT tiêu hao: <span className="font-semibold text-blue-600">{Object.keys(item.consumable_supplies || {}).length}</span></span>
+                          <span>VT thay thế: <span className="font-semibold text-green-600">{Object.keys(item.replacement_materials || {}).length}</span></span>
                         </div>
                       </div>
                     ))}
@@ -277,6 +277,7 @@ export default function RequestsPage() {
         request={selectedRequest}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        onUpdate={loadRequests}
       />
 
       {/* Create Material Request Modal */}
