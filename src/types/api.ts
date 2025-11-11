@@ -195,6 +195,13 @@ export interface UpdateNumberOfRequestReq {
   num_of_request: number;
 }
 
+export interface MaterialRequestUpdateReq {
+  id: string;
+  sector?: string;
+  description?: string;
+  materials_for_equipment?: Record<string, MaterialsForEquipment>;
+}
+
 // Upload Types
 export interface UploadMaterialsEstimateRequest {
   project: string;

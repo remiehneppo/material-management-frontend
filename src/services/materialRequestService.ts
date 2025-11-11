@@ -5,7 +5,8 @@ import type {
   CreateMaterialRequestReq,
   MaterialRequestFilter,
   MaterialRequestExport,
-  UpdateNumberOfRequestReq
+  UpdateNumberOfRequestReq,
+  MaterialRequestUpdateReq
 } from '../types/api';
 
 export class MaterialRequestService {
@@ -45,6 +46,11 @@ export class MaterialRequestService {
     return response.data;
   }
 
+  async updateMaterialRequest(request: MaterialRequestUpdateReq): Promise<ApiResponse> {
+    const response = await apiClient.post<ApiResponse>('/materials-request/update', request);
+    return response.data;
+  }
+
   /**
    * Export material request to DOCX
    * POST /materials-request/export
@@ -70,7 +76,7 @@ export class MaterialRequestService {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = filename || `material-request-${materialRequestId}.docx`;
+      link.download = filename || `YCVT-${materialRequestId}.docx`;
       document.body.appendChild(link);
       link.click();
       
