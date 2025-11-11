@@ -18,6 +18,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
   const [loading, setLoading] = useState(false);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [requestNumber, setRequestNumber] = useState("");
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   useEffect(() => {
     if (request) {
@@ -90,6 +91,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
     });
   };
 
+
   const handleApproveRequest = async () => {
     if (!requestNumber || requestNumber.trim() === "") {
       alert("Vui lòng nhập số yêu cầu vật tư");
@@ -118,6 +120,24 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
     } catch (error) {
       console.error("Error approving material request:", error);
       alert("Có lỗi xảy ra khi duyệt yêu cầu vật tư");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelRequest = async () => {
+    try {
+      setLoading(true);
+      await materialRequestService.cancelMaterialRequest(request.id);
+      alert("Hủy yêu cầu vật tư thành công!");
+      setShowCancelModal(false);
+      if (onUpdate) {
+        onUpdate();
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error canceling material request:", error);
+      alert("Có lỗi xảy ra khi hủy yêu cầu vật tư");
     } finally {
       setLoading(false);
     }
@@ -378,7 +398,10 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
                       </svg>
                       Duyệt yêu cầu
                     </button>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center">
+                    <button 
+                      onClick={() => setShowCancelModal(true)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center"
+                    >
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
@@ -445,6 +468,51 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   {loading ? "Đang duyệt..." : "Xác nhận duyệt"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Xác nhận hủy yêu cầu</h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    #{`${request.project}/${request.maintenance_tier}/${request.sector}/${request.year}`}
+                  </p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Bạn có chắc chắn muốn hủy yêu cầu vật tư này? Hành động này không thể hoàn tác.
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setShowCancelModal(false)}
+                  disabled={loading}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Không, giữ lại
+                </button>
+                <button
+                  onClick={handleCancelRequest}
+                  disabled={loading}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  {loading ? "Đang hủy..." : "Có, hủy yêu cầu"}
                 </button>
               </div>
             </div>

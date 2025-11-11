@@ -14,6 +14,10 @@ export default function RequestsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [requests, setRequests] = useState<MaterialRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [requestNumber, setRequestNumber] = useState("");
+  const [processingRequest, setProcessingRequest] = useState<MaterialRequest | null>(null);
 
   const loadRequests = async () => {
     try {
@@ -46,6 +50,67 @@ export default function RequestsPage() {
 
   const handleCreateSuccess = () => {
     loadRequests();
+  };
+
+  const handleOpenApproveModal = (request: MaterialRequest) => {
+    setProcessingRequest(request);
+    setShowApproveModal(true);
+  };
+
+  const handleOpenCancelModal = (request: MaterialRequest) => {
+    setProcessingRequest(request);
+    setShowCancelModal(true);
+  };
+
+  const handleApproveRequest = async () => {
+    if (!processingRequest) return;
+
+    if (!requestNumber || requestNumber.trim() === "") {
+      alert("Vui lòng nhập số yêu cầu vật tư");
+      return;
+    }
+
+    const numOfRequest = parseInt(requestNumber);
+    if (isNaN(numOfRequest) || numOfRequest <= 0) {
+      alert("Số yêu cầu vật tư phải là số nguyên dương");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await materialRequestService.updateNumber({
+        material_request_id: processingRequest.id,
+        num_of_request: numOfRequest
+      });
+      alert("Duyệt yêu cầu vật tư thành công!");
+      setShowApproveModal(false);
+      setRequestNumber("");
+      setProcessingRequest(null);
+      loadRequests();
+    } catch (error) {
+      console.error("Error approving material request:", error);
+      alert("Có lỗi xảy ra khi duyệt yêu cầu vật tư");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelRequest = async () => {
+    if (!processingRequest) return;
+
+    try {
+      setLoading(true);
+      await materialRequestService.cancelMaterialRequest(processingRequest.id);
+      alert("Hủy yêu cầu vật tư thành công!");
+      setShowCancelModal(false);
+      setProcessingRequest(null);
+      loadRequests();
+    } catch (error) {
+      console.error("Error canceling material request:", error);
+      alert("Có lỗi xảy ra khi hủy yêu cầu vật tư");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -196,10 +261,16 @@ export default function RequestsPage() {
                 <div className="flex space-x-2">
                   {request.num_of_request === 0 && (
                     <>
-                      <button className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors">
+                      <button 
+                        onClick={() => handleOpenApproveModal(request)}
+                        className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors"
+                      >
                         Duyệt
                       </button>
-                      <button className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors">
+                      <button 
+                        onClick={() => handleOpenCancelModal(request)}
+                        className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors"
+                      >
                         Hủy
                       </button>
                     </>
@@ -274,6 +345,103 @@ export default function RequestsPage() {
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleCreateSuccess}
       />
+
+      {/* Approve Modal */}
+      {showApproveModal && processingRequest && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Duyệt yêu cầu vật tư</h3>
+              <p className="text-gray-600 mb-2">
+                Yêu cầu: <span className="font-semibold">#{`${processingRequest.project}/${processingRequest.maintenance_tier}/${processingRequest.sector}/${processingRequest.year}`}</span>
+              </p>
+              <p className="text-gray-600 mb-4">
+                Nhập số yêu cầu vật tư để xác nhận duyệt:
+              </p>
+              <input
+                type="number"
+                min="1"
+                value={requestNumber}
+                onChange={(e) => setRequestNumber(e.target.value)}
+                placeholder="Nhập số yêu cầu (VD: 1, 2, 3...)"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg font-semibold text-gray-900"
+                autoFocus
+              />
+              <div className="flex justify-end gap-2 mt-6">
+                <button
+                  onClick={() => {
+                    setShowApproveModal(false);
+                    setRequestNumber("");
+                    setProcessingRequest(null);
+                  }}
+                  disabled={loading}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleApproveRequest}
+                  disabled={loading}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {loading ? "Đang duyệt..." : "Xác nhận duyệt"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Modal */}
+      {showCancelModal && processingRequest && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Xác nhận hủy yêu cầu</h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    #{`${processingRequest.project}/${processingRequest.maintenance_tier}/${processingRequest.sector}/${processingRequest.year}`}
+                  </p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Bạn có chắc chắn muốn hủy yêu cầu vật tư này? Hành động này không thể hoàn tác.
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => {
+                    setShowCancelModal(false);
+                    setProcessingRequest(null);
+                  }}
+                  disabled={loading}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Không, giữ lại
+                </button>
+                <button
+                  onClick={handleCancelRequest}
+                  disabled={loading}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  {loading ? "Đang hủy..." : "Có, hủy yêu cầu"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

@@ -65,6 +65,11 @@ export class MaterialRequestService {
     return response.data as Blob;
   }
 
+  async cancelMaterialRequest(id: string): Promise<ApiResponse> {
+    const response = await apiClient.post<ApiResponse>('/materials-request/cancel/' + id);
+    return response.data;
+  }
+
   /**
    * Download exported material request
    */
