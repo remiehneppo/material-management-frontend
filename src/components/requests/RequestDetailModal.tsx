@@ -16,6 +16,8 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
   const [editedDescription, setEditedDescription] = useState("");
   const [editedMaterials, setEditedMaterials] = useState<Record<string, MaterialsForEquipment>>({});
   const [loading, setLoading] = useState(false);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [requestNumber, setRequestNumber] = useState("");
 
   useEffect(() => {
     if (request) {
@@ -86,6 +88,39 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
       }
       return updated;
     });
+  };
+
+  const handleApproveRequest = async () => {
+    if (!requestNumber || requestNumber.trim() === "") {
+      alert("Vui lòng nhập số yêu cầu vật tư");
+      return;
+    }
+
+    const numOfRequest = parseInt(requestNumber);
+    if (isNaN(numOfRequest) || numOfRequest <= 0) {
+      alert("Số yêu cầu vật tư phải là số nguyên dương");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await materialRequestService.updateNumber({
+        material_request_id: request.id,
+        num_of_request: numOfRequest
+      });
+      alert("Duyệt yêu cầu vật tư thành công!");
+      setShowApproveModal(false);
+      setRequestNumber("");
+      if (onUpdate) {
+        onUpdate();
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error approving material request:", error);
+      alert("Có lỗi xảy ra khi duyệt yêu cầu vật tư");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const canEdit = request.num_of_request === 0;
@@ -334,7 +369,10 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
               <>
                 {request.num_of_request === 0 && (
                   <>
-                    <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center">
+                    <button 
+                      onClick={() => setShowApproveModal(true)}
+                      className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center"
+                    >
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
@@ -368,6 +406,51 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
           </button>
         </div>
       </div>
+
+      {/* Approve Modal */}
+      {showApproveModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Duyệt yêu cầu vật tư</h3>
+              <p className="text-gray-600 mb-4">
+                Nhập số yêu cầu vật tư để xác nhận duyệt:
+              </p>
+              <input
+                type="number"
+                min="1"
+                value={requestNumber}
+                onChange={(e) => setRequestNumber(e.target.value)}
+                placeholder="Nhập số yêu cầu (VD: 1, 2, 3...)"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg font-semibold text-gray-900"
+                autoFocus
+              />
+              <div className="flex justify-end gap-2 mt-6">
+                <button
+                  onClick={() => {
+                    setShowApproveModal(false);
+                    setRequestNumber("");
+                  }}
+                  disabled={loading}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleApproveRequest}
+                  disabled={loading}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {loading ? "Đang duyệt..." : "Xác nhận duyệt"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

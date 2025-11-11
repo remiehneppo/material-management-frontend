@@ -8,18 +8,6 @@ import CreateMaterialRequestModal from "@/components/requests/CreateMaterialRequ
 import { materialRequestService } from "@/services";
 import { MaterialRequest } from "@/types/api";
 
-interface Material {
-  name: string;
-  unit: string;
-  quantity: number;
-}
-
-interface EquipmentMaterials {
-  equipment_machinery_name: string;
-  consumable_supplies: Record<string, Material>;
-  replacement_materials: Record<string, Material>;
-}
-
 export default function RequestsPage() {
   const [selectedRequest, setSelectedRequest] = useState<MaterialRequest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
