@@ -5,19 +5,39 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import Header from "@/components/layout/Header";
 import RequestDetailModal from "@/components/requests/RequestDetailModal";
 import CreateMaterialRequestModal from "@/components/requests/CreateMaterialRequestModal";
-import { materialRequestService } from "@/services";
-import { MaterialRequest } from "@/types/api";
+import { materialRequestService, maintenanceService } from "@/services";
+import { MaterialRequest, Maintenance } from "@/types/api";
 
 export default function RequestsPage() {
   const [selectedRequest, setSelectedRequest] = useState<MaterialRequest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [requests, setRequests] = useState<MaterialRequest[]>([]);
+  const [filteredRequests, setFilteredRequests] = useState<MaterialRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [requestNumber, setRequestNumber] = useState("");
   const [processingRequest, setProcessingRequest] = useState<MaterialRequest | null>(null);
+
+  // Filter states
+  const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
+  const [selectedMaintenanceId, setSelectedMaintenanceId] = useState<string>("");
+  const [selectedSector, setSelectedSector] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const loadMaintenances = async () => {
+    try {
+      const response = await maintenanceService.getAll();
+      if (response.data) {
+        setMaintenances(response.data);
+      }
+    } catch (error) {
+      console.error("Error loading maintenances:", error);
+    }
+  };
 
   const loadRequests = async () => {
     try {
@@ -25,6 +45,7 @@ export default function RequestsPage() {
       const response = await materialRequestService.getAll();
       if (response.data) {
         setRequests(response.data);
+        applyFiltersAndSort(response.data);
       }
     } catch (error) {
       console.error("Error loading material requests:", error);
@@ -34,9 +55,68 @@ export default function RequestsPage() {
     }
   };
 
+  const applyFiltersAndSort = (data: MaterialRequest[]) => {
+    let filtered = [...data];
+
+    // Filter by maintenance (project)
+    if (selectedMaintenanceId) {
+      const maintenance = maintenances.find(m => m.id === selectedMaintenanceId);
+      if (maintenance) {
+        filtered = filtered.filter(r => 
+          r.project === maintenance.project &&
+          r.maintenance_tier === maintenance.maintenance_tier &&
+          r.maintenance_number === maintenance.maintenance_number
+        );
+      }
+    }
+
+    // Filter by sector
+    if (selectedSector) {
+      filtered = filtered.filter(r => r.sector === selectedSector);
+    }
+
+    // Filter by status
+    if (selectedStatus) {
+      filtered = filtered.filter(r => {
+        if (selectedStatus === "pending") return r.num_of_request === 0;
+        if (selectedStatus === "approved") return r.num_of_request > 0;
+        return true;
+      });
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(r => 
+        r.project.toLowerCase().includes(term) ||
+        r.sector.toLowerCase().includes(term) ||
+        r.requested_by.toLowerCase().includes(term) ||
+        r.description?.toLowerCase().includes(term)
+      );
+    }
+
+    // Sort by time
+    filtered.sort((a, b) => {
+      if (sortOrder === "desc") {
+        return b.requested_at - a.requested_at;
+      } else {
+        return a.requested_at - b.requested_at;
+      }
+    });
+
+    setFilteredRequests(filtered);
+  };
+
   useEffect(() => {
     loadRequests();
+    loadMaintenances();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    applyFiltersAndSort(requests);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMaintenanceId, selectedSector, selectedStatus, sortOrder, searchTerm, requests, maintenances]);
 
   const handleViewDetail = (request: MaterialRequest) => {
     setSelectedRequest(request);
@@ -140,27 +220,121 @@ export default function RequestsPage() {
             >
               + Tạo yêu cầu mới
             </button>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
-              Duyệt hàng loạt
-            </button>
-            <button className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
-              Xuất báo cáo
-            </button>
           </div>
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              placeholder="Tìm kiếm yêu cầu..."
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            />
-            <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
-              <option>Tất cả trạng thái</option>
-              <option>Chờ duyệt</option>
-              <option>Đã duyệt</option>
-              <option>Từ chối</option>
-              <option>Đã xuất</option>
-            </select>
+        </div>
+
+        {/* Filter Section */}
+        <div className="bg-white rounded-lg shadow p-4 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Bộ lọc và tìm kiếm</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {/* Search */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tìm kiếm
+              </label>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Tìm theo dự án, ngành..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900"
+              />
+            </div>
+
+            {/* Project Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Dự án
+              </label>
+              <select
+                value={selectedMaintenanceId}
+                onChange={(e) => setSelectedMaintenanceId(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+              >
+                <option value="">Tất cả dự án</option>
+                {maintenances.map((maintenance) => (
+                  <option key={maintenance.id} value={maintenance.id}>
+                    {maintenance.project} - {maintenance.maintenance_tier}/{maintenance.maintenance_number}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sector Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Ngành
+              </label>
+              <select
+                value={selectedSector}
+                onChange={(e) => setSelectedSector(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+              >
+                <option value="">Tất cả ngành</option>
+                <option value="Cơ khí">Cơ khí</option>
+                <option value="Vũ khí">Vũ khí</option>
+                <option value="Vỏ Tàu">Vỏ Tàu</option>
+                <option value="Đà đốc">Đà đốc</option>
+                <option value="Điện tàu">Điện tàu</option>
+                <option value="Động lực">Động lực</option>
+                <option value="Van ống">Van ống</option>
+                <option value="KT-ĐT">KT-ĐT</option>
+                <option value="Trang trí">Trang trí</option>
+                <option value="Cơ điện">Cơ điện</option>
+              </select>
+            </div>
+
+            {/* Status Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Trạng thái
+              </label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+              >
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending">Chờ duyệt</option>
+                <option value="approved">Đã duyệt</option>
+              </select>
+            </div>
+
+            {/* Sort Order */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Sắp xếp theo thời gian
+              </label>
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+              >
+                <option value="desc">Mới nhất</option>
+                <option value="asc">Cũ nhất</option>
+              </select>
+            </div>
           </div>
+
+          {/* Clear Filter Button */}
+          {(selectedMaintenanceId || selectedSector || selectedStatus || searchTerm) && (
+            <div className="mt-4">
+              <button
+                onClick={() => {
+                  setSelectedMaintenanceId("");
+                  setSelectedSector("");
+                  setSelectedStatus("");
+                  setSearchTerm("");
+                }}
+                className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center"
+              >
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Xóa bộ lọc
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Quick Stats */}
@@ -208,6 +382,21 @@ export default function RequestsPage() {
               </div>
             </div>
           </div>
+          <div className="bg-white rounded-lg shadow p-4">
+            <div className="flex items-center">
+              <div className="p-2 bg-cyan-100 rounded-lg">
+                <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-500">Đã lọc</p>
+                <p className="text-xl font-semibold text-gray-900">
+                  {filteredRequests.length}
+                </p>
+              </div>
+            </div>
+          </div>
           {/* <div className="bg-white rounded-lg shadow p-4">
             <div className="flex items-center">
               <div className="p-2 bg-purple-100 rounded-lg">
@@ -235,8 +424,16 @@ export default function RequestsPage() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
               <p className="text-gray-500">Chưa có yêu cầu vật tư nào</p>
             </div>
+          ) : filteredRequests.length === 0 ? (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+              <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <p className="text-gray-500 text-lg font-medium mb-2">Không tìm thấy yêu cầu nào</p>
+              <p className="text-gray-400 text-sm">Thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác</p>
+            </div>
           ) : (
-            requests.map((request) => (
+            filteredRequests.map((request) => (
             <div key={request.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">

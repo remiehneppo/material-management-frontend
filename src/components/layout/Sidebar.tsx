@@ -20,8 +20,8 @@ const navigation = [
   { name: "Dự án", href: "/projects", icon: DocumentTextIcon },
   { name: "Vật tư", href: "/materials", icon: CubeIcon },
   { name: "Yêu cầu vật tư", href: "/requests", icon: DocumentCheckIcon },
-  { name: "Báo cáo", href: "/reports", icon: ChartBarIcon },
-  { name: "Tạo nhóm", href: "/groups", icon: UserGroupIcon },
+  // { name: "Báo cáo", href: "/reports", icon: ChartBarIcon },
+  // { name: "Tạo nhóm", href: "/groups", icon: UserGroupIcon },
   { name: "Thông tin", href: "/profile", icon: UserIcon },
   { name: "Thiết lập", href: "/settings", icon: CogIcon },
 ];
