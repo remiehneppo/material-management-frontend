@@ -111,20 +111,23 @@ export default function MaterialsPage() {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (filterParams?: MaterialsProfileFilterParams) => {
     try {
       setLoading(true);
       setError(null);
 
+      // Use provided filters or current state filters
+      const currentFilters = filterParams || filters;
+
       // Check if any filter is applied
       const hasFilters = 
-        filters.sector || 
-        (filters.maintenance_ids && filters.maintenance_ids.length > 0) || 
-        (filters.equipment_machinery_ids && filters.equipment_machinery_ids.length > 0);
+        currentFilters.sector || 
+        (currentFilters.maintenance_ids && currentFilters.maintenance_ids.length > 0) || 
+        (currentFilters.equipment_machinery_ids && currentFilters.equipment_machinery_ids.length > 0);
 
       if (hasFilters) {
         // Use filter API
-        const response = await materialsProfileService.filter(filters);
+        const response = await materialsProfileService.filter(currentFilters);
         console.log('Filtered material profiles:', response.data);
         setMaterialProfiles(response.data || []);
       } else {
@@ -153,25 +156,27 @@ export default function MaterialsPage() {
   };
 
   const handleApplyFilter = () => {
-    setFilters(prev => ({
-      ...prev,
+    const newFilters = {
+      ...filters,
       maintenance_ids: selectedMaintenanceIds,
       equipment_machinery_ids: selectedEquipmentIds,
-    }));
+    };
+    setFilters(newFilters);
     setIsFiltering(true);
-    setTimeout(() => fetchData(), 0);
+    fetchData(newFilters); // Pass new filters directly
   };
 
   const handleClearFilter = () => {
-    setFilters({
+    const emptyFilters = {
       maintenance_ids: [],
       equipment_machinery_ids: [],
       sector: ''
-    });
+    };
+    setFilters(emptyFilters);
     setSelectedMaintenanceIds([]);
     setSelectedEquipmentIds([]);
     setIsFiltering(false);
-    setTimeout(() => fetchData(), 0);
+    fetchData(emptyFilters); // Pass empty filters directly
   };
 
   const handleMaintenanceToggle = (maintenanceId: string) => {
