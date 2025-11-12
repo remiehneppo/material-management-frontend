@@ -20,6 +20,12 @@ export default function RequestsPage() {
   const [requestNumber, setRequestNumber] = useState("");
   const [processingRequest, setProcessingRequest] = useState<MaterialRequest | null>(null);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
   // Filter states
   const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
   const [selectedMaintenanceId, setSelectedMaintenanceId] = useState<string>("");
@@ -39,13 +45,35 @@ export default function RequestsPage() {
     }
   };
 
-  const loadRequests = async () => {
+  const loadRequests = async (page: number = 1) => {
     try {
       setLoading(true);
-      const response = await materialRequestService.getAll();
+      
+      // Build filter request based on current filter states
+      const filterRequest: {
+        maintenance_instance_id?: string;
+        sector?: string;
+        num_of_request?: number;
+      } = {};
+
+      if (selectedMaintenanceId) {
+        filterRequest.maintenance_instance_id = selectedMaintenanceId;
+      }
+      if (selectedSector) {
+        filterRequest.sector = selectedSector;
+      }
+      if (selectedStatus === "pending") {
+        filterRequest.num_of_request = 0;
+      }
+      // Note: API doesn't support num_of_request > 0, so "approved" will get all non-pending
+      // and we filter client-side
+
+      const response = await materialRequestService.filter(filterRequest, page, pageSize);
       if (response.data) {
-        setRequests(response.data);
-        applyFiltersAndSort(response.data);
+        setRequests(response.data.items);
+        setTotalItems(response.data.total);
+        setTotalPages(Math.ceil(response.data.total / pageSize));
+        setCurrentPage(response.data.page);
       }
     } catch (error) {
       console.error("Error loading material requests:", error);
@@ -55,36 +83,15 @@ export default function RequestsPage() {
     }
   };
 
-  const applyFiltersAndSort = (data: MaterialRequest[]) => {
-    let filtered = [...data];
+  const applyFiltersAndSort = () => {
+    let filtered = [...requests];
 
-    // Filter by maintenance (project)
-    if (selectedMaintenanceId) {
-      const maintenance = maintenances.find(m => m.id === selectedMaintenanceId);
-      if (maintenance) {
-        filtered = filtered.filter(r => 
-          r.project === maintenance.project &&
-          r.maintenance_tier === maintenance.maintenance_tier &&
-          r.maintenance_number === maintenance.maintenance_number
-        );
-      }
+    // Client-side filter by status "approved" (only if not already filtered by pending)
+    if (selectedStatus === "approved") {
+      filtered = filtered.filter(r => r.num_of_request > 0);
     }
 
-    // Filter by sector
-    if (selectedSector) {
-      filtered = filtered.filter(r => r.sector === selectedSector);
-    }
-
-    // Filter by status
-    if (selectedStatus) {
-      filtered = filtered.filter(r => {
-        if (selectedStatus === "pending") return r.num_of_request === 0;
-        if (selectedStatus === "approved") return r.num_of_request > 0;
-        return true;
-      });
-    }
-
-    // Filter by search term
+    // Filter by search term (client-side)
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(r => 
@@ -95,7 +102,7 @@ export default function RequestsPage() {
       );
     }
 
-    // Sort by time
+    // Sort by time (client-side)
     filtered.sort((a, b) => {
       if (sortOrder === "desc") {
         return b.requested_at - a.requested_at;
@@ -107,16 +114,31 @@ export default function RequestsPage() {
     setFilteredRequests(filtered);
   };
 
+  // Initial load
   useEffect(() => {
-    loadRequests();
     loadMaintenances();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Reload data when server-side filters change
   useEffect(() => {
-    applyFiltersAndSort(requests);
+    setCurrentPage(1); // Reset to page 1 when filters change
+    loadRequests(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMaintenanceId, selectedSector, selectedStatus, sortOrder, searchTerm, requests, maintenances]);
+  }, [selectedMaintenanceId, selectedSector, selectedStatus, pageSize]);
+
+  // Reload when page changes
+  useEffect(() => {
+    if (currentPage > 1) {
+      loadRequests(currentPage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
+
+  // Apply client-side filters (search and sort) whenever data or these filters change
+  useEffect(() => {
+    applyFiltersAndSort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortOrder, searchTerm, requests, selectedStatus]);
 
   const handleViewDetail = (request: MaterialRequest) => {
     setSelectedRequest(request);
@@ -348,7 +370,7 @@ export default function RequestsPage() {
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-500">Tổng yêu cầu</p>
-                <p className="text-xl font-semibold text-gray-900">{requests.length}</p>
+                <p className="text-xl font-semibold text-gray-900">{totalItems}</p>
               </div>
             </div>
           </div>
@@ -360,7 +382,7 @@ export default function RequestsPage() {
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Chờ duyệt</p>
+                <p className="text-sm font-medium text-gray-500">Chờ duyệt (trang này)</p>
                 <p className="text-xl font-semibold text-gray-900">
                   {requests.filter(r => r.num_of_request === 0).length}
                 </p>
@@ -375,7 +397,7 @@ export default function RequestsPage() {
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Đã duyệt</p>
+                <p className="text-sm font-medium text-gray-500">Đã duyệt (trang này)</p>
                 <p className="text-xl font-semibold text-gray-900">
                   {requests.filter(r => r.num_of_request > 0).length}
                 </p>
@@ -390,7 +412,7 @@ export default function RequestsPage() {
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Đã lọc</p>
+                <p className="text-sm font-medium text-gray-500">Trang hiện tại</p>
                 <p className="text-xl font-semibold text-gray-900">
                   {filteredRequests.length}
                 </p>
@@ -529,6 +551,110 @@ export default function RequestsPage() {
             ))
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {!loading && filteredRequests.length > 0 && (
+          <div className="bg-white rounded-lg shadow p-4 mt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Page size selector */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Hiển thị:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+                <span className="text-sm text-gray-600">
+                  Tổng: <span className="font-semibold text-gray-900">{totalItems}</span> yêu cầu
+                </span>
+              </div>
+
+              {/* Page navigation */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Trang đầu"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                  </svg>
+                </button>
+                
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Trang trước"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`px-3 py-1 rounded-lg transition-colors ${
+                          currentPage === pageNum
+                            ? "bg-cyan-500 text-white font-semibold"
+                            : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Trang sau"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Trang cuối"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Empty State - Removed as we now handle it inline */}
         {false && requests.length === 0 && (

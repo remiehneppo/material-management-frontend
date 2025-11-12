@@ -1,6 +1,7 @@
 import { apiClient } from './apiClient';
 import type { 
   ApiResponse, 
+  PaginatedResponse,
   MaterialRequest, 
   CreateMaterialRequestReq,
   MaterialRequestFilter,
@@ -23,8 +24,8 @@ export class MaterialRequestService {
    * Filter material requests
    * POST /materials-request/filter
    */
-  async filter(filterRequest: MaterialRequestFilter): Promise<ApiResponse<MaterialRequest[]>> {
-    const response = await apiClient.post<ApiResponse<MaterialRequest[]>>('/materials-request/filter', filterRequest);
+  async filter(filterRequest: MaterialRequestFilter, page: number, limit: number): Promise<PaginatedResponse<MaterialRequest>> {
+    const response = await apiClient.post<PaginatedResponse<MaterialRequest>>(`/materials-request/filter?page=${page}&limit=${limit}`, { ...filterRequest});
     return response.data;
   }
 
@@ -97,53 +98,53 @@ export class MaterialRequestService {
   /**
    * Get all material requests (using empty filter)
    */
-  async getAll(): Promise<ApiResponse<MaterialRequest[]>> {
-    return this.filter({});
+  async getAll(): Promise<PaginatedResponse<MaterialRequest>> {
+    return this.filter({}, 1, 1000);
   }
 
   /**
    * Get material requests by sector
    */
-  async getBySector(sector: string): Promise<ApiResponse<MaterialRequest[]>> {
-    return this.filter({ sector });
+  async getBySector(sector: string): Promise<PaginatedResponse<MaterialRequest>> {
+    return this.filter({ sector }, 1, 1000);
   }
 
   /**
    * Get material requests by requester
    */
-  async getByRequester(requestedBy: string): Promise<ApiResponse<MaterialRequest[]>> {
-    return this.filter({ requested_by: requestedBy });
+  async getByRequester(requestedBy: string): Promise<PaginatedResponse<MaterialRequest>> {
+    return this.filter({ requested_by: requestedBy }, 1, 1000);
   }
 
   /**
    * Get material requests by maintenance instance
    */
-  async getByMaintenanceInstance(maintenanceInstanceId: string): Promise<ApiResponse<MaterialRequest[]>> {
-    return this.filter({ maintenance_instance_id: maintenanceInstanceId });
+  async getByMaintenanceInstance(maintenanceInstanceId: string): Promise<PaginatedResponse<MaterialRequest>> {
+    return this.filter({ maintenance_instance_id: maintenanceInstanceId }, 1, 1000);
   }
 
   /**
    * Get material requests by equipment machinery
    */
-  async getByEquipmentMachinery(equipmentMachineryId: string): Promise<ApiResponse<MaterialRequest[]>> {
-    return this.filter({ equipment_machinery_id: equipmentMachineryId });
+  async getByEquipmentMachinery(equipmentMachineryId: string): Promise<PaginatedResponse<MaterialRequest>> {
+    return this.filter({ equipment_machinery_id: equipmentMachineryId }, 1, 1000);
   }
 
   /**
    * Get material requests by date range
    */
-  async getByDateRange(startDate: number, endDate: number): Promise<ApiResponse<MaterialRequest[]>> {
+  async getByDateRange(startDate: number, endDate: number): Promise<PaginatedResponse<MaterialRequest>> {
     return this.filter({ 
-      requested_at_start: startDate, 
-      requested_at_end: endDate 
-    });
+      requested_at_start: startDate,
+      requested_at_end: endDate
+    }, 1, 1000);
   }
 
   /**
    * Get material requests by number of requests
    */
-  async getByNumberOfRequests(numOfRequest: number): Promise<ApiResponse<MaterialRequest[]>> {
-    return this.filter({ num_of_request: numOfRequest });
+  async getByNumberOfRequests(numOfRequest: number): Promise<PaginatedResponse<MaterialRequest>> {
+    return this.filter({ num_of_request: numOfRequest }, 1, 1000);
   }
 }
 
