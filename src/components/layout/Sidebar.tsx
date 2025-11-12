@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   HomeIcon, 
@@ -23,7 +24,7 @@ const navigation = [
   // { name: "Báo cáo", href: "/reports", icon: ChartBarIcon },
   // { name: "Tạo nhóm", href: "/groups", icon: UserGroupIcon },
   { name: "Thông tin", href: "/profile", icon: UserIcon },
-  { name: "Thiết lập", href: "/settings", icon: CogIcon },
+  // { name: "Thiết lập", href: "/settings", icon: CogIcon },
 ];
 
 export default function Sidebar() {
@@ -39,11 +40,16 @@ export default function Sidebar() {
   return (
     <div className="fixed inset-y-0 left-0 z-50 w-64 bg-cyan-400 overflow-y-auto">
       {/* Logo */}
-      <div className="flex items-center justify-center h-16 px-4 border-b border-cyan-300">
+      <div className="flex items-center justify-center h-24 px-4 border-b border-cyan-300">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-white rounded border-2 border-black flex items-center justify-center">
-            <span className="text-xs font-bold">Logo</span>
-          </div>
+          <Image 
+            src="/logo.png" 
+            alt="Logo" 
+            width={120}
+            height={48}
+            className="h-20 w-auto object-contain"
+            priority
+          />
         </div>
       </div>
 
