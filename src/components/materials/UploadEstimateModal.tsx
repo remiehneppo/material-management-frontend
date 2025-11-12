@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { materialsProfileService } from '@/services/materialsProfileService';
-import { SECTORS } from '@/types/api';
+import { maintenanceService } from '@/services';
+import { SECTORS, Maintenance } from '@/types/api';
 
 interface UploadEstimateModalProps {
   isOpen: boolean;
@@ -10,41 +11,71 @@ interface UploadEstimateModalProps {
   onSuccess: () => void;
 }
 
-const MAINTENANCE_TIERS = {
-  DOCK: "SCCĐ",
-  SMALL: "SCCN",
-  MEDIUM: "SCCV"
-};
-
-export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: UploadEstimateModalProps) {
+export default function UploadEstimateModal({
+  isOpen,
+  onClose,
+  onSuccess,
+}: UploadEstimateModalProps) {
   const [formData, setFormData] = useState({
-    project: '',
-    maintenance_tier: '',
-    maintenance_number: '',
+    maintenance_id: '',
     sheet_name: '',
-    sector: ''
+    sector: '',
   });
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
+  const [loadingMaintenances, setLoadingMaintenances] = useState(false);
+  const [selectedMaintenance, setSelectedMaintenance] =
+    useState<Maintenance | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadMaintenances();
+    }
+  }, [isOpen]);
+
+  const loadMaintenances = async () => {
+    setLoadingMaintenances(true);
+    try {
+      const response = await maintenanceService.getAll();
+      if (response.status && response.data) {
+        setMaintenances(response.data);
+      }
+    } catch (err) {
+      console.error('Error loading maintenances:', err);
+      setError('Không thể tải danh sách dự án');
+    } finally {
+      setLoadingMaintenances(false);
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
+    }));
+  };
+
+  const handleMaintenanceChange = (maintenanceId: string) => {
+    const maintenance = maintenances.find((m) => m.id === maintenanceId);
+    setSelectedMaintenance(maintenance || null);
+    setFormData((prev) => ({
+      ...prev,
+      maintenance_id: maintenanceId,
     }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      
+
       // Validate file type
       if (!selectedFile.name.endsWith('.xlsx')) {
         setError('Chỉ chấp nhận file Excel (.xlsx)');
         return;
       }
-      
+
       setFile(selectedFile);
       setError(null);
     }
@@ -52,16 +83,20 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validation
     if (!file) {
       setError('Vui lòng chọn file để upload');
       return;
     }
 
-    if (!formData.project || !formData.maintenance_tier || !formData.maintenance_number || 
-        !formData.sheet_name || !formData.sector) {
+    if (!formData.maintenance_id || !formData.sheet_name || !formData.sector) {
       setError('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    if (!selectedMaintenance) {
+      setError('Vui lòng chọn dự án');
       return;
     }
 
@@ -69,8 +104,15 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
       setUploading(true);
       setError(null);
 
-      await materialsProfileService.uploadEstimate(file, formData);
-      
+      // Build request data with maintenance instance id
+      const uploadData = {
+        maintenance_instance_id: selectedMaintenance.id,
+        sheet_name: formData.sheet_name,
+        sector: formData.sector,
+      };
+
+      await materialsProfileService.uploadEstimate(file, uploadData);
+
       // Success
       alert('Upload file dự toán thành công!');
       handleClose();
@@ -86,14 +128,13 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
   const handleClose = () => {
     if (!uploading) {
       setFormData({
-        project: '',
-        maintenance_tier: '',
-        maintenance_number: '',
+        maintenance_id: '',
         sheet_name: '',
-        sector: ''
+        sector: '',
       });
       setFile(null);
       setError(null);
+      setSelectedMaintenance(null);
       onClose();
     }
   };
@@ -103,7 +144,7 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Overlay */}
-      <div 
+      <div
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
         onClick={handleClose}
       ></div>
@@ -121,8 +162,18 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
               disabled={uploading}
               className="text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -133,8 +184,18 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
             {error && (
               <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="flex items-center">
-                  <svg className="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-5 h-5 text-red-500 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <span className="text-red-700 text-sm">{error}</span>
                 </div>
@@ -150,8 +211,18 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                 <div className="flex items-center space-x-4">
                   <label className="flex-1 flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-cyan-500 cursor-pointer transition-colors">
                     <div className="text-center">
-                      <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      <svg
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        />
                       </svg>
                       <p className="mt-2 text-sm text-gray-600">
                         {file ? file.name : 'Chọn file hoặc kéo thả vào đây'}
@@ -170,57 +241,6 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                   </label>
                 </div>
               </div>
-
-              {/* Project */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dự án <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.project}
-                  onChange={(e) => handleInputChange('project', e.target.value)}
-                  placeholder="Nhập tên dự án..."
-                  disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
-                />
-              </div>
-
-              {/* Maintenance Tier */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cấp sửa chữa <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={formData.maintenance_tier}
-                  onChange={(e) => handleInputChange('maintenance_tier', e.target.value)}
-                  disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium"
-                >
-                  <option value="">Chọn cấp sửa chữa</option>
-                  {Object.values(MAINTENANCE_TIERS).map((tier) => (
-                    <option key={tier} value={tier}>
-                      {tier}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Maintenance Number */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Lần sửa chữa <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.maintenance_number}
-                  onChange={(e) => handleInputChange('maintenance_number', e.target.value)}
-                  placeholder="Nhập lần sửa chữa (vd: 1, 2, 3...)"
-                  disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
-                />
-              </div>
-
               {/* Sheet Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -229,12 +249,64 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
                 <input
                   type="text"
                   value={formData.sheet_name}
-                  onChange={(e) => handleInputChange('sheet_name', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange('sheet_name', e.target.value)
+                  }
                   placeholder="Nhập tên sheet trong file Excel..."
                   disabled={uploading}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
                 />
               </div>
+              {/* Maintenance (Project) Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Chọn dự án <span className="text-red-500">*</span>
+                </label>
+                {loadingMaintenances ? (
+                  <div className="flex items-center text-gray-500 text-sm px-3 py-2 border border-gray-300 rounded-lg">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-500 mr-2"></div>
+                    Đang tải danh sách dự án...
+                  </div>
+                ) : (
+                  <select
+                    value={formData.maintenance_id}
+                    onChange={(e) => handleMaintenanceChange(e.target.value)}
+                    disabled={uploading}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium"
+                  >
+                    <option value="">-- Chọn dự án --</option>
+                    {maintenances.map((maintenance) => (
+                      <option key={maintenance.id} value={maintenance.id}>
+                        {maintenance.project} - {maintenance.maintenance_tier} -
+                        Lần {maintenance.maintenance_number} ({maintenance.year}
+                        )
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
+              {/* Display selected maintenance info */}
+              {selectedMaintenance && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <p className="text-sm text-blue-800">
+                    <span className="font-semibold">Dự án:</span>{' '}
+                    {selectedMaintenance.project}
+                  </p>
+                  <p className="text-sm text-blue-800">
+                    <span className="font-semibold">Cấp sửa chữa:</span>{' '}
+                    {selectedMaintenance.maintenance_tier}
+                  </p>
+                  <p className="text-sm text-blue-800">
+                    <span className="font-semibold">Lần sửa chữa:</span>{' '}
+                    {selectedMaintenance.maintenance_number}
+                  </p>
+                  <p className="text-sm text-blue-800">
+                    <span className="font-semibold">Năm:</span>{' '}
+                    {selectedMaintenance.year}
+                  </p>
+                </div>
+              )}
 
               {/* Sector */}
               <div>
@@ -274,16 +346,42 @@ export default function UploadEstimateModal({ isOpen, onClose, onSuccess }: Uplo
               >
                 {uploading ? (
                   <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     <span>Đang upload...</span>
                   </>
                 ) : (
                   <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
                     </svg>
                     <span>Upload</span>
                   </>

@@ -204,9 +204,7 @@ export interface MaterialRequestUpdateReq {
 
 // Upload Types
 export interface UploadMaterialsEstimateRequest {
-  project: string;
-  maintenance_tier: string;
-  maintenance_number: string;
+  maintenance_instance_id: string;
   sheet_name: string;
   sector: string;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Header from "@/components/layout/Header";
 import RequestDetailModal from "@/components/requests/RequestDetailModal";
@@ -19,6 +19,9 @@ export default function RequestsPage() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [requestNumber, setRequestNumber] = useState("");
   const [processingRequest, setProcessingRequest] = useState<MaterialRequest | null>(null);
+  
+  // Ref to track if this is the initial mount
+  const isInitialMount = useRef(true);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,10 +120,18 @@ export default function RequestsPage() {
   // Initial load
   useEffect(() => {
     loadMaintenances();
+    loadRequests(1); // Load initial data
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Reload data when server-side filters change
+  // Reload data when server-side filters or pageSize change
   useEffect(() => {
+    // Skip the initial mount (already loaded above)
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    
     setCurrentPage(1); // Reset to page 1 when filters change
     loadRequests(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
