@@ -1,7 +1,8 @@
 'use client';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import Header from '@/components/layout/Header';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { AlignedMaterial, MaterialsProfile, Maintenance, EquipmentMachinery, SECTORS } from '@/types/api';
 import {
   materialsProfileService,
@@ -14,6 +15,8 @@ import CreateMaterialsProfileModal from '@/components/materials/CreateMaterialsP
 
 
 export default function MaterialsPage() {
+  const searchParams = useSearchParams();
+  const hasInitialized = useRef(false);
   const [materialProfiles, setMaterialProfiles] = useState<
     MaterialsProfile[] | null
   >();
@@ -68,8 +71,43 @@ export default function MaterialsPage() {
   };
 
   useEffect(() => {
-    fetchData();
-    loadMaintenances();
+    // Prevent double execution in React Strict Mode
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+    
+    const initializePage = async () => {
+      // Load maintenances first
+      await loadMaintenances();
+      
+      // Check for URL parameters
+      const maintenanceId = searchParams.get('maintenance_id');
+      const projectName = searchParams.get('project');
+      
+      if (maintenanceId) {
+        // Auto-apply filter from URL parameters
+        setSelectedMaintenanceIds([maintenanceId]);
+        const newFilters = {
+          maintenance_ids: [maintenanceId],
+          equipment_machinery_ids: [],
+          sector: '',
+        };
+        setFilters(newFilters);
+        // Fetch data with the new filters (only once)
+        await fetchData(newFilters);
+        
+        // Show notification (only once)
+        if (projectName) {
+          setTimeout(() => {
+            alert(`Đang hiển thị vật tư cho dự án: ${decodeURIComponent(projectName)}`);
+          }, 500);
+        }
+      } else {
+        // No URL params, fetch all data
+        await fetchData();
+      }
+    };
+    
+    initializePage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
