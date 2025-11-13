@@ -94,7 +94,7 @@ export default function Sidebar() {
       {/* Footer Link */}
       <div className="absolute bottom-4 left-4 right-4">
         <div className="text-white text-xs opacity-75">
-          https://app.sumsurv.vn/ocr/
+          https://kt-cn.x52.com
         </div>
       </div>
     </div>

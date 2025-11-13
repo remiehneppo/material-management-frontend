@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { getRuntimeConfig } from '@/config/runtime';
 
 class ApiClient {
   private client: AxiosInstance;
@@ -9,9 +10,11 @@ class ApiClient {
     resolve: (value?: unknown) => void;
     reject: (reason?: unknown) => void;
   }> = [];
+  private configLoaded = false;
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8088/api/v1';
+    // Temporary baseURL, will be updated after loading runtime config
+    this.baseURL = 'http://localhost:8088/api/v1';
     
     this.client = axios.create({
       baseURL: this.baseURL,
@@ -24,6 +27,23 @@ class ApiClient {
     });
 
     this.setupInterceptors();
+    this.loadRuntimeConfig();
+  }
+
+  private async loadRuntimeConfig() {
+    if (typeof window !== 'undefined' && !this.configLoaded) {
+      try {
+        const config = await getRuntimeConfig();
+        if (config) {
+          this.baseURL = config.apiUrl;
+          this.client.defaults.baseURL = config.apiUrl;
+          this.configLoaded = true;
+          console.log('Runtime config loaded, API URL:', config.apiUrl);
+        }
+      } catch (error) {
+        console.error('Failed to load runtime config:', error);
+      }
+    }
   }
 
   public setUnauthorizedCallback(callback: () => void) {
