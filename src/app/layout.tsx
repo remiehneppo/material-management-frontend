@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Material Management System",
+  title: "Hệ thống quản lý vật tư",
   description: "Hệ thống quản lý vật tư",
   icons: {
     icon: '/favicon.ico',
