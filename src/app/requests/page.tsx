@@ -65,11 +65,14 @@ export default function RequestsPage() {
       if (selectedSector) {
         filterRequest.sector = selectedSector;
       }
+      // Only send num_of_request filter to API for "pending" status
+      // API supports filtering by num_of_request = 0 for pending requests
       if (selectedStatus === "pending") {
         filterRequest.num_of_request = 0;
       }
-      // Note: API doesn't support num_of_request > 0, so "approved" will get all non-pending
-      // and we filter client-side
+      // For "approved" status, we get all requests and filter client-side
+      // because API may not support num_of_request > 0 directly
+      // For "all" status (empty), we get all requests without num_of_request filter
 
       const response = await materialRequestService.filter(filterRequest, page, pageSize);
       if (response.data) {
@@ -89,10 +92,15 @@ export default function RequestsPage() {
   const applyFiltersAndSort = () => {
     let filtered = [...requests];
 
-    // Client-side filter by status "approved" (only if not already filtered by pending)
-    if (selectedStatus === "approved") {
+    // Client-side filter by status
+    if (selectedStatus === "pending") {
+      // Only show requests with num_of_request === 0 (pending approval)
+      filtered = filtered.filter(r => r.num_of_request === 0);
+    } else if (selectedStatus === "approved") {
+      // Only show requests with num_of_request > 0 (approved)
       filtered = filtered.filter(r => r.num_of_request > 0);
     }
+    // If selectedStatus is empty, show all requests
 
     // Filter by search term (client-side)
     if (searchTerm) {
