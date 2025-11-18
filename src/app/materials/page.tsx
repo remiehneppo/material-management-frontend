@@ -39,6 +39,10 @@ export default function MaterialsPage() {
   const [selectedMaintenanceIds, setSelectedMaintenanceIds] = useState<string[]>([]);
   const [selectedEquipmentIds, setSelectedEquipmentIds] = useState<string[]>([]);
 
+  // Equipment search state
+  const [equipmentSearchTerm, setEquipmentSearchTerm] = useState('');
+  const [isEquipmentDropdownOpen, setIsEquipmentDropdownOpen] = useState(false);
+
   // Modal states
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -414,7 +418,7 @@ export default function MaterialsPage() {
             </div>
 
             {/* Equipment Selection */}
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Thiết bị
               </label>
@@ -429,25 +433,54 @@ export default function MaterialsPage() {
                 </div>
               ) : (
                 <>
-                  <select
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value && !selectedEquipmentIds.includes(value)) {
-                        handleEquipmentToggle(value);
-                        e.target.value = ''; // Reset select
-                      }
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
-                  >
-                    <option value="">Chọn thiết bị...</option>
-                    {equipments
-                      .filter(eq => !selectedEquipmentIds.includes(eq.id))
-                      .map((equipment) => (
-                        <option key={equipment.id} value={equipment.id}>
-                          {equipment.name}
-                        </option>
-                      ))}
-                  </select>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={equipmentSearchTerm}
+                      onChange={(e) => setEquipmentSearchTerm(e.target.value)}
+                      onFocus={() => setIsEquipmentDropdownOpen(true)}
+                      placeholder="Tìm kiếm thiết bị..."
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                    />
+                    {isEquipmentDropdownOpen && (
+                      <>
+                        {/* Backdrop to close dropdown */}
+                        <div 
+                          className="fixed inset-0 z-10" 
+                          onClick={() => setIsEquipmentDropdownOpen(false)}
+                        />
+                        {/* Dropdown list */}
+                        <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                          {equipments
+                            .filter(eq => 
+                              !selectedEquipmentIds.includes(eq.id) &&
+                              eq.name.toLowerCase().includes(equipmentSearchTerm.toLowerCase())
+                            )
+                            .map((equipment) => (
+                              <div
+                                key={equipment.id}
+                                onClick={() => {
+                                  handleEquipmentToggle(equipment.id);
+                                  setEquipmentSearchTerm('');
+                                  setIsEquipmentDropdownOpen(false);
+                                }}
+                                className="px-4 py-2 hover:bg-cyan-50 cursor-pointer text-gray-900 border-b border-gray-100 last:border-b-0"
+                              >
+                                {equipment.name}
+                              </div>
+                            ))}
+                          {equipments.filter(eq => 
+                            !selectedEquipmentIds.includes(eq.id) &&
+                            eq.name.toLowerCase().includes(equipmentSearchTerm.toLowerCase())
+                          ).length === 0 && (
+                            <div className="px-4 py-2 text-gray-500 text-center">
+                              Không tìm thấy thiết bị
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
                   {/* Selected equipments */}
                   {selectedEquipmentIds.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-2">
@@ -761,7 +794,7 @@ export default function MaterialsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {materialProfiles?.map((material, equipmentIndex) => {
+                  {materialProfiles?.map((material) => {
                     const alignedMaterials = alignMaterials(
                       material.estimate,
                       material.reality
