@@ -173,8 +173,31 @@ export default function RequestsPage() {
     loadRequests();
   };
 
+  const getSuggestedRequestNumber = (request: MaterialRequest): number => {
+    // Find all approved requests for the same maintenance instance from current loaded data
+    // Note: This might not include all requests if pagination/filters are applied
+    const sameMaintenanceRequests = requests.filter(r => 
+      r.project === request.project &&
+      r.maintenance_tier === request.maintenance_tier &&
+      r.maintenance_number === request.maintenance_number &&
+      r.year === request.year &&
+      r.num_of_request > 0
+    );
+
+    if (sameMaintenanceRequests.length === 0) {
+      return 1; // First request for this maintenance (or no approved requests in current data)
+    }
+
+    // Find the maximum num_of_request from currently loaded data
+    const maxNumber = Math.max(...sameMaintenanceRequests.map(r => r.num_of_request));
+    return maxNumber + 1;
+  };
+
   const handleOpenApproveModal = (request: MaterialRequest) => {
     setProcessingRequest(request);
+    // Auto-suggest the next request number
+    const suggestedNumber = getSuggestedRequestNumber(request);
+    setRequestNumber(suggestedNumber.toString());
     setShowApproveModal(true);
   };
 
@@ -713,21 +736,40 @@ export default function RequestsPage() {
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Duyệt yêu cầu vật tư</h3>
-              <p className="text-gray-600 mb-2">
-                Yêu cầu: <span className="font-semibold">#{`${processingRequest.project}/${processingRequest.maintenance_tier}/${processingRequest.sector}/${processingRequest.year}`}</span>
-              </p>
-              <p className="text-gray-600 mb-4">
-                Nhập số yêu cầu vật tư để xác nhận duyệt:
-              </p>
-              <input
-                type="number"
-                min="1"
-                value={requestNumber}
-                onChange={(e) => setRequestNumber(e.target.value)}
-                placeholder="Nhập số yêu cầu (VD: 1, 2, 3...)"
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg font-semibold text-gray-900"
-                autoFocus
-              />
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-blue-800">
+                  <span className="font-semibold">Yêu cầu:</span> {processingRequest.project} - {processingRequest.maintenance_tier}/{processingRequest.maintenance_number}
+                </p>
+                <p className="text-sm text-blue-800">
+                  <span className="font-semibold">Ngành:</span> {processingRequest.sector}
+                </p>
+                <p className="text-sm text-blue-800">
+                  <span className="font-semibold">Người yêu cầu:</span> {processingRequest.requested_by}
+                </p>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Số yêu cầu vật tư <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={requestNumber}
+                  onChange={(e) => setRequestNumber(e.target.value)}
+                  placeholder="Nhập số yêu cầu (VD: 1, 2, 3...)"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg font-semibold text-gray-900"
+                  autoFocus
+                />
+                <p className="text-xs text-gray-600 mt-2 flex items-start">
+                  <svg className="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>
+                    Số phiếu được gợi ý dựa trên phiếu lớn nhất của dự án này. 
+                    Bạn có thể thay đổi nếu cần.
+                  </span>
+                </p>
+              </div>
               <div className="flex justify-end gap-2 mt-6">
                 <button
                   onClick={() => {
