@@ -761,7 +761,7 @@ export default function MaterialsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {materialProfiles?.map((material) => {
+                  {materialProfiles?.map((material, equipmentIndex) => {
                     const alignedMaterials = alignMaterials(
                       material.estimate,
                       material.reality
@@ -788,394 +788,217 @@ export default function MaterialsPage() {
                           material.reality?.replacement_materials?.[item.name])
                     );
 
-                    return (
-                      <tr key={material.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
+                    // Create rows array: header rows + material rows
+                    type RowType = 
+                      | { type: 'header'; category: string; label: string }
+                      | { type: 'material'; category: string; data: AlignedMaterial };
+                    
+                    const allRows: RowType[] = [];
+                    
+                    // Add consumable header
+                    if (consumableMaterials.length > 0) {
+                      allRows.push({ 
+                        type: 'header', 
+                        category: 'consumable',
+                        label: 'Vật tư tiêu hao'
+                      });
+                    }
+                    
+                    // Add consumable materials
+                    consumableMaterials.forEach((item) => {
+                      allRows.push({ 
+                        type: 'material', 
+                        category: 'consumable',
+                        data: item 
+                      });
+                    });
+                    
+                    // Add replacement header
+                    if (replacementMaterials.length > 0) {
+                      allRows.push({ 
+                        type: 'header', 
+                        category: 'replacement',
+                        label: 'Vật tư thay thế'
+                      });
+                    }
+                    
+                    // Add replacement materials
+                    replacementMaterials.forEach((item) => {
+                      allRows.push({ 
+                        type: 'material', 
+                        category: 'replacement',
+                        data: item 
+                      });
+                    });
+
+                    const totalRows = allRows.length || 1; // At least 1 row if no materials
+
+                    return allRows.length > 0 ? allRows.map((row, rowIndex) => (
+                      <tr key={`${material.id}-${rowIndex}`} className="hover:bg-gray-50 border-b border-gray-200">
+                        {/* Equipment Index - only on first row */}
+                        {rowIndex === 0 && (
+                          <td 
+                            rowSpan={totalRows} 
+                            className="px-3 py-4 text-center border-r border-gray-200 align-top bg-gray-50"
+                          >
+                            <div className="text-sm font-medium text-gray-900 sticky top-0">
                               {material.index_path}
                             </div>
+                          </td>
+                        )}
+                        
+                        {/* Equipment Name - only on first row */}
+                        {rowIndex === 0 && (
+                          <td 
+                            rowSpan={totalRows} 
+                            className="px-6 py-4 border-r border-gray-200 align-top bg-gray-50"
+                          >
+                            <div className="sticky top-0">
+                              <div className="text-sm font-medium text-gray-900">
+                                {material.equipment_machinery}
+                              </div>
+                              {/* <div className="text-xs text-gray-500 mt-1">
+                                ID: {material.id}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                Ngành: {material.sector}
+                              </div> */}
+                            </div>
+                          </td>
+                        )}
+
+                        {/* Render based on row type */}
+                        {row.type === 'header' ? (
+                          // Header row (category label)
+                          <>
+                            <td 
+                              colSpan={3} 
+                              className={`px-4 py-2 text-center border-r border-gray-200 ${
+                                row.category === 'consumable' 
+                                  ? 'bg-blue-500' 
+                                  : 'bg-green-500'
+                              }`}
+                            >
+                              <div className="text-sm font-bold uppercase text-white">
+                                {'label' in row ? row.label : ''}
+                              </div>
+                            </td>
+                            <td 
+                              colSpan={3} 
+                              className={`px-4 py-2 text-center border-r border-gray-200 ${
+                                row.category === 'consumable' 
+                                  ? 'bg-blue-500' 
+                                  : 'bg-green-500'
+                              }`}
+                            >
+                              <div className="text-sm font-bold uppercase text-white">
+                                {'label' in row ? row.label : ''}
+                              </div>
+                            </td>
+                            <td className={`px-2 py-2 text-center ${
+                              row.category === 'consumable' 
+                                ? 'bg-blue-500' 
+                                : 'bg-green-500'
+                            }`}>
+                              <div className="text-sm font-bold uppercase text-white">
+                                Chênh lệch
+                              </div>
+                            </td>
+                          </>
+                        ) : row.type === 'material' ? (
+                          // Material row
+                          <>
+                            {/* Estimate Material Name */}
+                            <td className="px-4 py-2 border-r border-gray-200">
+                              <div className="text-sm text-gray-900 break-words">
+                                {row.data.estimate?.name || '-'}
+                              </div>
+                            </td>
+                            
+                            {/* Estimate Material Unit */}
+                            <td className="px-2 py-2 text-center border-r border-gray-200">
+                              <div className="text-sm text-gray-900">
+                                {row.data.estimate?.unit || '-'}
+                              </div>
+                            </td>
+                            
+                            {/* Estimate Material Quantity */}
+                            <td className="px-2 py-2 text-center border-r border-gray-200">
+                              <div className="text-sm text-gray-900 font-medium">
+                                {row.data.estimate?.quantity || '-'}
+                              </div>
+                            </td>
+                            
+                            {/* Reality Material Name */}
+                            <td className="px-4 py-2 border-r border-gray-200">
+                              <div className="text-sm text-gray-900 break-words">
+                                {row.data.reality?.name || '-'}
+                              </div>
+                            </td>
+                            
+                            {/* Reality Material Unit */}
+                            <td className="px-2 py-2 text-center border-r border-gray-200">
+                              <div className="text-sm text-gray-900">
+                                {row.data.reality?.unit || '-'}
+                              </div>
+                            </td>
+                            
+                            {/* Reality Material Quantity */}
+                            <td className="px-2 py-2 text-center border-r border-gray-200">
+                              <div className="text-sm text-gray-900 font-medium">
+                                {row.data.reality?.quantity || '-'}
+                              </div>
+                            </td>
+                            
+                            {/* Difference */}
+                            <td className="px-2 py-2 text-center">
+                              {(() => {
+                                const estimateQty = row.data.estimate?.quantity || 0;
+                                const realityQty = row.data.reality?.quantity || 0;
+                                const diff = estimateQty - realityQty;
+                                const diffColor =
+                                  diff > 0
+                                    ? 'text-green-600'
+                                    : diff < 0
+                                    ? 'text-orange-500'
+                                    : 'text-gray-900';
+                                return (
+                                  <div className={`text-sm font-semibold ${diffColor}`}>
+                                    {diff !== 0
+                                      ? diff > 0
+                                        ? `+${diff}`
+                                        : diff
+                                      : '-'}
+                                  </div>
+                                );
+                              })()}
+                            </td>
+                          </>
+                        ) : null}
+                      </tr>
+                    )) : (
+                      // Empty equipment case
+                      <tr key={material.id} className="hover:bg-gray-50 border-b border-gray-200">
+                        <td className="px-3 py-4 text-center border-r border-gray-200 bg-gray-50">
+                          <div className="text-sm font-medium text-gray-900">
+                            {material.index_path}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-6 py-4 border-r border-gray-200 bg-gray-50">
                           <div>
                             <div className="text-sm font-medium text-gray-900">
                               {material.equipment_machinery}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            {/* <div className="text-xs text-gray-500 mt-1">
                               ID: {material.id}
                             </div>
-
-                            <div className="text-sm text-gray-500">
+                            <div className="text-xs text-gray-500">
                               Ngành: {material.sector}
-                            </div>
+                            </div> */}
                           </div>
                         </td>
-                        {/* Estimate Materials Name */}
-                        <td className="px-4 py-4 align-top">
-                          <div className="space-y-2">
-                            {/* Consumable Materials Section */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold uppercase text-white bg-blue-500 border border-blue-600 rounded px-2 py-1 min-h-[32px] flex items-center justify-center">
-                                Vật tư tiêu hao
-                              </div>
-                            )}
-                            {consumableMaterials.map((item, idx) => (
-                              <div
-                                key={`consumable-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center"
-                              >
-                                {item.estimate?.name || ''}
-                              </div>
-                            ))}
-                            {consumableMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px] flex items-center italic">
-                                  Không có
-                                </div>
-                              )}
-
-                            {/* Replacement Materials Section */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold uppercase text-white bg-green-500 border border-green-600 rounded px-2 py-1 min-h-[32px] mt-2 flex items-center justify-center">
-                                Vật tư thay thế
-                              </div>
-                            )}
-                            {replacementMaterials.map((item, idx) => (
-                              <div
-                                key={`replacement-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center"
-                              >
-                                {item.estimate?.name || ''}
-                              </div>
-                            ))}
-                            {replacementMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px] flex items-center italic">
-                                  Không có
-                                </div>
-                              )}
-                          </div>
-                        </td>
-
-                        {/* Estimate Materials Unit */}
-                        <td className="px-2 py-4 text-center align-top">
-                          <div className="space-y-2">
-                            {/* Empty header space for consumables */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-blue-500 border border-blue-600 rounded px-2 py-1 min-h-[32px]">
-                                .
-                              </div>
-                            )}
-                            {consumableMaterials.map((item, idx) => (
-                              <div
-                                key={`consumable-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center"
-                              >
-                                {item.estimate?.unit || ''}
-                              </div>
-                            ))}
-                            {consumableMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-
-                            {/* Empty header space for replacements */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-green-500 border border-green-600 rounded px-2 py-1 min-h-[32px] mt-2">
-                                .
-                              </div>
-                            )}
-                            {replacementMaterials.map((item, idx) => (
-                              <div
-                                key={`replacement-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center"
-                              >
-                                {item.estimate?.unit || ''}
-                              </div>
-                            ))}
-                            {replacementMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-                          </div>
-                        </td>
-
-                        {/* Estimate Materials Quantity */}
-                        <td className="px-2 py-4 text-center align-top">
-                          <div className="space-y-2">
-                            {/* Empty header space for consumables */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-blue-500 border border-blue-600 rounded px-2 py-1 min-h-[32px]">
-                                .
-                              </div>
-                            )}
-                            {consumableMaterials.map((item, idx) => (
-                              <div
-                                key={`consumable-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center"
-                              >
-                                {item.estimate?.quantity || ''}
-                              </div>
-                            ))}
-                            {consumableMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-
-                            {/* Empty header space for replacements */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-green-500 border border-green-600 rounded px-2 py-1 min-h-[32px] mt-2">
-                                .
-                              </div>
-                            )}
-                            {replacementMaterials.map((item, idx) => (
-                              <div
-                                key={`replacement-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center"
-                              >
-                                {item.estimate?.quantity || ''}
-                              </div>
-                            ))}
-                            {replacementMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-                          </div>
-                        </td>
-
-                        {/* Reality Materials Name */}
-                        <td className="px-4 py-4 align-top">
-                          <div className="space-y-2">
-                            {/* Consumable Materials Section */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold uppercase text-white bg-blue-500 border border-blue-600 rounded px-2 py-1 min-h-[32px] flex items-center justify-center">
-                                Vật tư tiêu hao
-                              </div>
-                            )}
-                            {consumableMaterials.map((item, idx) => (
-                              <div
-                                key={`consumable-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center"
-                              >
-                                {item.reality?.name || ''}
-                              </div>
-                            ))}
-                            {consumableMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px] flex items-center italic">
-                                  Không có
-                                </div>
-                              )}
-
-                            {/* Replacement Materials Section */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold uppercase text-white bg-green-500 border border-green-600 rounded px-2 py-1 min-h-[32px] mt-2 flex items-center justify-center">
-                                Vật tư thay thế
-                              </div>
-                            )}
-                            {replacementMaterials.map((item, idx) => (
-                              <div
-                                key={`replacement-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center"
-                              >
-                                {item.reality?.name || ''}
-                              </div>
-                            ))}
-                            {replacementMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px] flex items-center italic">
-                                  Không có
-                                </div>
-                              )}
-                          </div>
-                        </td>
-
-                        {/* Reality Materials Unit */}
-                        <td className="px-2 py-4 text-center align-top">
-                          <div className="space-y-2">
-                            {/* Empty header space for consumables */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-blue-500 border border-blue-600 rounded px-2 py-1 min-h-[32px]">
-                                .
-                              </div>
-                            )}
-                            {consumableMaterials.map((item, idx) => (
-                              <div
-                                key={`consumable-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center"
-                              >
-                                {item.reality?.unit || ''}
-                              </div>
-                            ))}
-                            {consumableMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-
-                            {/* Empty header space for replacements */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-green-500 border border-green-600 rounded px-2 py-1 min-h-[32px] mt-2">
-                                .
-                              </div>
-                            )}
-                            {replacementMaterials.map((item, idx) => (
-                              <div
-                                key={`replacement-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center"
-                              >
-                                {item.reality?.unit || ''}
-                              </div>
-                            ))}
-                            {replacementMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-                          </div>
-                        </td>
-
-                        {/* Reality Materials Quantity */}
-                        <td className="px-2 py-4 text-center align-top">
-                          <div className="space-y-2">
-                            {/* Empty header space for consumables */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-blue-500 border border-blue-600 rounded px-2 py-1 min-h-[32px]">
-                                .
-                              </div>
-                            )}
-                            {consumableMaterials.map((item, idx) => (
-                              <div
-                                key={`consumable-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center"
-                              >
-                                {item.reality?.quantity || ''}
-                              </div>
-                            ))}
-                            {consumableMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-
-                            {/* Empty header space for replacements */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-green-500 border border-green-600 rounded px-2 py-1 min-h-[32px] mt-2">
-                                .
-                              </div>
-                            )}
-                            {replacementMaterials.map((item, idx) => (
-                              <div
-                                key={`replacement-${idx}`}
-                                className="text-sm text-gray-900 border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center"
-                              >
-                                {item.reality?.quantity || ''}
-                              </div>
-                            ))}
-                            {replacementMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-                          </div>
-                        </td>
-
-                        {/* Difference Column */}
-                        <td className="px-2 py-4 text-center align-top">
-                          <div className="space-y-2">
-                            {/* Empty header space for consumables */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-blue-500 border border-blue-600 rounded px-2 py-1 min-h-[32px]">
-                                .
-                              </div>
-                            )}
-                            {consumableMaterials.map((item, idx) => {
-                              const estimateQty = item.estimate?.quantity || 0;
-                              const realityQty = item.reality?.quantity || 0;
-                              const diff = estimateQty - realityQty;
-                              const diffColor =
-                                diff > 0
-                                  ? 'text-green-600'
-                                  : diff < 0
-                                  ? 'text-orange-500'
-                                  : 'text-gray-900';
-                              return (
-                                <div
-                                  key={`consumable-${idx}`}
-                                  className={`text-sm font-medium border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center ${diffColor}`}
-                                >
-                                  {diff !== 0
-                                    ? diff > 0
-                                      ? `+${diff}`
-                                      : diff
-                                    : ''}
-                                </div>
-                              );
-                            })}
-                            {consumableMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-
-                            {/* Empty header space for replacements */}
-                            {(consumableMaterials.length > 0 ||
-                              replacementMaterials.length > 0) && (
-                              <div className="text-sm font-bold text-transparent bg-green-500 border border-green-600 rounded px-2 py-1 min-h-[32px] mt-2">
-                                .
-                              </div>
-                            )}
-                            {replacementMaterials.map((item, idx) => {
-                              const estimateQty = item.estimate?.quantity || 0;
-                              const realityQty = item.reality?.quantity || 0;
-                              const diff = estimateQty - realityQty;
-                              const diffColor =
-                                diff > 0
-                                  ? 'text-green-600'
-                                  : diff < 0
-                                  ? 'text-orange-500'
-                                  : 'text-gray-900';
-                              return (
-                                <div
-                                  key={`replacement-${idx}`}
-                                  className={`text-sm font-medium border-b border-gray-100 pb-1 min-h-[32px] flex items-center justify-center ${diffColor}`}
-                                >
-                                  {diff !== 0
-                                    ? diff > 0
-                                      ? `+${diff}`
-                                      : diff
-                                    : ''}
-                                </div>
-                              );
-                            })}
-                            {replacementMaterials.length === 0 &&
-                              (consumableMaterials.length > 0 ||
-                                replacementMaterials.length > 0) && (
-                                <div className="text-sm text-gray-400 border-b border-gray-100 pb-1 min-h-[32px]"></div>
-                              )}
-                          </div>
+                        <td colSpan={7} className="px-4 py-4 text-center text-gray-400 italic">
+                          {/* Chưa có vật tư */}
                         </td>
                       </tr>
                     );
