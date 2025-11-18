@@ -275,21 +275,84 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
     });
   };
 
-  const getCurrentProfileEstimate = (): Material[] => {
+  const getAllMaterialsForSelection = (): Array<{ material: Material; source: 'estimate' | 'reality' | 'both' }> => {
     if (!currentEquipmentId) return [];
     
     const profile = materialsProfiles.find(p => p.id === currentEquipmentId);
     if (!profile) return [];
 
-    const materials: Material[] = [];
+    const materialsMap = new Map<string, { estimate: Material | null; reality: Material | null }>();
     
+    // Add estimate materials
     if (materialType === "consumable" && profile.estimate.consumable_supplies) {
-      Object.values(profile.estimate.consumable_supplies).forEach(m => materials.push(m));
+      Object.values(profile.estimate.consumable_supplies).forEach(m => {
+        materialsMap.set(m.name, { estimate: m, reality: null });
+      });
     } else if (materialType === "replacement" && profile.estimate.replacement_materials) {
-      Object.values(profile.estimate.replacement_materials).forEach(m => materials.push(m));
+      Object.values(profile.estimate.replacement_materials).forEach(m => {
+        materialsMap.set(m.name, { estimate: m, reality: null });
+      });
     }
 
-    return materials;
+    // Add reality materials
+    if (profile.reality) {
+      if (materialType === "consumable" && profile.reality.consumable_supplies) {
+        Object.values(profile.reality.consumable_supplies).forEach(m => {
+          const existing = materialsMap.get(m.name);
+          if (existing) {
+            existing.reality = m;
+          } else {
+            materialsMap.set(m.name, { estimate: null, reality: m });
+          }
+        });
+      } else if (materialType === "replacement" && profile.reality.replacement_materials) {
+        Object.values(profile.reality.replacement_materials).forEach(m => {
+          const existing = materialsMap.get(m.name);
+          if (existing) {
+            existing.reality = m;
+          } else {
+            materialsMap.set(m.name, { estimate: null, reality: m });
+          }
+        });
+      }
+    }
+
+    // Convert to array with source information
+    const result: Array<{ material: Material; source: 'estimate' | 'reality' | 'both' }> = [];
+    materialsMap.forEach((value, name) => {
+      let source: 'estimate' | 'reality' | 'both';
+      let material: Material;
+
+      if (value.estimate && value.reality) {
+        source = 'both';
+        material = value.estimate; // Use estimate as primary
+      } else if (value.estimate) {
+        source = 'estimate';
+        material = value.estimate;
+      } else {
+        source = 'reality';
+        material = value.reality!;
+      }
+
+      result.push({ material: { ...material, name }, source });
+    });
+
+    return result;
+  };
+
+  const getMaterialReality = (materialName: string): Material | null => {
+    if (!currentEquipmentId) return null;
+    
+    const profile = materialsProfiles.find(p => p.id === currentEquipmentId);
+    if (!profile || !profile.reality) return null;
+
+    if (materialType === "consumable" && profile.reality.consumable_supplies) {
+      return profile.reality.consumable_supplies[materialName] || null;
+    } else if (materialType === "replacement" && profile.reality.replacement_materials) {
+      return profile.reality.replacement_materials[materialName] || null;
+    }
+
+    return null;
   };
 
   const handleSubmit = async () => {
@@ -712,16 +775,18 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
                     </span>
                   )}
                 </div>
-                {getCurrentProfileEstimate().length === 0 ? (
-                  <p className="text-sm text-gray-500 italic">Không có vật tư trong dự toán</p>
+                {getAllMaterialsForSelection().length === 0 ? (
+                  <p className="text-sm text-gray-500 italic">Không có vật tư</p>
                 ) : (
                   <div className="space-y-2 max-h-96 overflow-y-auto">
-                    {getCurrentProfileEstimate().map((material, index) => {
+                    {getAllMaterialsForSelection().map((item, index) => {
+                      const { material, source } = item;
                       const isSelected = !!selectedEstimateMaterials[material.name];
                       const isAlreadyAdded = currentEquipmentId && selectedEquipments[currentEquipmentId] && (
                         (materialType === "consumable" && selectedEquipments[currentEquipmentId].consumable_supplies[material.name]) ||
                         (materialType === "replacement" && selectedEquipments[currentEquipmentId].replacement_materials[material.name])
                       );
+                      const realityMaterial = getMaterialReality(material.name);
                       
                       return (
                         <div
@@ -760,13 +825,37 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
                                 <span className={`text-sm font-medium ${isAlreadyAdded ? "text-gray-500" : "text-gray-900"}`}>
                                   {material.name}
                                 </span>
-                                {isAlreadyAdded && (
-                                  <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Đã thêm</span>
+                                <div className="flex items-center gap-2">
+                                  {source === 'reality' && (
+                                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">
+                                      Chỉ có trong yêu cầu
+                                    </span>
+                                  )}
+                                  {isAlreadyAdded && (
+                                    <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Đã thêm</span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="mt-1 space-y-0.5">
+                                {source === 'estimate' || source === 'both' ? (
+                                  <p className="text-xs text-blue-600">
+                                    <span className="font-medium">Dự toán:</span> {material.quantity} {material.unit}
+                                  </p>
+                                ) : (
+                                  <p className="text-xs text-gray-500 italic">
+                                    Không có trong dự toán
+                                  </p>
+                                )}
+                                {realityMaterial ? (
+                                  <p className="text-xs text-green-600">
+                                    <span className="font-medium">Đã yêu cầu:</span> {realityMaterial.quantity} {realityMaterial.unit}
+                                  </p>
+                                ) : (
+                                  <p className="text-xs text-gray-500 italic">
+                                    Chưa có yêu cầu
+                                  </p>
                                 )}
                               </div>
-                              <p className="text-xs text-gray-600 mt-1">
-                                Dự toán: {material.quantity} {material.unit}
-                              </p>
                               {isSelected && (
                                 <div className="mt-2 flex items-center gap-2">
                                   <label className="text-xs font-medium text-gray-700">Số lượng yêu cầu:</label>
