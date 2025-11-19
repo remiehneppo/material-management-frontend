@@ -12,6 +12,37 @@ import { maintenanceService, equipmentMachineryService } from '@/services';
 import UploadEstimateModal from '@/components/materials/UploadEstimateModal';
 import CreateMaterialsProfileModal from '@/components/materials/CreateMaterialsProfileModal';
 
+// Icons Components
+const UploadIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+  </svg>
+);
+
+const PlusIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+  </svg>
+);
+
+const FilterIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+  </svg>
+);
+
 
 
 export default function MaterialsPage() {
@@ -243,56 +274,24 @@ export default function MaterialsPage() {
 
   return (
     <DashboardLayout>
-      <Header title="VẬT TƯ" />
-      <div className="p-6">
+      <Header title="QUẢN LÝ VẬT TƯ" />
+      <div className="p-6 space-y-6">
         {/* Action Bar */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex space-x-4">
-            <button
-              onClick={() => setIsUploadModalOpen(true)}
-              className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors flex items-center space-x-2"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
-              <span>Cập nhật dự toán</span>
-            </button>
-            {/* <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
-              Nhập kho
-            </button> */}
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
-            >
-              Tạo hồ sơ vật tư mới
-            </button>
-            {/* <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-2">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <span>Xuất báo cáo</span>
-            </button> */}
-          </div>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => setIsUploadModalOpen(true)}
+            className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] font-medium"
+          >
+            <UploadIcon />
+            <span>Cập nhật dự toán</span>
+          </button>
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] font-medium"
+          >
+            <PlusIcon />
+            <span>Tạo hồ sơ vật tư</span>
+          </button>
         </div>
 
         {/* Upload Modal */}
@@ -314,36 +313,31 @@ export default function MaterialsPage() {
         />
 
         {/* Filter Section */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Bộ lọc</h3>
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100 p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg">
+                <FilterIcon />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Bộ lọc tìm kiếm</h3>
+            </div>
             {isFiltering && (
-              <span className="text-sm text-blue-600 flex items-center">
-                <svg
-                  className="w-4 h-4 mr-1"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Đang lọc
+              <span className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                <FilterIcon />
+                <span>Đang lọc</span>
               </span>
             )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Sector Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ngành
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                🏭 Ngành
               </label>
               <select
                 value={filters.sector}
                 onChange={(e) => handleFilterChange('sector', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 font-medium transition-all duration-200 bg-white hover:border-cyan-300"
               >
                 <option value="">Tất cả ngành</option>
                 {Object.values(SECTORS).map((sector) => (
@@ -355,14 +349,14 @@ export default function MaterialsPage() {
             </div>
 
             {/* Maintenance Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dự án
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                📋 Dự án
               </label>
               {loadingMaintenances ? (
-                <div className="flex items-center text-gray-500 text-sm px-3 py-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-500 mr-2"></div>
-                  Đang tải...
+                <div className="flex items-center gap-2 text-gray-500 text-sm px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-500"></div>
+                  <span>Đang tải...</span>
                 </div>
               ) : (
                 <>
@@ -371,10 +365,10 @@ export default function MaterialsPage() {
                       const value = e.target.value;
                       if (value && !selectedMaintenanceIds.includes(value)) {
                         handleMaintenanceToggle(value);
-                        e.target.value = ''; // Reset select
+                        e.target.value = '';
                       }
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 font-medium transition-all duration-200 bg-white hover:border-cyan-300"
                   >
                     <option value="">Chọn dự án...</option>
                     {maintenances
@@ -385,28 +379,25 @@ export default function MaterialsPage() {
                         </option>
                       ))}
                   </select>
-                  {/* Selected maintenances */}
                   {selectedMaintenanceIds.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className="mt-3 flex flex-wrap gap-2">
                       {selectedMaintenanceIds.map((id) => {
                         const maintenance = maintenances.find(m => m.id === id);
                         if (!maintenance) return null;
                         return (
                           <div
                             key={id}
-                            className="inline-flex items-center bg-cyan-100 text-cyan-800 text-xs font-medium px-2 py-1 rounded"
+                            className="inline-flex items-center gap-1.5 bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-800 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
                           >
-                            <span className="mr-1">
+                            <span>
                               {maintenance.project} - {maintenance.maintenance_tier} - Lần {maintenance.maintenance_number}
                             </span>
                             <button
                               type="button"
                               onClick={() => handleMaintenanceToggle(id)}
-                              className="hover:text-cyan-900"
+                              className="hover:text-cyan-900 transition-colors"
                             >
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                              </svg>
+                              <CloseIcon />
                             </button>
                           </div>
                         );
@@ -418,39 +409,41 @@ export default function MaterialsPage() {
             </div>
 
             {/* Equipment Selection */}
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Thiết bị
+            <div className="relative space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                ⚙️ Thiết bị
               </label>
               {!filters.sector ? (
-                <div className="px-3 py-2 text-sm text-gray-500 border border-gray-300 rounded-lg bg-gray-50">
-                  Vui lòng chọn ngành trước
+                <div className="px-4 py-3 text-sm text-gray-500 border-2 border-gray-200 rounded-xl bg-gray-50 flex items-center gap-2">
+                  <span>💡</span>
+                  <span>Vui lòng chọn ngành trước</span>
                 </div>
               ) : loadingEquipments ? (
-                <div className="flex items-center text-gray-500 text-sm px-3 py-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-500 mr-2"></div>
-                  Đang tải...
+                <div className="flex items-center gap-2 text-gray-500 text-sm px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-500"></div>
+                  <span>Đang tải...</span>
                 </div>
               ) : (
                 <>
                   <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <SearchIcon />
+                    </div>
                     <input
                       type="text"
                       value={equipmentSearchTerm}
                       onChange={(e) => setEquipmentSearchTerm(e.target.value)}
                       onFocus={() => setIsEquipmentDropdownOpen(true)}
                       placeholder="Tìm kiếm thiết bị..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 font-medium transition-all duration-200 bg-white hover:border-cyan-300"
                     />
                     {isEquipmentDropdownOpen && (
                       <>
-                        {/* Backdrop to close dropdown */}
                         <div 
                           className="fixed inset-0 z-10" 
                           onClick={() => setIsEquipmentDropdownOpen(false)}
                         />
-                        {/* Dropdown list */}
-                        <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                        <div className="absolute z-20 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-2xl max-h-60 overflow-y-auto">
                           {equipments
                             .filter(eq => 
                               !selectedEquipmentIds.includes(eq.id) &&
@@ -464,7 +457,7 @@ export default function MaterialsPage() {
                                   setEquipmentSearchTerm('');
                                   setIsEquipmentDropdownOpen(false);
                                 }}
-                                className="px-4 py-2 hover:bg-cyan-50 cursor-pointer text-gray-900 border-b border-gray-100 last:border-b-0"
+                                className="px-4 py-3 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 cursor-pointer text-gray-900 border-b border-gray-100 last:border-b-0 transition-all duration-150 font-medium"
                               >
                                 {equipment.name}
                               </div>
@@ -473,7 +466,7 @@ export default function MaterialsPage() {
                             !selectedEquipmentIds.includes(eq.id) &&
                             eq.name.toLowerCase().includes(equipmentSearchTerm.toLowerCase())
                           ).length === 0 && (
-                            <div className="px-4 py-2 text-gray-500 text-center">
+                            <div className="px-4 py-3 text-gray-500 text-center text-sm">
                               Không tìm thấy thiết bị
                             </div>
                           )}
@@ -481,26 +474,23 @@ export default function MaterialsPage() {
                       </>
                     )}
                   </div>
-                  {/* Selected equipments */}
                   {selectedEquipmentIds.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className="mt-3 flex flex-wrap gap-2">
                       {selectedEquipmentIds.map((id) => {
                         const equipment = equipments.find(eq => eq.id === id);
                         if (!equipment) return null;
                         return (
                           <div
                             key={id}
-                            className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded"
+                            className="inline-flex items-center gap-1.5 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
                           >
-                            <span className="mr-1">{equipment.name}</span>
+                            <span>{equipment.name}</span>
                             <button
                               type="button"
                               onClick={() => handleEquipmentToggle(id)}
-                              className="hover:text-green-900"
+                              className="hover:text-green-900 transition-colors"
                             >
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                              </svg>
+                              <CloseIcon />
                             </button>
                           </div>
                         );
@@ -513,42 +503,20 @@ export default function MaterialsPage() {
           </div>
 
           {/* Filter Action Buttons */}
-          <div className="flex space-x-4 mt-4">
+          <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200">
             <button
               onClick={handleApplyFilter}
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
+              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] font-semibold"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                />
-              </svg>
-              <span>Áp dụng</span>
+              <FilterIcon />
+              <span>Áp dụng bộ lọc</span>
             </button>
             <button
               onClick={handleClearFilter}
-              className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors flex items-center space-x-2"
+              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] font-semibold"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span>Xóa bộ lọc</span>
             </button>
@@ -557,178 +525,101 @@ export default function MaterialsPage() {
 
         {/* Loading State */}
         {loading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
-            <span className="ml-3 text-gray-600">Đang tải dữ liệu...</span>
+          <div className="flex flex-col justify-center items-center py-20 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100">
+            <div className="relative">
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-cyan-200"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-cyan-500 absolute top-0 left-0"></div>
+            </div>
+            <span className="mt-6 text-lg font-semibold text-gray-700">Đang tải dữ liệu...</span>
+            <span className="mt-2 text-sm text-gray-500">Vui lòng chờ trong giây lát</span>
           </div>
         )}
 
         {/* Error State */}
         {error && !loading && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center">
-              <svg
-                className="w-6 h-6 text-red-500 mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span className="text-red-700">{error}</span>
+          <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-red-100 rounded-full">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-red-900 mb-1">Lỗi tải dữ liệu</h3>
+                <span className="text-red-700">{error}</span>
+              </div>
             </div>
           </div>
         )}
 
         {/* Quick Stats */}
         {!loading && !error && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <svg
-                    className="w-5 h-5 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-500">
-                    Tổng số trang thiết bị
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium opacity-90 mb-1">
+                    Trang thiết bị
                   </p>
-                  <p className="text-xl font-semibold text-gray-900">
+                  <p className="text-4xl font-bold">
                     {materialProfiles?.length ?? 0}
                   </p>
                 </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="flex items-center">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <svg
-                    className="w-5 h-5 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                 </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-500">
-                    Tổng số vật tư dự toán
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium opacity-90 mb-1">
+                    Vật tư dự toán
                   </p>
-                  <p className="text-xl font-semibold text-gray-900">
+                  <p className="text-4xl font-bold">
                     {materialProfiles?.reduce((sum, profile) => {
-                      const consumableCount = profile.estimate
-                        ?.consumable_supplies
-                        ? Object.keys(profile.estimate.consumable_supplies)
-                            .length
-                        : 0;
-                      const replacementCount = profile.estimate
-                        ?.replacement_materials
-                        ? Object.keys(profile.estimate.replacement_materials)
-                            .length
-                        : 0;
+                      const consumableCount = profile.estimate?.consumable_supplies 
+                        ? Object.keys(profile.estimate.consumable_supplies).length : 0;
+                      const replacementCount = profile.estimate?.replacement_materials 
+                        ? Object.keys(profile.estimate.replacement_materials).length : 0;
                       return sum + consumableCount + replacementCount;
                     }, 0)}
                   </p>
                 </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <svg
-                    className="w-5 h-5 text-yellow-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                    />
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-500">
-                    Tổng số vật tư vượt dự toán
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium opacity-90 mb-1">
+                    Vượt dự toán
                   </p>
-                  <p className="text-xl font-semibold text-gray-900">
+                  <p className="text-4xl font-bold">
                     {materialProfiles?.reduce((count, profile) => {
-                      const alignedMaterials = alignMaterials(
-                        profile.estimate,
-                        profile.reality
-                      );
-                      const overBudgetCount = alignedMaterials.filter(
-                        (item) => {
-                          const estimateQty = item.estimate
-                            ? item.estimate.quantity
-                            : 0;
-                          const realityQty = item.reality
-                            ? item.reality.quantity
-                            : 0;
-                          return realityQty > estimateQty;
-                        }
-                      );
+                      const alignedMaterials = alignMaterials(profile.estimate, profile.reality);
+                      const overBudgetCount = alignedMaterials.filter((item) => {
+                        const estimateQty = item.estimate ? item.estimate.quantity : 0;
+                        const realityQty = item.reality ? item.reality.quantity : 0;
+                        return realityQty > estimateQty;
+                      });
                       return count + overBudgetCount.length;
                     }, 0)}
                   </p>
                 </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <svg
-                    className="w-5 h-5 text-purple-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                    />
+                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
                 </div>
-                {/* <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">
-                  Tổng giá trị
-                </p>
-                <p className="text-xl font-semibold text-gray-900">
-                  {(
-                    materials.reduce(
-                      (sum, m) => sum + m.quantity * m.price,
-                      0
-                    ) / 1000000
-                  ).toFixed(1)}
-                  M
-                </p>
-              </div> */}
               </div>
             </div>
           </div>
@@ -736,59 +627,59 @@ export default function MaterialsPage() {
 
         {/* Materials Table */}
         {!loading && !error && (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
             <div className="overflow-x-auto max-h-[calc(100vh-100px)] overflow-y-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-blue-500 sticky top-0 z-10">
-                  <tr className="border-b border-gray-600">
+                <thead className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 sticky top-0 z-10">
+                  <tr className="border-b-2 border-white/20">
                     <th
                       rowSpan={2}
-                      className="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-12"
+                      className="px-3 py-4 text-center text-xs font-bold text-white uppercase tracking-wider border-r border-white/20 w-12"
                     >
                       TT
                     </th>
                     <th
                       rowSpan={2}
-                      className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 min-w-[200px]"
+                      className="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider border-r border-white/20 min-w-[200px]"
                     >
                       Thiết bị
                     </th>
                     <th
                       colSpan={3}
-                      className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600"
+                      className="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider border-r border-white/20"
                     >
-                      Vật tư dự toán
+                      📋 Vật tư dự toán
                     </th>
                     <th
                       colSpan={3}
-                      className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600"
+                      className="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider border-r border-white/20"
                     >
-                      Vật tư thực tế
+                      ✅ Vật tư thực tế
                     </th>
                     <th
                       rowSpan={2}
-                      className="px-3 py-3 text-center text-xs font-medium text-white uppercase tracking-wider w-24"
+                      className="px-3 py-4 text-center text-xs font-bold text-white uppercase tracking-wider w-24"
                     >
-                      Trạng thái
+                      Chênh lệch
                     </th>
                   </tr>
-                  <tr className="border-b border-gray-600">
-                    <th className="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 min-w-[150px]">
+                  <tr className="border-b-2 border-white/20">
+                    <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider border-r border-white/20 min-w-[150px]">
                       Tên vật tư
                     </th>
-                    <th className="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-16">
+                    <th className="px-2 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider border-r border-white/20 w-16">
                       ĐVT
                     </th>
-                    <th className="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-16">
+                    <th className="px-2 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider border-r border-white/20 w-16">
                       SL
                     </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 min-w-[150px]">
+                    <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider border-r border-white/20 min-w-[150px]">
                       Tên vật tư
                     </th>
-                    <th className="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-16">
+                    <th className="px-2 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider border-r border-white/20 w-16">
                       ĐVT
                     </th>
-                    <th className="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-gray-600 w-16">
+                    <th className="px-2 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider border-r border-white/20 w-16">
                       SL
                     </th>
                   </tr>
@@ -872,9 +763,9 @@ export default function MaterialsPage() {
                         {rowIndex === 0 && (
                           <td 
                             rowSpan={totalRows} 
-                            className="px-3 py-4 text-center border-r border-gray-200 align-top bg-gray-50"
+                            className="px-3 py-4 text-center border-r border-gray-200 align-top bg-gradient-to-br from-gray-50 to-gray-100"
                           >
-                            <div className="text-sm font-medium text-gray-900 sticky top-0">
+                            <div className="text-sm font-bold text-gray-900 sticky top-0">
                               {material.index_path}
                             </div>
                           </td>
@@ -884,18 +775,12 @@ export default function MaterialsPage() {
                         {rowIndex === 0 && (
                           <td 
                             rowSpan={totalRows} 
-                            className="px-6 py-4 border-r border-gray-200 align-top bg-gray-50"
+                            className="px-6 py-4 border-r border-gray-200 align-top bg-gradient-to-br from-blue-50 to-cyan-50"
                           >
                             <div className="sticky top-0">
-                              <div className="text-sm font-medium text-gray-900">
+                              <div className="text-sm font-bold text-gray-900">
                                 {material.equipment_machinery}
                               </div>
-                              {/* <div className="text-xs text-gray-500 mt-1">
-                                ID: {material.id}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                Ngành: {material.sector}
-                              </div> */}
                             </div>
                           </td>
                         )}
@@ -906,34 +791,34 @@ export default function MaterialsPage() {
                           <>
                             <td 
                               colSpan={3} 
-                              className={`px-4 py-2 text-center border-r border-gray-200 ${
+                              className={`px-4 py-3 text-center border-r border-gray-200 ${
                                 row.category === 'consumable' 
-                                  ? 'bg-blue-500' 
-                                  : 'bg-green-500'
+                                  ? 'bg-gradient-to-r from-blue-500 to-indigo-500' 
+                                  : 'bg-gradient-to-r from-green-500 to-emerald-500'
                               }`}
                             >
-                              <div className="text-sm font-bold uppercase text-white">
+                              <div className="text-sm font-bold uppercase text-white tracking-wide">
                                 {'label' in row ? row.label : ''}
                               </div>
                             </td>
                             <td 
                               colSpan={3} 
-                              className={`px-4 py-2 text-center border-r border-gray-200 ${
+                              className={`px-4 py-3 text-center border-r border-gray-200 ${
                                 row.category === 'consumable' 
-                                  ? 'bg-blue-500' 
-                                  : 'bg-green-500'
+                                  ? 'bg-gradient-to-r from-blue-500 to-indigo-500' 
+                                  : 'bg-gradient-to-r from-green-500 to-emerald-500'
                               }`}
                             >
-                              <div className="text-sm font-bold uppercase text-white">
+                              <div className="text-sm font-bold uppercase text-white tracking-wide">
                                 {'label' in row ? row.label : ''}
                               </div>
                             </td>
-                            <td className={`px-2 py-2 text-center ${
+                            <td className={`px-2 py-3 text-center ${
                               row.category === 'consumable' 
-                                ? 'bg-blue-500' 
-                                : 'bg-green-500'
+                                ? 'bg-gradient-to-r from-blue-500 to-indigo-500' 
+                                : 'bg-gradient-to-r from-green-500 to-emerald-500'
                             }`}>
-                              <div className="text-sm font-bold uppercase text-white">
+                              <div className="text-sm font-bold uppercase text-white tracking-wide">
                                 Chênh lệch
                               </div>
                             </td>
@@ -991,12 +876,12 @@ export default function MaterialsPage() {
                                 const diff = estimateQty - realityQty;
                                 const diffColor =
                                   diff > 0
-                                    ? 'text-green-600'
+                                    ? 'text-green-600 bg-green-50'
                                     : diff < 0
-                                    ? 'text-orange-500'
-                                    : 'text-gray-900';
+                                    ? 'text-orange-600 bg-orange-50'
+                                    : 'text-gray-500 bg-gray-50';
                                 return (
-                                  <div className={`text-sm font-semibold ${diffColor}`}>
+                                  <div className={`text-sm font-bold ${diffColor} px-2 py-1 rounded-lg inline-block`}>
                                     {diff !== 0
                                       ? diff > 0
                                         ? `+${diff}`
@@ -1011,27 +896,21 @@ export default function MaterialsPage() {
                       </tr>
                     )) : (
                       // Empty equipment case
-                      <tr key={material.id} className="hover:bg-gray-50 border-b border-gray-200">
-                        <td className="px-3 py-4 text-center border-r border-gray-200 bg-gray-50">
-                          <div className="text-sm font-medium text-gray-900">
+                      <tr key={material.id} className="hover:bg-gray-50 border-b border-gray-200 transition-colors">
+                        <td className="px-3 py-4 text-center border-r border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100">
+                          <div className="text-sm font-bold text-gray-900">
                             {material.index_path}
                           </div>
                         </td>
-                        <td className="px-6 py-4 border-r border-gray-200 bg-gray-50">
+                        <td className="px-6 py-4 border-r border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50">
                           <div>
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-bold text-gray-900">
                               {material.equipment_machinery}
                             </div>
-                            {/* <div className="text-xs text-gray-500 mt-1">
-                              ID: {material.id}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              Ngành: {material.sector}
-                            </div> */}
                           </div>
                         </td>
-                        <td colSpan={7} className="px-4 py-4 text-center text-gray-400 italic">
-                          {/* Chưa có vật tư */}
+                        <td colSpan={7} className="px-4 py-4 text-center">
+                          <span className="text-gray-400 italic text-sm">Chưa có vật tư</span>
                         </td>
                       </tr>
                     );
