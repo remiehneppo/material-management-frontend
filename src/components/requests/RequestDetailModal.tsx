@@ -237,48 +237,48 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 px-8 py-8 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 text-white relative overflow-hidden flex-shrink-0">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-10 rounded-full -ml-24 -mb-24"></div>
           
           <div className="relative z-10">
-            <div className="flex items-start justify-between gap-6">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 lg:gap-6">
+              <div className="flex-1 min-w-0 w-full">
+                <div className="flex items-start gap-2.5 sm:gap-3 lg:gap-4 mb-2">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-2xl font-bold flex flex-wrap items-center gap-3">
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold flex flex-wrap items-center gap-2 sm:gap-3 break-words">
                       Chi tiết yêu cầu vật tư
                       {isEditing && (
-                        <span className="text-sm bg-orange-500/90 backdrop-blur-sm px-3 py-1 rounded-full font-medium animate-pulse">
+                        <span className="text-xs sm:text-sm bg-orange-500/90 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full font-medium animate-pulse whitespace-nowrap">
                           ✏️ Đang chỉnh sửa
                         </span>
                       )}
                     </h2>
-                    <p className="text-white/90 text-sm mt-2 font-mono break-all">
+                    <p className="text-white/90 text-xs sm:text-sm mt-1 sm:mt-2 font-mono break-all">
                       #{`${request.project}/${request.maintenance_tier}/${request.sector}/${request.year}${request.num_of_request > 0 ? `/${request.num_of_request}` : ""}`}
                     </p>
                   </div>
                 </div>
               </div>
               
-              <div className="flex items-start gap-3 flex-shrink-0">
+              <div className="flex items-start gap-2 sm:gap-3 flex-shrink-0 self-end sm:self-start">
                 {canEdit && !isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="px-4 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-300 flex items-center gap-2 font-medium border border-white/30 hover:scale-105 whitespace-nowrap"
+                    className="px-3 sm:px-4 py-2 sm:py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-lg sm:rounded-xl hover:bg-white/30 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 font-medium text-sm border border-white/30 hover:scale-105 whitespace-nowrap"
                   >
                     <EditIcon />
-                    Chỉnh sửa
+                    <span className="hidden sm:inline">Chỉnh sửa</span>
                   </button>
                 )}
                 <button
                   onClick={onClose}
-                  className="text-white/80 hover:text-white hover:bg-white/20 p-2.5 rounded-xl transition-all duration-300 flex-shrink-0"
+                  className="text-white/80 hover:text-white hover:bg-white/20 p-2 sm:p-2.5 rounded-lg sm:rounded-xl transition-all duration-300 flex-shrink-0"
                 >
                   <CloseIcon />
                 </button>
@@ -288,62 +288,62 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto flex-1 p-8">
+        <div className="overflow-y-auto flex-1 p-4 sm:p-6 lg:p-8">
           {/* Status and Basic Info */}
-          <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6 mb-6 border border-gray-200 shadow-md">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 mb-4 sm:mb-6 border border-gray-200 shadow-md">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 📋 Thông tin chung
               </h3>
-              <div className={`${statusBadge.bg} ${statusBadge.text} px-4 py-2 rounded-xl font-bold text-sm border-2 ${statusBadge.border} shadow-md flex items-center gap-2`}>
-                <span className="text-lg">{statusBadge.icon}</span>
+              <div className={`${statusBadge.bg} ${statusBadge.text} px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm border-2 ${statusBadge.border} shadow-md flex items-center gap-1.5 sm:gap-2`}>
+                <span className="text-base sm:text-lg">{statusBadge.icon}</span>
                 {statusBadge.label}
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="bg-white rounded-xl p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
-                <p className="text-xs font-bold text-gray-500 mb-2">🏗️ Dự án</p>
-                <p className="font-bold text-gray-900 text-lg">{request.project}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
+                <p className="text-xs font-bold text-gray-500 mb-1 sm:mb-2">🏗️ Dự án</p>
+                <p className="font-bold text-gray-900 text-base sm:text-lg break-words">{request.project}</p>
               </div>
-              <div className="bg-white rounded-xl p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
-                <p className="text-xs font-bold text-gray-500 mb-2">📊 Cấp Sửa chữa</p>
-                <p className="font-bold text-gray-900 text-lg">{request.maintenance_tier}</p>
+              <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
+                <p className="text-xs font-bold text-gray-500 mb-1 sm:mb-2">📊 Cấp Sửa chữa</p>
+                <p className="font-bold text-gray-900 text-base sm:text-lg">{request.maintenance_tier}</p>
               </div>
-              <div className="bg-white rounded-xl p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
-                <p className="text-xs font-bold text-gray-500 mb-2">🏭 Ngành</p>
-                <p className="font-bold text-gray-900 text-lg">{request.sector}</p>
+              <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
+                <p className="text-xs font-bold text-gray-500 mb-1 sm:mb-2">🏭 Ngành</p>
+                <p className="font-bold text-gray-900 text-base sm:text-lg">{request.sector}</p>
               </div>
-              <div className="bg-white rounded-xl p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
-                <p className="text-xs font-bold text-gray-500 mb-2">📅 Năm</p>
-                <p className="font-bold text-gray-900 text-lg">{request.year}</p>
+              <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
+                <p className="text-xs font-bold text-gray-500 mb-1 sm:mb-2">📅 Năm</p>
+                <p className="font-bold text-gray-900 text-base sm:text-lg">{request.year}</p>
               </div>
-              <div className="bg-white rounded-xl p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
-                <p className="text-xs font-bold text-gray-500 mb-2">👤 Người yêu cầu</p>
-                <p className="font-bold text-gray-900 text-lg">{request.requested_by}</p>
+              <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
+                <p className="text-xs font-bold text-gray-500 mb-1 sm:mb-2">👤 Người yêu cầu</p>
+                <p className="font-bold text-gray-900 text-base sm:text-lg break-words">{request.requested_by}</p>
               </div>
-              <div className="bg-white rounded-xl p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
-                <p className="text-xs font-bold text-gray-500 mb-2">🕒 Ngày tạo</p>
-                <p className="font-bold text-gray-900">{new Date(request.requested_at * 1000).toLocaleString('vi-VN')}</p>
+              <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-100 hover:shadow-md transition-all duration-300">
+                <p className="text-xs font-bold text-gray-500 mb-1 sm:mb-2">🕒 Ngày tạo</p>
+                <p className="font-bold text-gray-900 text-sm sm:text-base">{new Date(request.requested_at * 1000).toLocaleString('vi-VN')}</p>
               </div>
             </div>
           </div>
 
           {/* Description */}
-          <div className="mb-6">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          <div className="mb-4 sm:mb-6">
+            <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3 sm:mb-4">
               📝 Nội dung yêu cầu
             </h3>
-            <div className={`rounded-2xl p-6 border-2 shadow-md ${isEditing ? 'bg-gradient-to-br from-orange-50 to-amber-50 border-orange-300' : 'bg-white border-gray-200'}`}>
+            <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border-2 shadow-md ${isEditing ? 'bg-gradient-to-br from-orange-50 to-amber-50 border-orange-300' : 'bg-white border-gray-200'}`}>
               {isEditing ? (
                 <textarea
                   value={editedDescription}
                   onChange={(e) => setEditedDescription(e.target.value)}
-                  className="w-full min-h-[120px] p-4 border-2 border-orange-400 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-600 hover:border-orange-500 transition-all duration-300 text-gray-900 font-medium resize-none"
+                  className="w-full min-h-[100px] sm:min-h-[120px] p-3 sm:p-4 border-2 border-orange-400 bg-white rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-600 hover:border-orange-500 transition-all duration-300 text-gray-900 text-sm sm:text-base font-medium resize-none"
                   placeholder="Nhập nội dung yêu cầu..."
                 />
               ) : (
-                <p className="text-gray-900 whitespace-pre-wrap">{request.description}</p>
+                <p className="text-gray-900 text-sm sm:text-base whitespace-pre-wrap">{request.description}</p>
               )}
             </div>
           </div>
