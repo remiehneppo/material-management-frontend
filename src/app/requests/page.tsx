@@ -274,46 +274,61 @@ export default function RequestsPage() {
   return (
     <DashboardLayout>
       <Header title="YÊU CẦU VẬT TƯ" />
-      <div className="p-6">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6">
         {/* Action Bar */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex space-x-4">
-            <button 
-              onClick={() => setIsCreateModalOpen(true)}
-              className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors"
-            >
-              + Tạo yêu cầu mới
-            </button>
-          </div>
+        <div className="flex justify-between items-center">
+          <button 
+            onClick={() => setIsCreateModalOpen(true)}
+            className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] font-semibold"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Tạo yêu cầu mới</span>
+          </button>
         </div>
 
         {/* Filter Section */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Bộ lọc và tìm kiếm</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100 p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg">
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">Bộ lọc và tìm kiếm</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 lg:gap-6">
             {/* Search */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tìm kiếm
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                🔍 Tìm kiếm
               </label>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Tìm theo dự án, ngành..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900"
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Tìm theo dự án, ngành..."
+                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 transition-all duration-200 bg-white hover:border-cyan-300"
+                />
+              </div>
             </div>
 
             {/* Project Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dự án
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                📋 Dự án
               </label>
               <select
                 value={selectedMaintenanceId}
                 onChange={(e) => setSelectedMaintenanceId(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 font-medium transition-all duration-200 bg-white hover:border-cyan-300"
               >
                 <option value="">Tất cả dự án</option>
                 {maintenances.map((maintenance) => (
@@ -325,14 +340,14 @@ export default function RequestsPage() {
             </div>
 
             {/* Sector Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ngành
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                🏭 Ngành
               </label>
               <select
                 value={selectedSector}
                 onChange={(e) => setSelectedSector(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 font-medium transition-all duration-200 bg-white hover:border-cyan-300"
               >
                 <option value="">Tất cả ngành</option>
                 <option value="Cơ khí">Cơ khí</option>
@@ -349,14 +364,14 @@ export default function RequestsPage() {
             </div>
 
             {/* Status Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Trạng thái
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                📊 Trạng thái
               </label>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 font-medium transition-all duration-200 bg-white hover:border-cyan-300"
               >
                 <option value="">Tất cả trạng thái</option>
                 <option value="pending">Chờ duyệt</option>
@@ -365,14 +380,14 @@ export default function RequestsPage() {
             </div>
 
             {/* Sort Order */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Sắp xếp theo thời gian
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                🕒 Sắp xếp
               </label>
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 font-medium transition-all duration-200 bg-white hover:border-cyan-300"
               >
                 <option value="desc">Mới nhất</option>
                 <option value="asc">Cũ nhất</option>
@@ -382,7 +397,7 @@ export default function RequestsPage() {
 
           {/* Clear Filter Button */}
           {(selectedMaintenanceId || selectedSector || selectedStatus || searchTerm) && (
-            <div className="mt-4">
+            <div className="mt-6 pt-6 border-t border-gray-200">
               <button
                 onClick={() => {
                   setSelectedMaintenanceId("");
@@ -390,202 +405,236 @@ export default function RequestsPage() {
                   setSelectedStatus("");
                   setSearchTerm("");
                 }}
-                className="text-sm text-cyan-600 hover:text-cyan-700 font-medium flex items-center"
+                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
               >
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                Xóa bộ lọc
+                <span>Xóa bộ lọc</span>
               </button>
             </div>
           )}
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium opacity-90 mb-1">Tổng yêu cầu</p>
+                <p className="text-4xl font-bold">{totalItems}</p>
+              </div>
+              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Tổng yêu cầu</p>
-                <p className="text-xl font-semibold text-gray-900">{totalItems}</p>
-              </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Chờ duyệt (trang này)</p>
-                <p className="text-xl font-semibold text-gray-900">
+          
+          <div className="bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium opacity-90 mb-1">Chờ duyệt</p>
+                <p className="text-4xl font-bold">
                   {requests.filter(r => r.num_of_request === 0).length}
                 </p>
               </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Đã duyệt (trang này)</p>
-                <p className="text-xl font-semibold text-gray-900">
+            </div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium opacity-90 mb-1">Đã duyệt</p>
+                <p className="text-4xl font-bold">
                   {requests.filter(r => r.num_of_request > 0).length}
                 </p>
               </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-cyan-100 rounded-lg">
-                <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Trang hiện tại</p>
-                <p className="text-xl font-semibold text-gray-900">
+            </div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium opacity-90 mb-1">Hiển thị</p>
+                <p className="text-4xl font-bold">
                   {filteredRequests.length}
                 </p>
               </div>
-            </div>
-          </div>
-          {/* <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              <div className="p-4 bg-white/20 backdrop-blur-sm rounded-xl">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Đã xuất</p>
-                <p className="text-xl font-semibold text-gray-900">
-                  {requests.filter(r => r.status === "Đã xuất").length}
-                </p>
-              </div>
             </div>
-          </div> */}
+          </div>
         </div>
 
         {/* Requests List */}
-        <div className="space-y-4">
+        <div className="space-y-4 lg:space-y-6">
           {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="flex flex-col justify-center items-center py-20 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100">
+              <div className="relative">
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-cyan-200"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-cyan-500 absolute top-0 left-0"></div>
+              </div>
+              <span className="mt-6 text-lg font-semibold text-gray-700">Đang tải dữ liệu...</span>
+              <span className="mt-2 text-sm text-gray-500">Vui lòng chờ trong giây lát</span>
             </div>
           ) : requests.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-              <p className="text-gray-500">Chưa có yêu cầu vật tư nào</p>
+            <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-200 p-12 text-center">
+              <div className="p-4 bg-blue-100 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p className="text-gray-700 text-xl font-bold mb-2">Chưa có yêu cầu vật tư nào</p>
+              <p className="text-gray-500">Tạo yêu cầu đầu tiên để bắt đầu</p>
             </div>
           ) : filteredRequests.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-              <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <p className="text-gray-500 text-lg font-medium mb-2">Không tìm thấy yêu cầu nào</p>
-              <p className="text-gray-400 text-sm">Thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác</p>
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border-2 border-gray-200 p-12 text-center">
+              <div className="p-4 bg-gray-100 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <p className="text-gray-700 text-xl font-bold mb-2">Không tìm thấy yêu cầu nào</p>
+              <p className="text-gray-500">Thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác</p>
             </div>
           ) : (
             filteredRequests.map((request) => (
-            <div key={request.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-4 mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900">#{`${request.project}/${request.maintenance_tier}/${request.sector}/${request.year}/${request.num_of_request > 0 ? request.num_of_request : ""}`}</h3>
-                    <span className={`px-3 py-1 text-sm rounded-full ${
-                      request.num_of_request === 0 
-                        ? "bg-green-100 text-green-800"
-                        : request.num_of_request > 0
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-                    }`}>
-                      {request.num_of_request === 0 ? "Chờ duyệt" : request.num_of_request > 0 ? "Đã duyệt" : "Từ chối"}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-500">Dự án:</span>
-                      <p className="font-medium text-gray-900">{request.project}</p>
+            <div key={request.id} className="bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all duration-300 overflow-hidden">
+              <div className="p-6 lg:p-8">
+                <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 mb-6">
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-3 mb-4">
+                      <h3 className="text-lg lg:text-xl font-bold text-gray-900">
+                        #{`${request.project}/${request.maintenance_tier}/${request.sector}/${request.year}/${request.num_of_request > 0 ? request.num_of_request : ""}`}
+                      </h3>
+                      <span className={`px-4 py-1.5 text-sm font-semibold rounded-full ${
+                        request.num_of_request === 0 
+                          ? "bg-gradient-to-r from-orange-100 to-pink-100 text-orange-800"
+                          : request.num_of_request > 0
+                          ? "bg-gradient-to-r from-green-100 to-emerald-100 text-green-800"
+                          : "bg-gradient-to-r from-red-100 to-pink-100 text-red-800"
+                      }`}>
+                        {request.num_of_request === 0 ? "⏳ Chờ duyệt" : request.num_of_request > 0 ? "✅ Đã duyệt" : "❌ Từ chối"}
+                      </span>
                     </div>
-                    <div>
-                      <span className="text-gray-500">Ngành:</span>
-                      <p className="font-medium text-gray-900">{request.sector}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Người yêu cầu:</span>
-                      <p className="font-medium text-gray-900">{request.requested_by}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Ngày tạo:</span>
-                      <p className="font-medium text-gray-900">{new Date(request.requested_at * 1000).toLocaleString('vi-VN')}</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex space-x-2">
-                  {request.num_of_request === 0 && (
-                    <>
-                      <button 
-                        onClick={() => handleOpenApproveModal(request)}
-                        className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors"
-                      >
-                        Duyệt
-                      </button>
-                      <button 
-                        onClick={() => handleOpenCancelModal(request)}
-                        className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors"
-                      >
-                        Hủy
-                      </button>
-                    </>
-                  )}
-                  <button 
-                    onClick={() => handleExportRequest(request)}
-                    disabled={loading}
-                    className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span>Xuất file</span>
-                  </button>
-                  <button 
-                    onClick={() => handleViewDetail(request)}
-                    className="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600 transition-colors"
-                  >
-                    Chi tiết
-                  </button>
-                </div>
-              </div>
-              <div className="border-t border-gray-100 pt-4">
-                <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Nội dung:</h4>
-                  <p className="text-sm text-gray-900">{request.description}</p>
-                </div>
-                
-                <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">Danh sách hạng mục:</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {Object.entries(request.materials_for_equipment).map(([id, item]) => (
-                      <div key={id} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                        <p className="font-medium text-gray-900 mb-2">{item.equipment_machinery_name}</p>
-                        <div className="flex justify-between text-xs text-gray-600">
-                          <span>VT tiêu hao: <span className="font-semibold text-blue-600">{Object.keys(item.consumable_supplies || {}).length}</span></span>
-                          <span>VT thay thế: <span className="font-semibold text-green-600">{Object.keys(item.replacement_materials || {}).length}</span></span>
-                        </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 text-sm">
+                      <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-3">
+                        <span className="text-gray-600 text-xs font-medium">Dự án</span>
+                        <p className="font-bold text-gray-900 mt-1">{request.project}</p>
                       </div>
-                    ))}
+                      <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-3">
+                        <span className="text-gray-600 text-xs font-medium">Ngành</span>
+                        <p className="font-bold text-gray-900 mt-1">{request.sector}</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3">
+                        <span className="text-gray-600 text-xs font-medium">Người yêu cầu</span>
+                        <p className="font-bold text-gray-900 mt-1">{request.requested_by}</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg p-3">
+                        <span className="text-gray-600 text-xs font-medium">Ngày tạo</span>
+                        <p className="font-bold text-gray-900 mt-1">{new Date(request.requested_at * 1000).toLocaleString('vi-VN')}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {request.num_of_request === 0 && (
+                      <>
+                        <button 
+                          onClick={() => handleOpenApproveModal(request)}
+                          className="flex items-center gap-1.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Duyệt
+                        </button>
+                        <button 
+                          onClick={() => handleOpenCancelModal(request)}
+                          className="flex items-center gap-1.5 bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:from-red-600 hover:to-pink-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          Hủy
+                        </button>
+                      </>
+                    )}
+                    <button 
+                      onClick={() => handleExportRequest(request)}
+                      disabled={loading}
+                      className="flex items-center gap-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Xuất file
+                    </button>
+                    <button 
+                      onClick={() => handleViewDetail(request)}
+                      className="flex items-center gap-1.5 bg-gradient-to-r from-gray-600 to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      Chi tiết
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="border-t-2 border-gray-100 pt-6 space-y-6">
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Nội dung
+                    </h4>
+                    <p className="text-sm text-gray-700 bg-gray-50 rounded-lg p-3 border border-gray-200">{request.description}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      Danh sách hạng mục ({Object.keys(request.materials_for_equipment).length})
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {Object.entries(request.materials_for_equipment).map(([id, item]) => (
+                        <div key={id} className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 border-2 border-gray-200 hover:border-cyan-300 transition-all duration-200 hover:shadow-md">
+                          <p className="font-bold text-gray-900 mb-3 text-sm">{item.equipment_machinery_name}</p>
+                          <div className="flex justify-between text-xs">
+                            <div className="flex items-center gap-1">
+                              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                              <span className="text-gray-600">VT tiêu hao:</span>
+                              <span className="font-bold text-blue-600">{Object.keys(item.consumable_supplies || {}).length}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                              <span className="text-gray-600">VT thay thế:</span>
+                              <span className="font-bold text-green-600">{Object.keys(item.replacement_materials || {}).length}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -596,18 +645,18 @@ export default function RequestsPage() {
 
         {/* Pagination Controls */}
         {!loading && filteredRequests.length > 0 && (
-          <div className="bg-white rounded-lg shadow p-4 mt-4">
+          <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100 p-6">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               {/* Page size selector */}
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Hiển thị:</span>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-semibold text-gray-700">Hiển thị:</span>
                 <select
                   value={pageSize}
                   onChange={(e) => {
                     setPageSize(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
+                  className="px-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-cyan-100 focus:border-cyan-500 text-gray-900 font-semibold transition-all duration-200 bg-white hover:border-cyan-300"
                 >
                   <option value="5">5</option>
                   <option value="10">10</option>
@@ -615,7 +664,7 @@ export default function RequestsPage() {
                   <option value="50">50</option>
                 </select>
                 <span className="text-sm text-gray-600">
-                  Tổng: <span className="font-semibold text-gray-900">{totalItems}</span> yêu cầu
+                  Tổng: <span className="font-bold text-cyan-600">{totalItems}</span> yêu cầu
                 </span>
               </div>
 
@@ -624,7 +673,7 @@ export default function RequestsPage() {
                 <button
                   onClick={() => setCurrentPage(1)}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 border-2 border-gray-200 rounded-xl hover:bg-cyan-50 hover:border-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   title="Trang đầu"
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -635,7 +684,7 @@ export default function RequestsPage() {
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 border-2 border-gray-200 rounded-xl hover:bg-cyan-50 hover:border-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   title="Trang trước"
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -643,7 +692,7 @@ export default function RequestsPage() {
                   </svg>
                 </button>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     let pageNum;
                     if (totalPages <= 5) {
@@ -660,10 +709,10 @@ export default function RequestsPage() {
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`px-3 py-1 rounded-lg transition-colors ${
+                        className={`min-w-[40px] px-3 py-2 rounded-xl font-bold transition-all duration-200 ${
                           currentPage === pageNum
-                            ? "bg-cyan-500 text-white font-semibold"
-                            : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                            ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg scale-110"
+                            : "border-2 border-gray-200 text-gray-700 hover:bg-cyan-50 hover:border-cyan-300 hover:scale-105"
                         }`}
                       >
                         {pageNum}
@@ -675,7 +724,7 @@ export default function RequestsPage() {
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 border-2 border-gray-200 rounded-xl hover:bg-cyan-50 hover:border-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   title="Trang sau"
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -686,7 +735,7 @@ export default function RequestsPage() {
                 <button
                   onClick={() => setCurrentPage(totalPages)}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 border-2 border-gray-200 rounded-xl hover:bg-cyan-50 hover:border-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   title="Trang cuối"
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
