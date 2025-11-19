@@ -1,7 +1,44 @@
+'use client';
+
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Header from "@/components/layout/Header";
+import { maintenanceService, materialRequestService } from "@/services";
 
 export default function Dashboard() {
+  const [projectCount, setProjectCount] = useState<number>(0);
+  const [pendingRequestCount, setPendingRequestCount] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Load projects count
+      const projectsResponse = await maintenanceService.getAll();
+      if (projectsResponse.status && projectsResponse.data) {
+        setProjectCount(projectsResponse.data.length);
+      }
+
+      // Load material requests and count pending ones (num_of_request = 0)
+      const requestsResponse = await materialRequestService.getAll();
+      if (requestsResponse.status && requestsResponse.data) {
+        // Filter requests with num_of_request = 0 (pending)
+        const pendingRequests = requestsResponse.data.items.filter(
+          (request) => request.num_of_request === 0
+        );
+        setPendingRequestCount(pendingRequests.length);
+      }
+    } catch (error) {
+      console.error("Error loading dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <DashboardLayout>
       <Header title="TỔNG QUAN" />
@@ -16,7 +53,13 @@ export default function Dashboard() {
               </div>
               <div className="ml-4">
                 <h3 className="text-sm font-medium text-gray-500">Tổng dự án</h3>
-                <p className="text-2xl font-semibold text-gray-900">12</p>
+                {loading ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-semibold text-gray-900">{projectCount}</p>
+                )}
               </div>
             </div>
           </div>
@@ -43,8 +86,14 @@ export default function Dashboard() {
                 </svg>
               </div>
               <div className="ml-4">
-                <h3 className="text-sm font-medium text-gray-500">Yêu cầu chờ</h3>
-                <p className="text-2xl font-semibold text-gray-900">8</p>
+                <h3 className="text-sm font-medium text-gray-500">Yêu cầu chờ duyệt</h3>
+                {loading ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-yellow-600"></div>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-semibold text-gray-900">{pendingRequestCount}</p>
+                )}
               </div>
             </div>
           </div>
