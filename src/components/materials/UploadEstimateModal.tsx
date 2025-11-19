@@ -176,9 +176,9 @@ export default function UploadEstimateModal({
 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full animate-slideUp">
+        <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col animate-slideUp">
           {/* Header */}
-          <div className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 px-4 sm:px-6 py-6 sm:py-8 rounded-t-2xl">
+          <div className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 px-4 sm:px-6 py-4 sm:py-6 rounded-t-2xl flex-shrink-0">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
                 <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border-2 border-white/30 flex-shrink-0">
@@ -201,8 +201,9 @@ export default function UploadEstimateModal({
             </div>
           </div>
 
-          {/* Body */}
-          <form onSubmit={handleSubmit} className="p-6">
+          {/* Body - Scrollable */}
+          <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+            <div className="overflow-y-auto flex-1 p-6">
             {/* Error Message */}
             {error && (
               <div className="mb-6 bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-200 rounded-xl p-4 shadow-md animate-shake">
@@ -366,8 +367,10 @@ export default function UploadEstimateModal({
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t-2 border-gray-200">
+            </div>
+
+            {/* Footer - Fixed at bottom */}
+            <div className="flex-shrink-0 flex flex-col sm:flex-row justify-end gap-3 px-6 py-4 border-t-2 border-gray-200 bg-gray-50">
               <button
                 type="button"
                 onClick={handleClose}
