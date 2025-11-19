@@ -11,7 +11,8 @@ import {
   UserIcon,
   ArrowRightOnRectangleIcon,
   ChevronLeftIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  InformationCircleIcon
 } from "@heroicons/react/24/outline";
 import { useAuth } from "@/components/providers/AuthProvider";
 
@@ -21,6 +22,7 @@ const navigation = [
   { name: "Vật tư", href: "/materials", icon: CubeIcon },
   { name: "Yêu cầu vật tư", href: "/requests", icon: DocumentCheckIcon },
   { name: "Thông tin", href: "/profile", icon: UserIcon },
+  { name: "Giới thiệu", href: "/about", icon: InformationCircleIcon },
 ];
 
 interface SidebarProps {
@@ -129,7 +131,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {!isCollapsed && (
           <div className="px-5 py-2 border-t border-white/20 backdrop-blur-sm bg-white/10">
             <div className="text-white text-xs font-medium opacity-90 hover:opacity-100 transition-opacity text-center">
-              kt-cn.x52.com
+              <a href="https://github.com/remiehneppo"> @Author BaoTran - remiehneppo </a>
+
             </div>
           </div>
         )}
