@@ -178,14 +178,14 @@ export default function UploadEstimateModal({
       <div className="flex min-h-full items-center justify-center p-4">
         <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full animate-slideUp">
           {/* Header */}
-          <div className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 px-6 py-6 rounded-t-2xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border-2 border-white/30">
+          <div className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 px-4 sm:px-6 py-6 sm:py-8 rounded-t-2xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border-2 border-white/30 flex-shrink-0">
                   <UploadIcon />
                 </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white drop-shadow-md">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white drop-shadow-md break-words">
                     Upload File Dự Toán
                   </h3>
                   <p className="text-white/90 text-sm mt-0.5">Tải lên file Excel chứa dữ liệu dự toán</p>
@@ -194,7 +194,7 @@ export default function UploadEstimateModal({
               <button
                 onClick={handleClose}
                 disabled={uploading}
-                className="text-white/80 hover:text-white hover:bg-white/20 disabled:opacity-50 rounded-lg p-2 transition-all duration-300"
+                className="text-white/80 hover:text-white hover:bg-white/20 disabled:opacity-50 rounded-lg p-2 transition-all duration-300 flex-shrink-0 self-start sm:self-auto"
               >
                 <CloseIcon />
               </button>

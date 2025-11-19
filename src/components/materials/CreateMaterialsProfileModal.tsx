@@ -209,14 +209,14 @@ export default function CreateMaterialsProfileModal({
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
         <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-slideUp">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 px-6 py-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border-2 border-white/30">
+          <div className="bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 px-4 sm:px-6 py-6 sm:py-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border-2 border-white/30 flex-shrink-0">
                   <FolderIcon />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white drop-shadow-md">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white drop-shadow-md break-words">
                     Tạo hồ sơ vật tư mới
                   </h2>
                   <p className="text-white/90 text-sm mt-0.5">Thêm hồ sơ quản lý vật tư cho dự án</p>
@@ -225,7 +225,7 @@ export default function CreateMaterialsProfileModal({
               <button
                 onClick={handleClose}
                 disabled={creating || loadingMaintenances || loadingEquipments}
-                className="text-white/80 hover:text-white hover:bg-white/20 disabled:opacity-50 rounded-lg p-2 transition-all duration-300"
+                className="text-white/80 hover:text-white hover:bg-white/20 disabled:opacity-50 rounded-lg p-2 transition-all duration-300 flex-shrink-0 self-start sm:self-auto"
               >
                 <CloseIcon />
               </button>

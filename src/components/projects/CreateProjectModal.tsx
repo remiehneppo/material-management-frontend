@@ -111,22 +111,22 @@ export default function CreateProjectModal({
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 px-8 py-6 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-10 rounded-full -mr-20 -mt-20"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+          <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
                 <ProjectIcon />
               </div>
-              <div>
-                <h2 className="text-2xl font-bold">Tạo dự án mới</h2>
+              <div className="flex-1 min-w-0">
+                <h2 className="text-xl sm:text-2xl font-bold break-words">Tạo dự án mới</h2>
                 <p className="text-white/80 text-sm mt-1">Thêm dự án vào hệ thống</p>
               </div>
             </div>
             <button
               onClick={handleClose}
               disabled={loading}
-              className="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all duration-300 disabled:opacity-50"
+              className="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all duration-300 disabled:opacity-50 flex-shrink-0 self-start sm:self-auto"
             >
               <CloseIcon />
             </button>
