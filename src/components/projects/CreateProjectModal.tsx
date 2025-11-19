@@ -192,9 +192,9 @@ export default function CreateProjectModal({
                 disabled={loading}
               >
                 <option value="">Chọn cấp dự án...</option>
-                <option value="SCCĐ">🏢 SCCĐ</option>
-                <option value="SCCN">🏭 SCCN</option>
-                <option value="SCCV">⚙️ SCCV</option>
+                <option value="SCCĐ">SCCĐ</option>
+                <option value="SCCN">SCCN</option>
+                <option value="SCCV">SCCV</option>
               </select>
             </div>
 

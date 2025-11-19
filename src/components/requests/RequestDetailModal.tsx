@@ -237,38 +237,40 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 px-8 py-6 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 px-8 py-8 text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-10 rounded-full -ml-24 -mb-24"></div>
           
           <div className="relative z-10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4 flex-1">
-                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-3 flex-wrap">
-                    Chi tiết yêu cầu vật tư
-                    {isEditing && (
-                      <span className="text-sm bg-orange-500/90 backdrop-blur-sm px-3 py-1.5 rounded-full font-medium animate-pulse text-white">
-                        ✏️ Đang chỉnh sửa
-                      </span>
-                    )}
-                  </h2>
-                  <p className="text-white/90 text-sm mt-1 font-mono">
-                    #{`${request.project}/${request.maintenance_tier}/${request.sector}/${request.year}${request.num_of_request > 0 ? `/${request.num_of_request}` : ""}`}
-                  </p>
+            <div className="flex items-start justify-between gap-6">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-4 mb-2">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-2xl font-bold flex flex-wrap items-center gap-3">
+                      Chi tiết yêu cầu vật tư
+                      {isEditing && (
+                        <span className="text-sm bg-orange-500/90 backdrop-blur-sm px-3 py-1 rounded-full font-medium animate-pulse">
+                          ✏️ Đang chỉnh sửa
+                        </span>
+                      )}
+                    </h2>
+                    <p className="text-white/90 text-sm mt-2 font-mono break-all">
+                      #{`${request.project}/${request.maintenance_tier}/${request.sector}/${request.year}${request.num_of_request > 0 ? `/${request.num_of_request}` : ""}`}
+                    </p>
+                  </div>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3 flex-shrink-0 ml-4">
+              <div className="flex items-start gap-3 flex-shrink-0">
                 {canEdit && !isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-300 flex items-center gap-2 font-semibold border border-white/30 hover:scale-105 shadow-lg"
+                    className="px-4 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-300 flex items-center gap-2 font-medium border border-white/30 hover:scale-105 whitespace-nowrap"
                   >
                     <EditIcon />
                     Chỉnh sửa

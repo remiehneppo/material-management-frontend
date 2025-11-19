@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import { maintenanceService } from "@/services";
 import { Maintenance } from "@/types/api";
 import CreateProjectModal from "@/components/projects/CreateProjectModal";
+import { WrenchIcon, WrenchScrewdriverIcon, RocketLaunchIcon, CircleStackIcon } from "@heroicons/react/24/outline";
 
 // Icon Components
 const SearchIcon = () => (
@@ -24,12 +25,6 @@ const FilterIcon = () => (
 const PlusIcon = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-  </svg>
-);
-
-const ProjectIcon = () => (
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
   </svg>
 );
 
@@ -116,8 +111,8 @@ export default function ProjectsPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
           <div className="bg-gradient-to-br from-blue-500 via-blue-400 to-indigo-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-blue-100 text-sm font-medium">📊 Tổng số</span>
-              <ProjectIcon />
+              <span className="text-blue-100 text-sm font-medium">Tổng số</span>
+              <CircleStackIcon className="w-6 h-6" />
             </div>
             <p className="text-3xl font-bold">{stats.total}</p>
             <p className="text-blue-100 text-sm mt-1">Dự án</p>
@@ -126,7 +121,7 @@ export default function ProjectsPage() {
           <div className="bg-gradient-to-br from-emerald-500 via-green-400 to-teal-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
             <div className="flex items-center justify-between mb-2">
               <span className="text-emerald-100 text-sm font-medium">SCCĐ</span>
-              <ProjectIcon />
+              <WrenchIcon className="w-6 h-6" />
             </div>
             <p className="text-3xl font-bold">{stats.sccd}</p>
             <p className="text-emerald-100 text-sm mt-1">Dự án</p>
@@ -135,7 +130,7 @@ export default function ProjectsPage() {
           <div className="bg-gradient-to-br from-amber-500 via-orange-400 to-red-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
             <div className="flex items-center justify-between mb-2">
               <span className="text-amber-100 text-sm font-medium">SCCN</span>
-              <ProjectIcon />
+              <WrenchScrewdriverIcon className="w-6 h-6" />
             </div>
             <p className="text-3xl font-bold">{stats.sccn}</p>
             <p className="text-amber-100 text-sm mt-1">Dự án</p>
@@ -144,7 +139,7 @@ export default function ProjectsPage() {
           <div className="bg-gradient-to-br from-purple-500 via-violet-400 to-indigo-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
             <div className="flex items-center justify-between mb-2">
               <span className="text-purple-100 text-sm font-medium">SCCV</span>
-              <ProjectIcon />
+              <RocketLaunchIcon className="w-6 h-6" />
             </div>
             <p className="text-3xl font-bold">{stats.sccv}</p>
             <p className="text-purple-100 text-sm mt-1">Dự án</p>
@@ -271,7 +266,7 @@ export default function ProjectsPage() {
                           <span className={`px-3 py-1 ${colors.badge} rounded-full text-xs font-bold backdrop-blur-sm`}>
                             {project.maintenance_tier}
                           </span>
-                          <span className="px-3 py-1 bg-white bg-opacity-20 rounded-full text-xs font-semibold backdrop-blur-sm">
+                          <span className={`px-3 py-1 ${colors.gradient} bg-opacity-20 rounded-full text-xs font-semibold backdrop-blur-sm`}>
                             {project.year}
                           </span>
                         </div>
