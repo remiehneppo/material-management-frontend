@@ -196,22 +196,46 @@ export default function ProjectsPage() {
             <p className="mt-4 text-gray-500 font-medium">Đang tải dự án...</p>
           </div>
         ) : filteredProjects.length === 0 ? (
-          <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl shadow-lg border border-gray-200 p-16 text-center">
-            <div className="mx-auto mb-6 w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center">
-              <EmptyIcon />
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-3">Không tìm thấy dự án nào</h3>
-            <p className="text-gray-500 mb-6">Thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác</p>
-            <button
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedTier("");
-              }}
-              className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              Xóa bộ lọc
-            </button>
-          </div>
+          <>
+            {projects.length === 0 ? (
+              /* Empty state - No projects at all */
+              <div 
+                onClick={() => setIsCreateModalOpen(true)}
+                className="bg-gradient-to-br from-gray-50 to-blue-50 border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center hover:border-cyan-500 hover:from-cyan-50 hover:to-blue-50 transition-all duration-300 cursor-pointer group hover:shadow-xl"
+              >
+                <div className="mx-auto w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mb-6">
+                  <EmptyIcon />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-3">Chưa có dự án nào</h3>
+                <p className="text-gray-500 mb-6">Hãy tạo dự án đầu tiên của bạn để bắt đầu</p>
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  <PlusIcon />
+                </div>
+                <h4 className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                  Tạo dự án đầu tiên
+                </h4>
+                <p className="text-gray-500 font-medium">Nhấp để thêm dự án mới vào hệ thống</p>
+              </div>
+            ) : (
+              /* Empty state - Filter results empty */
+              <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl shadow-lg border border-gray-200 p-16 text-center">
+                <div className="mx-auto mb-6 w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center">
+                  <EmptyIcon />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-3">Không tìm thấy dự án nào</h3>
+                <p className="text-gray-500 mb-6">Thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác</p>
+                <button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedTier("");
+                  }}
+                  className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl hover:scale-105"
+                >
+                  Xóa bộ lọc
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <>
             {/* Projects Grid */}
