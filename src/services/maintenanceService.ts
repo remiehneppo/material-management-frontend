@@ -12,7 +12,7 @@ export class MaintenanceService {
    * POST /maintenance
    */
   async create(request: CreateMaintenanceRequest): Promise<ApiResponse<string>> {
-    const response = await apiClient.post<ApiResponse<string>>('/maintenance', request);
+    const response = await apiClient.post<ApiResponse<string>>('/maintenance/', request);
     return response.data;
   }
 

@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import Header from "@/components/layout/Header";
 import { maintenanceService } from "@/services";
 import { Maintenance } from "@/types/api";
+import CreateProjectModal from "@/components/projects/CreateProjectModal";
 
 export default function ProjectsPage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTier, setSelectedTier] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     loadProjects();
@@ -165,7 +167,10 @@ export default function ProjectsPage() {
 
             {/* Add New Project Card */}
             <div className="mt-6">
-              <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-cyan-400 transition-colors cursor-pointer">
+              <div 
+                onClick={() => setIsCreateModalOpen(true)}
+                className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-cyan-400 transition-colors cursor-pointer"
+              >
                 <div className="mx-auto w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mb-4">
                   <svg className="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -177,6 +182,15 @@ export default function ProjectsPage() {
             </div>
           </>
         )}
+
+        {/* Create Project Modal */}
+        <CreateProjectModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={() => {
+            loadProjects(); // Reload projects after successful creation
+          }}
+        />
       </div>
     </DashboardLayout>
   );
