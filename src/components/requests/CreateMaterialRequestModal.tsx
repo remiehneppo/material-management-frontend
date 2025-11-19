@@ -411,40 +411,61 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
         <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp">
           {/* Header */}
-          <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 px-8 py-6 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 px-3 sm:px-6 lg:px-8 py-5 sm:py-6 text-white relative overflow-hidden flex-shrink-0">
             <div className="absolute top-0 right-0 w-48 h-48 bg-white opacity-10 rounded-full -mr-24 -mt-24"></div>
-            <div className="relative z-10 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">Tạo yêu cầu vật tư mới</h2>
-                  <div className="flex items-center gap-3 mt-1">
-                    <p className="text-white/90 text-sm">Bước {step}/3</p>
-                    <div className="flex gap-1">
-                      {[1, 2, 3].map((s) => (
-                        <div
-                          key={s}
-                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                            s === step ? 'bg-white w-6' : s < step ? 'bg-white/70' : 'bg-white/30'
-                          }`}
-                        />
-                      ))}
+            <div className="relative z-10">
+              {/* Title and Close Button Row */}
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-lg sm:text-xl font-bold break-words leading-tight">
+                      {step === 1 && "Tạo yêu cầu vật tư mới"}
+                      {step === 2 && "Chọn hạng mục thiết bị"}
+                      {step === 3 && "Xác nhận thông tin"}
+                    </h2>
+                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                      <p className="text-white/90 text-xs sm:text-sm whitespace-nowrap">Bước {step}/3</p>
+                      <div className="flex gap-1">
+                        {[1, 2, 3].map((s) => (
+                          <div
+                            key={s}
+                            className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 ${
+                              s === step ? 'bg-white w-4 sm:w-6' : s < step ? 'bg-white/70' : 'bg-white/30'
+                            }`}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
+                <button
+                  onClick={onClose}
+                  className="text-white/80 hover:text-white hover:bg-white/20 p-1.5 sm:p-2 rounded-lg transition-all duration-300 flex-shrink-0"
+                >
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-              <button
-                onClick={onClose}
-                className="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all duration-300"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+
+              {/* Context Info for Step 2 & 3 */}
+              {(step === 2 || step === 3) && selectedMaintenance && (
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-2.5 sm:px-3 py-2 border border-white/20">
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1 sm:gap-x-4 text-xs sm:text-sm leading-relaxed">
+                    <span className="text-white/95 break-words">
+                      <span className="font-semibold">Dự án:</span> {selectedMaintenance.project} - {selectedMaintenance.maintenance_tier}/{selectedMaintenance.maintenance_number}
+                    </span>
+                    <span className="text-white/95">
+                      <span className="font-semibold">Ngành:</span> {selectedSector}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -514,17 +535,6 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
             {/* Step 2: Select Equipment/Profiles */}
             {step === 2 && (
               <div className="space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                  <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Dự án:</span> {selectedMaintenance?.project} - {selectedMaintenance?.maintenance_tier}/{selectedMaintenance?.maintenance_number}
-                  </p>
-                  <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Ngành:</span> {selectedSector}
-                  </p>
-                </div>
-
-                <h3 className="text-lg font-semibold text-gray-900">Chọn hạng mục thiết bị</h3>
-                
                 {loadingProfiles ? (
                   <p className="text-gray-500">Đang tải danh sách hạng mục...</p>
                 ) : materialsProfiles.length === 0 ? (
