@@ -11,6 +11,31 @@ interface UploadEstimateModalProps {
   onSuccess: () => void;
 }
 
+// Icon Components
+const CloseIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
+const AlertIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const UploadIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+  </svg>
+);
+
+const InfoIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
 export default function UploadEstimateModal({
   isOpen,
   onClose,
@@ -142,93 +167,94 @@ export default function UploadEstimateModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-50 animate-fadeIn">
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={handleClose}
       ></div>
 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full">
+        <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full animate-slideUp">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-900">
-              Upload File Dự Toán
-            </h3>
-            <button
-              onClick={handleClose}
-              disabled={uploading}
-              className="text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div className="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 px-6 py-6 rounded-t-2xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border-2 border-white/30">
+                  <UploadIcon />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white drop-shadow-md">
+                    Upload File Dự Toán
+                  </h3>
+                  <p className="text-white/90 text-sm mt-0.5">Tải lên file Excel chứa dữ liệu dự toán</p>
+                </div>
+              </div>
+              <button
+                onClick={handleClose}
+                disabled={uploading}
+                className="text-white/80 hover:text-white hover:bg-white/20 disabled:opacity-50 rounded-lg p-2 transition-all duration-300"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+                <CloseIcon />
+              </button>
+            </div>
           </div>
 
           {/* Body */}
           <form onSubmit={handleSubmit} className="p-6">
             {/* Error Message */}
             {error && (
-              <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 text-red-500 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span className="text-red-700 text-sm">{error}</span>
+              <div className="mb-6 bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-200 rounded-xl p-4 shadow-md animate-shake">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                    <AlertIcon />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-red-900 mb-1">Lỗi</h4>
+                    <span className="text-red-700 text-sm">{error}</span>
+                  </div>
                 </div>
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               {/* File Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                  <span className="text-xl">📄</span>
                   File Excel <span className="text-red-500">*</span>
                 </label>
-                <div className="flex items-center space-x-4">
-                  <label className="flex-1 flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-cyan-500 cursor-pointer transition-colors">
+                <div className="flex items-center">
+                  <label className="flex-1 flex items-center justify-center px-6 py-8 border-3 border-dashed border-gray-300 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 cursor-pointer transition-all duration-300 group">
                     <div className="text-center">
-                      <svg
-                        className="mx-auto h-12 w-12 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                        />
-                      </svg>
-                      <p className="mt-2 text-sm text-gray-600">
-                        {file ? file.name : 'Chọn file hoặc kéo thả vào đây'}
+                      <div className="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <svg
+                          className="h-10 w-10 text-indigo-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                          />
+                        </svg>
+                      </div>
+                      <p className="mt-2 text-sm font-medium text-gray-700">
+                        {file ? (
+                          <span className="text-indigo-600 font-bold">✓ {file.name}</span>
+                        ) : (
+                          'Chọn file hoặc kéo thả vào đây'
+                        )}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Định dạng: .xlsx
+                      <p className="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Chỉ chấp nhận file .xlsx
                       </p>
                     </div>
                     <input
@@ -241,9 +267,11 @@ export default function UploadEstimateModal({
                   </label>
                 </div>
               </div>
+
               {/* Sheet Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                  <span className="text-xl">📊</span>
                   Tên Sheet <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -254,17 +282,18 @@ export default function UploadEstimateModal({
                   }
                   placeholder="Nhập tên sheet trong file Excel..."
                   disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal transition-all duration-300"
                 />
               </div>
               {/* Maintenance (Project) Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                  <span className="text-xl">📁</span>
                   Chọn dự án <span className="text-red-500">*</span>
                 </label>
                 {loadingMaintenances ? (
-                  <div className="flex items-center text-gray-500 text-sm px-3 py-2 border border-gray-300 rounded-lg">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-500 mr-2"></div>
+                  <div className="flex items-center text-gray-500 text-sm px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50">
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-t-transparent mr-2"></div>
                     Đang tải danh sách dự án...
                   </div>
                 ) : (
@@ -272,14 +301,13 @@ export default function UploadEstimateModal({
                     value={formData.maintenance_id}
                     onChange={(e) => handleMaintenanceChange(e.target.value)}
                     disabled={uploading}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 text-gray-900 font-medium transition-all duration-300"
                   >
                     <option value="">-- Chọn dự án --</option>
                     {maintenances.map((maintenance) => (
                       <option key={maintenance.id} value={maintenance.id}>
                         {maintenance.project} - {maintenance.maintenance_tier} -
-                        Lần {maintenance.maintenance_number} ({maintenance.year}
-                        )
+                        Lần {maintenance.maintenance_number} ({maintenance.year})
                       </option>
                     ))}
                   </select>
@@ -288,36 +316,45 @@ export default function UploadEstimateModal({
 
               {/* Display selected maintenance info */}
               {selectedMaintenance && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Dự án:</span>{' '}
-                    {selectedMaintenance.project}
-                  </p>
-                  <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Cấp sửa chữa:</span>{' '}
-                    {selectedMaintenance.maintenance_tier}
-                  </p>
-                  <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Lần sửa chữa:</span>{' '}
-                    {selectedMaintenance.maintenance_number}
-                  </p>
-                  <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Năm:</span>{' '}
-                    {selectedMaintenance.year}
-                  </p>
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-5 shadow-md">
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                      <InfoIcon />
+                    </div>
+                    <h4 className="font-bold text-blue-900 text-lg">Thông tin dự án</h4>
+                  </div>
+                  <div className="text-sm text-blue-800 space-y-2 ml-11">
+                    <p className="flex items-center gap-2">
+                      <span className="font-semibold min-w-[100px]">Dự án:</span>
+                      <span className="font-medium">{selectedMaintenance.project}</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <span className="font-semibold min-w-[100px]">Cấp sửa chữa:</span>
+                      <span className="font-medium">{selectedMaintenance.maintenance_tier}</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <span className="font-semibold min-w-[100px]">Lần sửa chữa:</span>
+                      <span className="font-medium">{selectedMaintenance.maintenance_number}</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <span className="font-semibold min-w-[100px]">Năm:</span>
+                      <span className="font-medium">{selectedMaintenance.year}</span>
+                    </p>
+                  </div>
                 </div>
               )}
 
               {/* Sector */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                  <span className="text-xl">🏭</span>
                   Ngành <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formData.sector}
                   onChange={(e) => handleInputChange('sector', e.target.value)}
                   disabled={uploading}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:bg-gray-100 text-gray-900 font-medium"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 text-gray-900 font-medium transition-all duration-300"
                 >
                   <option value="">Chọn ngành</option>
                   {Object.values(SECTORS).map((sector) => (
@@ -330,42 +367,23 @@ export default function UploadEstimateModal({
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end space-x-4 mt-6 pt-6 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t-2 border-gray-200">
               <button
                 type="button"
                 onClick={handleClose}
                 disabled={uploading}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 border-2 border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={uploading}
-                className="px-6 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:from-purple-600 hover:to-indigo-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium shadow-lg hover:shadow-xl hover:scale-105"
               >
                 {uploading ? (
                   <>
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                     <span>Đang upload...</span>
                   </>
                 ) : (
