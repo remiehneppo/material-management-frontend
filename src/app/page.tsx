@@ -43,154 +43,95 @@ export default function Dashboard() {
     <DashboardLayout>
       <Header title="TỔNG QUAN" />
       <div className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Total Projects Card */}
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-blue-100 mb-2">Tổng số dự án</h3>
+                {loading ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                  </div>
+                ) : (
+                  <p className="text-4xl font-bold">{projectCount}</p>
+                )}
+                <p className="text-sm text-blue-100 mt-2">Dự án đang quản lý</p>
+              </div>
+              <div className="p-4 bg-white bg-opacity-20 rounded-lg">
+                <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
-              <div className="ml-4">
-                <h3 className="text-sm font-medium text-gray-500">Tổng dự án</h3>
+            </div>
+          </div>
+
+          {/* Pending Requests Card */}
+          <div className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg shadow-lg p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-yellow-100 mb-2">Yêu cầu chờ duyệt</h3>
                 {loading ? (
                   <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                   </div>
                 ) : (
-                  <p className="text-2xl font-semibold text-gray-900">{projectCount}</p>
+                  <p className="text-4xl font-bold">{pendingRequestCount}</p>
                 )}
+                <p className="text-sm text-yellow-100 mt-2">Yêu cầu cần xử lý</p>
               </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <h3 className="text-sm font-medium text-gray-500">Tổng vật tư</h3>
-                <p className="text-2xl font-semibold text-gray-900">1,247</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-4 bg-white bg-opacity-20 rounded-lg">
+                <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-              </div>
-              <div className="ml-4">
-                <h3 className="text-sm font-medium text-gray-500">Yêu cầu chờ duyệt</h3>
-                {loading ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-yellow-600"></div>
-                  </div>
-                ) : (
-                  <p className="text-2xl font-semibold text-gray-900">{pendingRequestCount}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <h3 className="text-sm font-medium text-gray-500">Thành viên</h3>
-                <p className="text-2xl font-semibold text-gray-900">24</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">Dự án gần đây</h3>
-            </div>
-            <div className="p-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Dự án A</p>
-                    <p className="text-sm text-gray-500">Đang thực hiện</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
-                      <div className="bg-cyan-500 h-2 rounded-full" style={{ width: "75%" }}></div>
-                    </div>
-                    <span className="text-sm text-gray-500">75%</span>
-                  </div>
+        {/* Welcome Message */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Chào mừng đến với Hệ thống Quản lý Vật tư</h2>
+          <p className="text-gray-600">
+            Hệ thống cung cấp các công cụ để quản lý dự án, vật tư và yêu cầu vật tư một cách hiệu quả.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center mb-2">
+                <div className="p-2 bg-cyan-100 rounded-lg mr-3">
+                  <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Dự án B</p>
-                    <p className="text-sm text-gray-500">Hoàn thành</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
-                      <div className="bg-cyan-500 h-2 rounded-full" style={{ width: "100%" }}></div>
-                    </div>
-                    <span className="text-sm text-gray-500">100%</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Dự án C</p>
-                    <p className="text-sm text-gray-500">Chuẩn bị</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
-                      <div className="bg-cyan-500 h-2 rounded-full" style={{ width: "25%" }}></div>
-                    </div>
-                    <span className="text-sm text-gray-500">25%</span>
-                  </div>
-                </div>
+                <h3 className="font-semibold text-gray-900">Quản lý dự án</h3>
               </div>
+              <p className="text-sm text-gray-600">Theo dõi và quản lý các dự án sửa chữa, bảo trì</p>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center mb-2">
+                <div className="p-2 bg-green-100 rounded-lg mr-3">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-gray-900">Quản lý vật tư</h3>
+              </div>
+              <p className="text-sm text-gray-600">Kiểm soát kho vật tư, dự toán và thực tế</p>
+            </div>
+            <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center mb-2">
+                <div className="p-2 bg-orange-100 rounded-lg mr-3">
+                  <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-gray-900">Yêu cầu vật tư</h3>
+              </div>
+              <p className="text-sm text-gray-600">Tạo và quản lý các yêu cầu cấp vật tư</p>
             </div>
           </div>
-
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">Yêu cầu gần đây</h3>
-            </div>
-            <div className="p-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Xi măng</p>
-                    <p className="text-sm text-gray-500">100 bao</p>
-                  </div>
-                  <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Chờ duyệt</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Thép</p>
-                    <p className="text-sm text-gray-500">5 tấn</p>
-                  </div>
-                  <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Đã duyệt</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Gạch</p>
-                    <p className="text-sm text-gray-500">1000 viên</p>
-                  </div>
-                  <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Từ chối</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
+        </div>
       </div>
     </DashboardLayout>
   );
