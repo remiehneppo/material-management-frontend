@@ -10,8 +10,30 @@ import {
   BuildingOfficeIcon,
   CalendarIcon,
   XCircleIcon,
-  PencilIcon
+  CheckIcon,
+  LockClosedIcon,
+  KeyIcon,
+  ShieldCheckIcon
 } from '@heroicons/react/24/outline';
+
+// Icon Components
+const SaveIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+  </svg>
+);
+
+const EditIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+  </svg>
+);
+
+const RefreshIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+  </svg>
+);
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -84,8 +106,11 @@ export default function ProfilePage() {
       <DashboardLayout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
-            <p className="mt-4 text-gray-600">Đang tải thông tin...</p>
+            <div className="relative">
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-cyan-500 border-r-blue-500 absolute top-0 left-0"></div>
+            </div>
+            <p className="mt-6 text-gray-600 font-medium text-lg">Đang tải thông tin...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -95,15 +120,20 @@ export default function ProfilePage() {
   if (error && !user) {
     return (
       <DashboardLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <XCircleIcon className="h-16 w-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Có lỗi xảy ra</h2>
-            <p className="text-gray-600 mb-4">{error}</p>
+        <div className="min-h-screen flex items-center justify-center p-6">
+          <div className="text-center max-w-md">
+            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mb-6">
+              <XCircleIcon className="h-12 w-12 text-red-500" />
+            </div>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent mb-3">
+              Có lỗi xảy ra
+            </h2>
+            <p className="text-gray-600 mb-6">{error}</p>
             <button 
               onClick={fetchUserProfile}
-              className="bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors"
+              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center gap-2"
             >
+              <RefreshIcon />
               Thử lại
             </button>
           </div>
@@ -117,8 +147,10 @@ export default function ProfilePage() {
       <DashboardLayout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <UserIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">Không tìm thấy thông tin người dùng</p>
+            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mb-6">
+              <UserIcon className="h-12 w-12 text-gray-400" />
+            </div>
+            <p className="text-gray-600 text-lg font-medium">Không tìm thấy thông tin người dùng</p>
           </div>
         </div>
       </DashboardLayout>
@@ -127,122 +159,139 @@ export default function ProfilePage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-4xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Thông tin cá nhân</h1>
-          <p className="text-gray-600 mt-2">Quản lý thông tin tài khoản của bạn</p>
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32 pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full -ml-24 -mb-24 pointer-events-none"></div>
+          
+          <div className="relative z-10">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className="w-24 h-24 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border-2 border-white/40 shadow-2xl">
+                  <UserIcon className="h-14 w-14 text-white drop-shadow-lg" />
+                </div>
+                <div>
+                  <h1 className="text-3xl lg:text-4xl font-bold mb-2 drop-shadow-md">{user.full_name}</h1>
+                  <p className="text-white text-lg font-medium drop-shadow-md">@{user.username}</p>
+                  <div className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-white/25 backdrop-blur-md rounded-full text-sm font-bold shadow-lg border border-white/30">
+                    <div className="w-2.5 h-2.5 bg-green-300 rounded-full animate-pulse shadow-lg"></div>
+                    Tài khoản hoạt động
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex">
-              <XCircleIcon className="h-5 w-5 text-red-400" />
-              <div className="ml-3">
+          <div className="bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-200 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                <XCircleIcon className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-red-900 mb-1">Có lỗi xảy ra</h3>
                 <p className="text-red-800">{error}</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Profile Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        {/* Profile Information Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
           {/* Card Header */}
-          <div className="border-b border-gray-200 px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center">
-                  <UserIcon className="h-6 w-6 text-cyan-600" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">{user.full_name}</h2>
-                  <p className="text-gray-500">@{user.username}</p>
-                </div>
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-8 py-6 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                  Thông tin cá nhân
+                </h2>
+                <p className="text-gray-600 mt-1">Quản lý và cập nhật thông tin tài khoản của bạn</p>
               </div>
               
-              <div className="flex items-center space-x-2">
-                {/* {user.is_active ? (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    <CheckCircleIcon className="h-3 w-3 mr-1" />
-                    Hoạt động
-                  </span>
+              <button
+                onClick={() => {
+                  setIsEditing(!isEditing);
+                  if (isEditing) {
+                    setEditForm(user);
+                    setError(null);
+                  }
+                }}
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 ${
+                  isEditing 
+                    ? 'bg-gradient-to-r from-gray-500 to-gray-600 text-white hover:from-gray-600 hover:to-gray-700' 
+                    : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-cyan-600 hover:to-blue-600'
+                }`}
+              >
+                {isEditing ? (
+                  <>
+                    <XCircleIcon className="h-5 w-5" />
+                    Hủy chỉnh sửa
+                  </>
                 ) : (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    <XCircleIcon className="h-3 w-3 mr-1" />
-                    Không hoạt động
-                  </span>
-                )} */}
-                
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-                >
-                  <PencilIcon className="h-4 w-4 mr-2" />
-                  {isEditing ? 'Hủy' : 'Chỉnh sửa'}
-                </button>
-              </div>
+                  <>
+                    <EditIcon />
+                    Chỉnh sửa
+                  </>
+                )}
+              </button>
             </div>
           </div>
 
           {/* Card Body */}
-          <div className="px-6 py-6">
+          <div className="p-8">
             {isEditing ? (
               /* Edit Form */
-              <form onSubmit={handleEditSubmit} className="space-y-6">
+              <form onSubmit={handleEditSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                      <UserIcon className="h-5 w-5 text-cyan-500" />
                       Tên đầy đủ
                     </label>
                     <input
                       type="text"
                       value={editForm.full_name || ''}
                       onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
-                      className="w-full text-gray-700 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                      className="w-full text-gray-700 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-300 font-medium"
+                      placeholder="Nhập tên đầy đủ"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Chức vụ
+                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                      <BuildingOfficeIcon className="h-5 w-5 text-cyan-500" />
+                      Chức vụ
                     </label>
                     <input
                       type="text"
                       value={editForm.workspace_role || ''}
                       onChange={(e) => setEditForm({ ...editForm, workspace_role: e.target.value })}
-                      className="w-full text-gray-700 text-gray-700 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                      className="w-full text-gray-700 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-300 font-medium"
+                      placeholder="Nhập chức vụ"
                       required
                     />
                   </div>
 
-                  {/* <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Số điện thoại
-                    </label>
-                    <input
-                      type="tel"
-                      value={editForm.phone || ''}
-                      onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                    />
-                  </div> */}
-
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+                      <BuildingOfficeIcon className="h-5 w-5 text-cyan-500" />
                       Phòng ban
                     </label>
                     <input
                       type="text"
                       value={editForm.workspace || ''}
                       onChange={(e) => setEditForm({ ...editForm, workspace: e.target.value })}
-                      className="w-full text-gray-700 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                      className="w-full text-gray-700 px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-300 font-medium"
+                      placeholder="Nhập phòng ban"
                     />
                   </div>
                 </div>
 
-                <div className="flex justify-end space-x-3">
+                <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
                   <button
                     type="button"
                     onClick={() => {
@@ -250,16 +299,26 @@ export default function ProfilePage() {
                       setEditForm(user);
                       setError(null);
                     }}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="px-6 py-3 border-2 border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all duration-300 hover:scale-105"
                   >
                     Hủy
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl hover:from-cyan-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
                   >
-                    {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                        Đang lưu...
+                      </>
+                    ) : (
+                      <>
+                        <SaveIcon />
+                        Lưu thay đổi
+                      </>
+                    )}
                   </button>
                 </div>
               </form>
@@ -267,57 +326,89 @@ export default function ProfilePage() {
               /* Display Mode */
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <EnvelopeIcon className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Email</p>
-                      <p className="text-gray-900">{user.email}</p>
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-5 border border-blue-100 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <EnvelopeIcon className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-600 mb-1">📧 Email</p>
+                        <p className="text-gray-900 font-medium break-all">{user.email}</p>
+                      </div>
                     </div>
                   </div>
 
-                  {/* <div className="flex items-center space-x-3">
-                    <PhoneIcon className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Số điện thoại</p>
-                      <p className="text-gray-900">{user.phone || 'Chưa cung cấp'}</p>
+                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-5 border border-emerald-100 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <BuildingOfficeIcon className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-gray-600 mb-1">🏢 Phòng ban</p>
+                        <p className="text-gray-900 font-medium">{user.workspace || 'Chưa cung cấp'}</p>
+                      </div>
                     </div>
-                  </div> */}
+                  </div>
 
-                  <div className="flex items-center space-x-3">
-                    <BuildingOfficeIcon className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Phòng ban</p>
-                      <p className="text-gray-900">{user.workspace || 'Chưa cung cấp'}</p>
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-5 border border-amber-100 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <UserIcon className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-gray-600 mb-1">👔 Chức vụ</p>
+                        <p className="text-gray-900 font-medium">{user.workspace_role}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <UserIcon className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Chức vụ</p>
-                      <p className="text-gray-900">{user.workspace_role}</p>
+                  <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-5 border border-purple-100 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <CalendarIcon className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-gray-600 mb-1">📅 Ngày tạo</p>
+                        <p className="text-gray-900 font-medium">
+                          {new Date(user.created_at * 1000).toLocaleDateString('vi-VN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-3">
-                    <CalendarIcon className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Ngày tạo</p>
-                      <p className="text-gray-900">
-                        {new Date(user.created_at * 1000).toLocaleDateString('vi-VN')}
-                      </p>
+                  <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-5 border border-pink-100 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <CalendarIcon className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-gray-600 mb-1">🔄 Cập nhật lần cuối</p>
+                        <p className="text-gray-900 font-medium">
+                          {new Date(user.updated_at * 1000).toLocaleDateString('vi-VN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-3">
-                    <CalendarIcon className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Cập nhật lần cuối</p>
-                      <p className="text-gray-900">
-                        {new Date(user.updated_at * 1000).toLocaleDateString('vi-VN')}
-                      </p>
+                  <div className="bg-gradient-to-br from-gray-50 to-slate-50 rounded-xl p-5 border border-gray-200 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-gray-500 to-slate-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <UserIcon className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-gray-600 mb-1">🆔 Tên đăng nhập</p>
+                        <p className="text-gray-900 font-medium">@{user.username}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -327,13 +418,22 @@ export default function ProfilePage() {
         </div>
 
         {/* Change Password Section */}
-        <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="border-b border-gray-200 px-6 py-4">
-            <h3 className="text-lg font-semibold text-gray-900">Đổi mật khẩu</h3>
-            <p className="text-gray-600 text-sm mt-1">Cập nhật mật khẩu để bảo mật tài khoản</p>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div className="bg-gradient-to-r from-orange-50 to-red-50 px-8 py-6 border-b border-gray-200">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <LockClosedIcon className="h-7 w-7 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                  Đổi mật khẩu
+                </h3>
+                <p className="text-gray-600 font-medium mt-1">Cập nhật mật khẩu để bảo mật tài khoản của bạn</p>
+              </div>
+            </div>
           </div>
           
-          <div className="px-6 py-6">
+          <div className="p-8">
             <ChangePasswordForm />
           </div>
         </div>
@@ -395,66 +495,100 @@ function ChangePasswordForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-          <p className="text-red-800 text-sm">{error}</p>
+        <div className="bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-200 rounded-xl p-4 shadow-md">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+              <XCircleIcon className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h4 className="font-bold text-red-900 mb-1">Lỗi</h4>
+              <p className="text-red-800 text-sm">{error}</p>
+            </div>
+          </div>
         </div>
       )}
 
       {success && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-          <p className="text-green-800 text-sm">Đổi mật khẩu thành công!</p>
+        <div className="bg-gradient-to-r from-green-50 to-emerald-100 border-2 border-green-200 rounded-xl p-4 shadow-md">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+              <CheckIcon className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h4 className="font-bold text-green-900 mb-1">Thành công!</h4>
+              <p className="text-green-800 text-sm">Mật khẩu của bạn đã được cập nhật</p>
+            </div>
+          </div>
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Mật khẩu hiện tại
-        </label>
-        <input
-          type="password"
-          value={formData.current_password}
-          onChange={(e) => setFormData({ ...formData, current_password: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-          required
-        />
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="md:col-span-2">
+          <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+            <KeyIcon className="h-5 w-5 text-orange-500" />
+            🔒 Mật khẩu hiện tại
+          </label>
+          <input
+            type="password"
+            value={formData.current_password}
+            onChange={(e) => setFormData({ ...formData, current_password: e.target.value })}
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 font-medium"
+            placeholder="Nhập mật khẩu hiện tại"
+            required
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Mật khẩu mới
-        </label>
-        <input
-          type="password"
-          value={formData.new_password}
-          onChange={(e) => setFormData({ ...formData, new_password: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-          required
-          minLength={6}
-        />
-      </div>
+        <div>
+          <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+            <ShieldCheckIcon className="h-5 w-5 text-orange-500" />
+            🆕 Mật khẩu mới
+          </label>
+          <input
+            type="password"
+            value={formData.new_password}
+            onChange={(e) => setFormData({ ...formData, new_password: e.target.value })}
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 font-medium"
+            placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
+            required
+            minLength={6}
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Xác nhận mật khẩu mới
-        </label>
-        <input
-          type="password"
-          value={formData.confirm_password}
-          onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-          required
-          minLength={6}
-        />
+        <div>
+          <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
+            <ShieldCheckIcon className="h-5 w-5 text-orange-500" />
+            ✅ Xác nhận mật khẩu
+          </label>
+          <input
+            type="password"
+            value={formData.confirm_password}
+            onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-300 font-medium"
+            placeholder="Nhập lại mật khẩu mới"
+            required
+            minLength={6}
+          />
+        </div>
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-cyan-500 text-white py-2 px-4 rounded-lg hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl hover:from-orange-600 hover:to-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2 text-lg"
       >
-        {loading ? 'Đang đổi mật khẩu...' : 'Đổi mật khẩu'}
+        {loading ? (
+          <>
+            <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
+            Đang đổi mật khẩu...
+          </>
+        ) : (
+          <>
+            <KeyIcon className="h-6 w-6" />
+            Đổi mật khẩu
+          </>
+        )}
       </button>
     </form>
   );
