@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
         <div 
           className={`transition-all duration-300 ease-in-out ${
-            isCollapsed ? "ml-20" : "ml-64 xl:ml-72"
+            isCollapsed ? "ml-16 sm:ml-20" : "ml-56 sm:ml-64 xl:ml-72"
           }`}
         >
           <main className="min-h-screen">
