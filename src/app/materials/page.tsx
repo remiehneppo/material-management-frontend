@@ -11,6 +11,7 @@ import {
 import { maintenanceService, equipmentMachineryService } from '@/services';
 import UploadEstimateModal from '@/components/materials/UploadEstimateModal';
 import CreateMaterialsProfileModal from '@/components/materials/CreateMaterialsProfileModal';
+import * as XLSX from 'xlsx';
 
 // Icons Components
 const UploadIcon = () => (
@@ -43,7 +44,11 @@ const CloseIcon = () => (
   </svg>
 );
 
-
+const ExcelIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+  </svg>
+);
 
 export default function MaterialsPage() {
   const searchParams = useSearchParams();
@@ -77,6 +82,282 @@ export default function MaterialsPage() {
   // Modal states
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Export to Excel function
+  const handleExportToExcel = () => {
+    if (!materialProfiles || materialProfiles.length === 0) {
+      alert('Không có dữ liệu để xuất');
+      return;
+    }
+
+    // Prepare data for Excel
+    const excelData: (string | number)[][] = [];
+    
+    // Add header rows (merged cells will be handled later)
+    excelData.push([
+      'STT',
+      'Tên thiết bị',
+      'Tên vật tư (Dự toán)',
+      'ĐVT (Dự toán)',
+      'SL (Dự toán)',
+      'Tên vật tư (Thực tế)',
+      'ĐVT (Thực tế)',
+      'SL (Thực tế)',
+      'Chênh lệch'
+    ]);
+
+    // Add data rows
+    materialProfiles.forEach((profile) => {
+      const alignedMaterials = alignMaterials(profile.estimate, profile.reality);
+      
+      // Separate consumable and replacement materials
+      const consumableMaterials = alignedMaterials.filter(
+        (item) =>
+          (item.estimate && profile.estimate?.consumable_supplies?.[item.name]) ||
+          (item.reality && profile.reality?.consumable_supplies?.[item.name])
+      );
+      
+      const replacementMaterials = alignedMaterials.filter(
+        (item) =>
+          (item.estimate && profile.estimate?.replacement_materials?.[item.name]) ||
+          (item.reality && profile.reality?.replacement_materials?.[item.name])
+      );
+
+      let firstRow = true;
+      
+      // Add consumable materials header if exists
+      if (consumableMaterials.length > 0) {
+        excelData.push([
+          firstRow ? profile.index_path : '',
+          firstRow ? profile.equipment_machinery : '',
+          'VẬT TƯ TIÊU HAO',
+          '',
+          '',
+          '',
+          '',
+          '',
+          ''
+        ]);
+        firstRow = false;
+        
+        // Add consumable material rows
+        consumableMaterials.forEach((material) => {
+          // If reality exists and estimate exists, show estimate name in reality column
+          const realityName = material.reality?.name || (material.estimate?.name || '');
+          
+          excelData.push([
+            '',
+            '',
+            material.estimate?.name || '',
+            material.estimate?.unit || '',
+            material.estimate?.quantity || 0,
+            realityName,
+            material.reality?.unit || '',
+            material.reality?.quantity || 0,
+            '' // Empty for formula
+          ]);
+        });
+      }
+
+      // Add replacement materials header if exists
+      if (replacementMaterials.length > 0) {
+        excelData.push([
+          firstRow ? profile.index_path : '',
+          firstRow ? profile.equipment_machinery : '',
+          'VẬT TƯ THAY THẾ',
+          '',
+          '',
+          '',
+          '',
+          '',
+          ''
+        ]);
+        firstRow = false;
+        
+        // Add replacement material rows
+        replacementMaterials.forEach((material) => {
+          // If reality exists and estimate exists, show estimate name in reality column
+          const realityName = material.reality?.name || (material.estimate?.name || '');
+          
+          excelData.push([
+            '',
+            '',
+            material.estimate?.name || '',
+            material.estimate?.unit || '',
+            material.estimate?.quantity || 0,
+            realityName,
+            material.reality?.unit || '',
+            material.reality?.quantity || 0,
+            '' // Empty for formula
+          ]);
+        });
+      }
+      
+      // If no materials, add empty row
+      if (consumableMaterials.length === 0 && replacementMaterials.length === 0) {
+        excelData.push([
+          profile.index_path,
+          profile.equipment_machinery,
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          ''
+        ]);
+      }
+    });
+
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(excelData);
+    
+    // Add formulas to difference column (column I)
+    let currentRow = 2; // Start from row 2 (after header)
+    materialProfiles.forEach((profile) => {
+      const alignedMaterials = alignMaterials(profile.estimate, profile.reality);
+      
+      const consumableMaterials = alignedMaterials.filter(
+        (item) =>
+          (item.estimate && profile.estimate?.consumable_supplies?.[item.name]) ||
+          (item.reality && profile.reality?.consumable_supplies?.[item.name])
+      );
+      
+      const replacementMaterials = alignedMaterials.filter(
+        (item) =>
+          (item.estimate && profile.estimate?.replacement_materials?.[item.name]) ||
+          (item.reality && profile.reality?.replacement_materials?.[item.name])
+      );
+      
+      // Skip header rows and add formulas for each material row
+      if (consumableMaterials.length > 0) {
+        currentRow++; // Skip "VẬT TƯ TIÊU HAO" header
+        consumableMaterials.forEach(() => {
+          const cellAddress = `I${currentRow}`;
+          ws[cellAddress] = { f: `E${currentRow}-H${currentRow}` };
+          currentRow++;
+        });
+      }
+      
+      if (replacementMaterials.length > 0) {
+        currentRow++; // Skip "VẬT TƯ THAY THẾ" header
+        replacementMaterials.forEach(() => {
+          const cellAddress = `I${currentRow}`;
+          ws[cellAddress] = { f: `E${currentRow}-H${currentRow}` };
+          currentRow++;
+        });
+      }
+      
+      // Handle empty equipment
+      if (consumableMaterials.length === 0 && replacementMaterials.length === 0) {
+        currentRow++;
+      }
+    });
+    
+    // Set column widths
+    ws['!cols'] = [
+      { wch: 10 },  // STT
+      { wch: 35 },  // Tên thiết bị
+      { wch: 30 },  // Tên vật tư (Dự toán)
+      { wch: 10 },  // ĐVT (Dự toán)
+      { wch: 12 },  // SL (Dự toán)
+      { wch: 30 },  // Tên vật tư (Thực tế)
+      { wch: 10 },  // ĐVT (Thực tế)
+      { wch: 12 },  // SL (Thực tế)
+      { wch: 12 }   // Chênh lệch
+    ];
+    
+    // Apply bold formatting to header row (row 1)
+    const headerCells = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1'];
+    headerCells.forEach(cell => {
+      if (ws[cell]) {
+        ws[cell].s = {
+          font: { bold: true },
+          alignment: { horizontal: 'center', vertical: 'center' }
+        };
+      }
+    });
+    
+    // Apply bold formatting to STT (column A) and Equipment Name (column B) for all data rows
+    // Also bold "VẬT TƯ TIÊU HAO" and "VẬT TƯ THAY THẾ" headers
+    currentRow = 2;
+    materialProfiles.forEach((profile) => {
+      const alignedMaterials = alignMaterials(profile.estimate, profile.reality);
+      
+      const consumableMaterials = alignedMaterials.filter(
+        (item) =>
+          (item.estimate && profile.estimate?.consumable_supplies?.[item.name]) ||
+          (item.reality && profile.reality?.consumable_supplies?.[item.name])
+      );
+      
+      const replacementMaterials = alignedMaterials.filter(
+        (item) =>
+          (item.estimate && profile.estimate?.replacement_materials?.[item.name]) ||
+          (item.reality && profile.reality?.replacement_materials?.[item.name])
+      );
+      
+      const startRow = currentRow;
+      
+      if (consumableMaterials.length > 0) {
+        // Bold "VẬT TƯ TIÊU HAO" row
+        const consumableHeaderCell = `C${currentRow}`;
+        if (ws[consumableHeaderCell]) {
+          ws[consumableHeaderCell].s = {
+            font: { bold: true },
+            alignment: { horizontal: 'center', vertical: 'center' }
+          };
+        }
+        currentRow++;
+        currentRow += consumableMaterials.length;
+      }
+      
+      if (replacementMaterials.length > 0) {
+        // Bold "VẬT TƯ THAY THẾ" row
+        const replacementHeaderCell = `C${currentRow}`;
+        if (ws[replacementHeaderCell]) {
+          ws[replacementHeaderCell].s = {
+            font: { bold: true },
+            alignment: { horizontal: 'center', vertical: 'center' }
+          };
+        }
+        currentRow++;
+        currentRow += replacementMaterials.length;
+      }
+      
+      if (consumableMaterials.length === 0 && replacementMaterials.length === 0) {
+        currentRow++;
+      }
+      
+      // Bold STT and Equipment name cells
+      const sttCell = `A${startRow}`;
+      const equipmentCell = `B${startRow}`;
+      if (ws[sttCell]) {
+        ws[sttCell].s = {
+          font: { bold: true },
+          alignment: { horizontal: 'center', vertical: 'center' }
+        };
+      }
+      if (ws[equipmentCell]) {
+        ws[equipmentCell].s = {
+          font: { bold: true },
+          alignment: { horizontal: 'left', vertical: 'center' }
+        };
+      }
+    });
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Hồ sơ vật tư');
+
+    // Generate filename with timestamp
+    const timestamp = new Date().toISOString().slice(0, 10);
+    const filename = `Ho_so_vat_tu_${timestamp}.xlsx`;
+
+    // Save file
+    XLSX.writeFile(wb, filename);
+    
+    alert(`Đã xuất ${materialProfiles.length} thiết bị ra file Excel`);
+  };
 
   // Function to align materials for comparison
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -291,6 +572,14 @@ export default function MaterialsPage() {
           >
             <PlusIcon />
             <span>Tạo hồ sơ vật tư</span>
+          </button>
+          <button
+            onClick={handleExportToExcel}
+            disabled={!materialProfiles || materialProfiles.length === 0}
+            className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            <ExcelIcon />
+            <span>Xuất Excel</span>
           </button>
         </div>
 
