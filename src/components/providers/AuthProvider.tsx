@@ -88,15 +88,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await authService.login({ username, password });
       if (response.status) {
         setIsAuthenticated(true);
-        // Force immediate redirect to dashboard
+        // Force immediate redirect to dashboard only on success
         setTimeout(() => {
           router.push('/');
         }, 100); // Small delay to ensure state is updated
         return true;
       }
+      // Login failed - do not redirect
+      setIsAuthenticated(false);
       return false;
     } catch (error) {
       console.error('Login failed:', error);
+      setIsAuthenticated(false);
       return false;
     }
   };

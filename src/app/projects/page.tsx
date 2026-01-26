@@ -120,7 +120,7 @@ export default function ProjectsPage() {
           
           <div className="bg-gradient-to-br from-emerald-500 via-green-400 to-teal-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-emerald-100 text-sm font-medium">SCCĐ</span>
+              <span className="text-emerald-100 text-sm font-medium">Cấp Đốc</span>
               <WrenchIcon className="w-6 h-6" />
             </div>
             <p className="text-3xl font-bold">{stats.sccd}</p>
@@ -129,7 +129,7 @@ export default function ProjectsPage() {
           
           <div className="bg-gradient-to-br from-amber-500 via-orange-400 to-red-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-amber-100 text-sm font-medium">SCCN</span>
+              <span className="text-amber-100 text-sm font-medium">Cấp Nhỏ</span>
               <WrenchScrewdriverIcon className="w-6 h-6" />
             </div>
             <p className="text-3xl font-bold">{stats.sccn}</p>
@@ -138,7 +138,7 @@ export default function ProjectsPage() {
           
           <div className="bg-gradient-to-br from-purple-500 via-violet-400 to-indigo-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-purple-100 text-sm font-medium">SCCV</span>
+              <span className="text-purple-100 text-sm font-medium">Cấp Vừa</span>
               <RocketLaunchIcon className="w-6 h-6" />
             </div>
             <p className="text-3xl font-bold">{stats.sccv}</p>
@@ -178,9 +178,9 @@ export default function ProjectsPage() {
                 className="px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-gray-900 font-medium bg-white hover:border-cyan-400 transition-all duration-300 cursor-pointer"
               >
                 <option value="">Tất cả các cấp</option>
-                <option value="SCCĐ">SCCĐ</option>
-                <option value="SCCN">SCCN</option>
-                <option value="SCCV">SCCV</option>
+                <option value="SCCĐ">Cấp Đốc</option>
+                <option value="SCCN">Cấp Nhỏ</option>
+                <option value="SCCV">Cấp Vừa</option>
               </select>
             </div>
           </div>

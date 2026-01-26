@@ -64,19 +64,31 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       <div className="flex-shrink-0 flex items-center justify-center h-16 sm:h-20 px-2 sm:px-4 border-b border-white/20 backdrop-blur-sm bg-white/10">
         <div className="flex items-center space-x-2">
           {isCollapsed ? (
-            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-white rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
-              <span className="text-cyan-600 font-bold text-base sm:text-lg">VT</span>
-            </div>
-          ) : (
-            <div className="transform hover:scale-105 transition-transform">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl flex items-center justify-center transform hover:scale-105 transition-transform overflow-hidden">
               <Image 
                 src="/logo.png" 
-                alt="Logo Quản lý vật tư" 
-                width={120}
-                height={48}
-                className="h-12 sm:h-16 w-auto object-contain drop-shadow-lg"
+                alt="Logo" 
+                width={44}
+                height={44}
+                className="w-full h-full object-contain"
                 priority
               />
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 transform hover:scale-105 transition-transform">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden">
+                <Image 
+                  src="/logo.png" 
+                  alt="Logo Quản lý vật tư" 
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-contain"
+                  priority
+                />
+              </div>
+              <span className="text-white text-[10px] sm:text-xs font-semibold text-center leading-tight drop-shadow-md">
+                Phòng Kỹ thuật-Công nghệ
+              </span>
             </div>
           )}
         </div>

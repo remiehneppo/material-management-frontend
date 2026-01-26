@@ -11,6 +11,7 @@ class ApiClient {
     reject: (reason?: unknown) => void;
   }> = [];
   private configLoaded = false;
+  private configLoadPromise?: Promise<void>;
 
   constructor() {
     // Temporary baseURL, will be updated after loading runtime config
@@ -27,10 +28,11 @@ class ApiClient {
     });
 
     this.setupInterceptors();
-    this.loadRuntimeConfig();
+    // Start loading config immediately
+    this.configLoadPromise = this.loadRuntimeConfig();
   }
 
-  private async loadRuntimeConfig() {
+  private async loadRuntimeConfig(): Promise<void> {
     if (typeof window !== 'undefined' && !this.configLoaded) {
       try {
         const config = await getRuntimeConfig();
@@ -43,6 +45,12 @@ class ApiClient {
       } catch (error) {
         console.error('Failed to load runtime config:', error);
       }
+    }
+  }
+
+  private async ensureConfigLoaded(): Promise<void> {
+    if (!this.configLoaded && this.configLoadPromise) {
+      await this.configLoadPromise;
     }
   }
 
@@ -255,22 +263,27 @@ class ApiClient {
 
   // HTTP Methods
   public async get<T>(url: string, config?: AxiosRequestConfig) {
+    await this.ensureConfigLoaded();
     return this.client.get<T>(url, config);
   }
 
   public async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig) {
+    await this.ensureConfigLoaded();
     return this.client.post<T>(url, data, config);
   }
 
   public async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig) {
+    await this.ensureConfigLoaded();
     return this.client.put<T>(url, data, config);
   }
 
   public async delete<T>(url: string, config?: AxiosRequestConfig) {
+    await this.ensureConfigLoaded();
     return this.client.delete<T>(url, config);
   }
 
   public async patch<T>(url: string, data?: unknown, config?: AxiosRequestConfig) {
+    await this.ensureConfigLoaded();
     return this.client.patch<T>(url, data, config);
   }
 }
