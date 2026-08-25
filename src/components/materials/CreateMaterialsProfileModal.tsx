@@ -88,7 +88,7 @@ export default function CreateMaterialsProfileModal({
       }
     } catch (err) {
       console.error('Error loading maintenances:', err);
-      setError('Có lỗi xảy ra khi tải danh sách dự án');
+      setError('Không thể tải danh sách dự án. Vui lòng thử lại.');
     } finally {
       setLoadingMaintenances(false);
     }
@@ -105,7 +105,7 @@ export default function CreateMaterialsProfileModal({
       }
     } catch (err) {
       console.error('Error loading equipments:', err);
-      setError('Có lỗi xảy ra khi tải danh sách thiết bị');
+      setError('Không thể tải danh sách thiết bị. Vui lòng thử lại.');
     } finally {
       setLoadingEquipments(false);
     }
@@ -161,14 +161,14 @@ export default function CreateMaterialsProfileModal({
         });
         onClose();
       } else {
-        setError(response.message || 'Tạo hồ sơ vật tư thất bại');
+        setError(response.message || 'Không thể tạo hồ sơ vật tư');
       }
     } catch (err: unknown) {
       console.error('Error creating materials profile:', err);
       setError(
         err instanceof Error
           ? err.message
-          : 'Có lỗi xảy ra khi tạo hồ sơ vật tư'
+          : 'Không thể tạo hồ sơ vật tư. Vui lòng thử lại.'
       );
     } finally {
       setCreating(false);
@@ -444,7 +444,7 @@ export default function CreateMaterialsProfileModal({
                     <div className="text-sm text-amber-900">
                       <p className="font-bold mb-2">💡 Lưu ý quan trọng</p>
                       <p className="leading-relaxed">
-                        Hồ sơ vật tư sẽ được tạo với danh sách vật tư trống. Bạn có thể cập nhật vật tư sau bằng cách upload file dự toán.
+                        Hồ sơ sẽ được tạo với danh sách vật tư trống. Bạn có thể bổ sung vật tư sau bằng cách tải tệp dự toán lên.
                       </p>
                     </div>
                   </div>

@@ -356,7 +356,7 @@ export default function MaterialsPage() {
     // Save file
     XLSX.writeFile(wb, filename);
     
-    alert(`Đã xuất ${materialProfiles.length} thiết bị ra file Excel`);
+    alert(`Đã xuất thông tin của ${materialProfiles.length} thiết bị ra tệp Excel.`);
   };
 
   // Function to align materials for comparison

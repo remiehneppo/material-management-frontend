@@ -78,12 +78,12 @@ export default function CreateEquipmentModal({
         setFormData({ name: '', sector: preSelectedSector || '' });
         onClose();
       } else {
-        setError(response.message || 'Tạo thiết bị thất bại');
+        setError(response.message || 'Không thể tạo thiết bị');
       }
     } catch (err: unknown) {
       console.error('Error creating equipment:', err);
       setError(
-        err instanceof Error ? err.message : 'Có lỗi xảy ra khi tạo thiết bị'
+        err instanceof Error ? err.message : 'Không thể tạo thiết bị. Vui lòng thử lại.'
       );
     } finally {
       setCreating(false);

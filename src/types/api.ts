@@ -37,11 +37,6 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   access_token: string;
-  refresh_token: string;
-}
-
-export interface RefreshRequest {
-  refresh_token: string;
 }
 
 
@@ -167,6 +162,9 @@ export interface MaterialRequest {
   requested_by: string;
   sector: string;
   description?: string;
+	status: 'draft' | 'issued';
+	issued_at?: number;
+	issued_by?: string;
 }
 
 export interface CreateMaterialRequestReq {
@@ -190,9 +188,11 @@ export interface MaterialRequestExport {
   material_request_id: string;
 }
 
-export interface UpdateNumberOfRequestReq {
-  material_request_id: string;
-  num_of_request: number;
+export interface IssueMaterialRequestResponse {
+  request_number: number;
+  status: 'issued';
+  issued_at: number;
+  issued_by: string;
 }
 
 export interface MaterialRequestUpdateReq {

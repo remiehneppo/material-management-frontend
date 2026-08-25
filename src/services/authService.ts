@@ -3,7 +3,6 @@ import type {
   ApiResponse, 
   LoginRequest, 
   LoginResponse, 
-  RefreshRequest 
 } from '../types/api';
 
 export class AuthService {
@@ -16,10 +15,7 @@ export class AuthService {
     
     // Store tokens after successful login
     if (response.data.status && response.data.data) {
-      apiClient.setTokens(
-        response.data.data.access_token,
-        response.data.data.refresh_token
-      );
+      apiClient.setTokens(response.data.data.access_token);
     }
     
     return response.data;
@@ -45,35 +41,10 @@ export class AuthService {
    * Note: This is now handled automatically by the API client interceptor
    * This method is kept for manual refresh if needed
    */
-  async refreshToken(refreshRequest: RefreshRequest): Promise<ApiResponse<LoginResponse>> {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh', refreshRequest);
-    
-    // Update stored tokens after successful refresh
-    if (response.data.status && response.data.data) {
-      apiClient.setTokens(
-        response.data.data.access_token,
-        response.data.data.refresh_token
-      );
-    }
-    
-    return response.data;
+  async restoreSession(): Promise<boolean> {
+    return apiClient.restoreSession();
   }
 
-  /**
-   * Check if user is authenticated
-   */
-  isAuthenticated(): boolean {
-    if (typeof window === 'undefined') return false;
-    return !!localStorage.getItem('access_token');
-  }
-
-  /**
-   * Get current access token
-   */
-  getAccessToken(): string | null {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('access_token');
-  }
 }
 
 export const authService = new AuthService();

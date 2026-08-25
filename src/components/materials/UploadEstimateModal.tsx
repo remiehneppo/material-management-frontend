@@ -97,7 +97,7 @@ export default function UploadEstimateModal({
 
       // Validate file type
       if (!selectedFile.name.endsWith('.xlsx')) {
-        setError('Chỉ chấp nhận file Excel (.xlsx)');
+        setError('Chỉ chấp nhận tệp Excel định dạng .xlsx');
         return;
       }
 
@@ -111,7 +111,7 @@ export default function UploadEstimateModal({
 
     // Validation
     if (!file) {
-      setError('Vui lòng chọn file để upload');
+      setError('Vui lòng chọn tệp Excel cần tải lên');
       return;
     }
 
@@ -139,12 +139,12 @@ export default function UploadEstimateModal({
       await materialsProfileService.uploadEstimate(file, uploadData);
 
       // Success
-      alert('Upload file dự toán thành công!');
+      alert('Đã tải tệp dự toán lên hệ thống.');
       handleClose();
       onSuccess();
     } catch (err) {
       console.error('Upload failed:', err);
-      setError('Upload thất bại. Vui lòng kiểm tra lại file và thông tin.');
+      setError('Không thể tải tệp dự toán lên. Vui lòng kiểm tra tệp và thông tin đã nhập.');
     } finally {
       setUploading(false);
     }
@@ -186,9 +186,9 @@ export default function UploadEstimateModal({
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-xl sm:text-2xl font-bold text-white drop-shadow-md break-words">
-                    Upload File Dự Toán
+                    Tải tệp dự toán
                   </h3>
-                  <p className="text-white/90 text-sm mt-0.5">Tải lên file Excel chứa dữ liệu dự toán</p>
+                  <p className="text-white/90 text-sm mt-0.5">Nhập dữ liệu dự toán từ tệp Excel</p>
                 </div>
               </div>
               <button
@@ -224,7 +224,7 @@ export default function UploadEstimateModal({
               <div>
                 <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
                   <span className="text-xl">📄</span>
-                  File Excel <span className="text-red-500">*</span>
+                  Tệp Excel <span className="text-red-500">*</span>
                 </label>
                 <div className="flex items-center">
                   <label className="flex-1 flex items-center justify-center px-6 py-8 border-3 border-dashed border-gray-300 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 cursor-pointer transition-all duration-300 group">
@@ -248,14 +248,14 @@ export default function UploadEstimateModal({
                         {file ? (
                           <span className="text-indigo-600 font-bold">✓ {file.name}</span>
                         ) : (
-                          'Chọn file hoặc kéo thả vào đây'
+                          'Chọn tệp hoặc kéo thả vào đây'
                         )}
                       </p>
                       <p className="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Chỉ chấp nhận file .xlsx
+                        Chỉ chấp nhận tệp .xlsx
                       </p>
                     </div>
                     <input
@@ -273,7 +273,7 @@ export default function UploadEstimateModal({
               <div>
                 <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
                   <span className="text-xl">📊</span>
-                  Tên Sheet <span className="text-red-500">*</span>
+                  Tên trang tính <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -281,7 +281,7 @@ export default function UploadEstimateModal({
                   onChange={(e) =>
                     handleInputChange('sheet_name', e.target.value)
                   }
-                  placeholder="Nhập tên sheet trong file Excel..."
+                  placeholder="Nhập tên trang tính trong tệp Excel..."
                   disabled={uploading}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal transition-all duration-300"
                 />
@@ -387,7 +387,7 @@ export default function UploadEstimateModal({
                 {uploading ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                    <span>Đang upload...</span>
+                    <span>Đang tải lên...</span>
                   </>
                 ) : (
                   <>
@@ -404,7 +404,7 @@ export default function UploadEstimateModal({
                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                       />
                     </svg>
-                    <span>Upload</span>
+                    <span>Tải lên</span>
                   </>
                 )}
               </button>

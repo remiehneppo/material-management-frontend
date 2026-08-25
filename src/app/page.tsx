@@ -55,7 +55,7 @@ export default function Dashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                   </div>
-                  <h3 className="text-xs sm:text-sm font-semibold text-blue-100 uppercase tracking-wide">Tổng số dự án</h3>
+                  <h2 className="text-xs sm:text-sm font-semibold text-blue-100 uppercase tracking-wide">Tổng số dự án</h2>
                 </div>
                 {loading ? (
                   <div className="flex items-center gap-2 sm:gap-3">
@@ -87,7 +87,7 @@ export default function Dashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-xs sm:text-sm font-semibold text-orange-100 uppercase tracking-wide">Yêu cầu chờ duyệt</h3>
+                  <h2 className="text-xs sm:text-sm font-semibold text-orange-100 uppercase tracking-wide">Yêu cầu chờ ban hành</h2>
                 </div>
                 {loading ? (
                   <div className="flex items-center gap-2 sm:gap-3">

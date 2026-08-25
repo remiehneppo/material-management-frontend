@@ -6,7 +6,7 @@ import type {
   CreateMaterialRequestReq,
   MaterialRequestFilter,
   MaterialRequestExport,
-  UpdateNumberOfRequestReq,
+  IssueMaterialRequestResponse,
   MaterialRequestUpdateReq
 } from '../types/api';
 
@@ -38,12 +38,8 @@ export class MaterialRequestService {
     return response.data;
   }
 
-  /**
-   * Update number of material requests
-   * POST /materials-request/update-number
-   */
-  async updateNumber(request: UpdateNumberOfRequestReq): Promise<ApiResponse> {
-    const response = await apiClient.post<ApiResponse>('/materials-request/update-number', request);
+  async issue(id: string): Promise<ApiResponse<IssueMaterialRequestResponse>> {
+    const response = await apiClient.post<ApiResponse<IssueMaterialRequestResponse>>(`/materials-request/${id}/issue`, {});
     return response.data;
   }
 

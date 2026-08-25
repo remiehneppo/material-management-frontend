@@ -12,6 +12,7 @@ class ApiClient {
   }> = [];
   private configLoaded = false;
   private configLoadPromise?: Promise<void>;
+  private accessToken: string | null = null;
 
   constructor() {
     // Temporary baseURL, will be updated after loading runtime config
@@ -24,7 +25,7 @@ class ApiClient {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      withCredentials: false, // Explicitly set for CORS
+      withCredentials: true,
     });
 
     this.setupInterceptors();
@@ -115,15 +116,6 @@ class ApiClient {
             return Promise.reject(error);
           }
 
-          const refreshToken = this.getRefreshToken();
-          
-          // If no refresh token, clear and redirect
-          if (!refreshToken) {
-            this.clearTokens();
-            this.handleUnauthorized();
-            return Promise.reject(error);
-          }
-
           // If already refreshing, queue this request
           if (this.isRefreshing) {
             return new Promise((resolve, reject) => {
@@ -143,18 +135,13 @@ class ApiClient {
 
           try {
             console.log('Attempting to refresh token...');
-            const response = await this.refreshTokenRequest(refreshToken);
+            const response = await this.refreshTokenRequest();
             
             // Check if response is successful
             if (response.data.status && response.data.data?.access_token) {
               const newAccessToken = response.data.data.access_token;
-              const newRefreshToken = response.data.data.refresh_token;
-              
-              // Update tokens
+
               this.setAccessToken(newAccessToken);
-              if (newRefreshToken) {
-                this.setRefreshToken(newRefreshToken);
-              }
               
               console.log('Token refreshed successfully');
               
@@ -204,39 +191,18 @@ class ApiClient {
   }
 
   private getAccessToken(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('access_token');
-    }
-    return null;
-  }
-
-  private getRefreshToken(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('refresh_token');
-    }
-    return null;
+    return this.accessToken;
   }
 
   private setAccessToken(token: string): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('access_token', token);
-    }
-  }
-
-  private setRefreshToken(token: string): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('refresh_token', token);
-    }
+    this.accessToken = token;
   }
 
   private clearTokens(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-    }
+    this.accessToken = null;
   }
 
-  private async refreshTokenRequest(refreshToken: string) {
+  private async refreshTokenRequest() {
     // Create a new axios instance without interceptors for refresh request
     const refreshClient = axios.create({
       baseURL: this.baseURL,
@@ -245,16 +211,28 @@ class ApiClient {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
+      withCredentials: true,
     });
 
-    return refreshClient.post('/auth/refresh', {
-      refresh_token: refreshToken,
-    });
+    return refreshClient.post('/auth/refresh', {});
   }
 
-  public setTokens(accessToken: string, refreshToken: string): void {
+  public setTokens(accessToken: string): void {
     this.setAccessToken(accessToken);
-    this.setRefreshToken(refreshToken);
+  }
+
+  public async restoreSession(): Promise<boolean> {
+    await this.ensureConfigLoaded();
+    try {
+      const response = await this.refreshTokenRequest();
+      const accessToken = response.data.data?.access_token;
+      if (!response.data.status || !accessToken) return false;
+      this.setAccessToken(accessToken);
+      return true;
+    } catch {
+      this.clearTokens();
+      return false;
+    }
   }
 
   public logout(): void {

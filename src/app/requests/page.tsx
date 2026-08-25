@@ -17,7 +17,6 @@ export default function RequestsPage() {
   const [loading, setLoading] = useState(true);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [requestNumber, setRequestNumber] = useState("");
   const [processingRequest, setProcessingRequest] = useState<MaterialRequest | null>(null);
   
   // Ref to track if this is the initial mount
@@ -173,31 +172,8 @@ export default function RequestsPage() {
     loadRequests();
   };
 
-  const getSuggestedRequestNumber = (request: MaterialRequest): number => {
-    // Find all approved requests for the same maintenance instance from current loaded data
-    // Note: This might not include all requests if pagination/filters are applied
-    const sameMaintenanceRequests = requests.filter(r => 
-      r.project === request.project &&
-      r.maintenance_tier === request.maintenance_tier &&
-      r.maintenance_number === request.maintenance_number &&
-      r.year === request.year &&
-      r.num_of_request > 0
-    );
-
-    if (sameMaintenanceRequests.length === 0) {
-      return 1; // First request for this maintenance (or no approved requests in current data)
-    }
-
-    // Find the maximum num_of_request from currently loaded data
-    const maxNumber = Math.max(...sameMaintenanceRequests.map(r => r.num_of_request));
-    return maxNumber + 1;
-  };
-
   const handleOpenApproveModal = (request: MaterialRequest) => {
     setProcessingRequest(request);
-    // Auto-suggest the next request number
-    const suggestedNumber = getSuggestedRequestNumber(request);
-    setRequestNumber(suggestedNumber.toString());
     setShowApproveModal(true);
   };
 
@@ -209,31 +185,16 @@ export default function RequestsPage() {
   const handleApproveRequest = async () => {
     if (!processingRequest) return;
 
-    if (!requestNumber || requestNumber.trim() === "") {
-      alert("Vui lòng nhập số yêu cầu vật tư");
-      return;
-    }
-
-    const numOfRequest = parseInt(requestNumber);
-    if (isNaN(numOfRequest) || numOfRequest <= 0) {
-      alert("Số yêu cầu vật tư phải là số nguyên dương");
-      return;
-    }
-
     try {
       setLoading(true);
-      await materialRequestService.updateNumber({
-        material_request_id: processingRequest.id,
-        num_of_request: numOfRequest
-      });
-      alert("Duyệt yêu cầu vật tư thành công!");
+      const response = await materialRequestService.issue(processingRequest.id);
+      alert(`Đã ban hành yêu cầu vật tư số ${response.data?.request_number}.`);
       setShowApproveModal(false);
-      setRequestNumber("");
       setProcessingRequest(null);
       loadRequests();
     } catch (error) {
       console.error("Error approving material request:", error);
-      alert("Có lỗi xảy ra khi duyệt yêu cầu vật tư");
+      alert("Không thể ban hành yêu cầu vật tư. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -245,13 +206,13 @@ export default function RequestsPage() {
     try {
       setLoading(true);
       await materialRequestService.cancelMaterialRequest(processingRequest.id);
-      alert("Hủy yêu cầu vật tư thành công!");
+      alert("Đã hủy yêu cầu vật tư.");
       setShowCancelModal(false);
       setProcessingRequest(null);
       loadRequests();
     } catch (error) {
       console.error("Error canceling material request:", error);
-      alert("Có lỗi xảy ra khi hủy yêu cầu vật tư");
+      alert("Không thể hủy yêu cầu vật tư. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -262,10 +223,10 @@ export default function RequestsPage() {
       setLoading(true);
       const filename = `YCVT-${request.project}-${request.maintenance_tier}-${request.sector}-${request.year}${request.num_of_request > 0 ? `-${request.num_of_request}` : ""}.docx`;
       await materialRequestService.downloadExport(request.id, filename);
-      alert("Xuất file thành công!");
+      alert("Đã xuất tệp yêu cầu vật tư.");
     } catch (error) {
       console.error("Error exporting material request:", error);
-      alert("Có lỗi xảy ra khi xuất file");
+      alert("Không thể xuất tệp yêu cầu vật tư. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -374,8 +335,8 @@ export default function RequestsPage() {
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 text-gray-900 font-medium transition-all duration-200 bg-white hover:border-cyan-300"
               >
                 <option value="">Tất cả trạng thái</option>
-                <option value="pending">Chờ duyệt</option>
-                <option value="approved">Đã duyệt</option>
+                <option value="pending">Chờ ban hành</option>
+                <option value="approved">Đã ban hành</option>
               </select>
             </div>
 
@@ -435,7 +396,7 @@ export default function RequestsPage() {
           <div className="bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium opacity-90 mb-1">Chờ duyệt</p>
+                <p className="text-sm font-medium opacity-90 mb-1">Chờ ban hành</p>
                 <p className="text-4xl font-bold">
                   {requests.filter(r => r.num_of_request === 0).length}
                 </p>
@@ -451,7 +412,7 @@ export default function RequestsPage() {
           <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-xl p-6 text-white transform hover:scale-[1.02] transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium opacity-90 mb-1">Đã duyệt</p>
+                <p className="text-sm font-medium opacity-90 mb-1">Đã ban hành</p>
                 <p className="text-4xl font-bold">
                   {requests.filter(r => r.num_of_request > 0).length}
                 </p>
@@ -529,7 +490,7 @@ export default function RequestsPage() {
                           ? "bg-gradient-to-r from-green-100 to-emerald-100 text-green-800"
                           : "bg-gradient-to-r from-red-100 to-pink-100 text-red-800"
                       }`}>
-                        {request.num_of_request === 0 ? "⏳ Chờ duyệt" : request.num_of_request > 0 ? "✅ Đã duyệt" : "❌ Từ chối"}
+                        {request.num_of_request === 0 ? "⏳ Chờ ban hành" : request.num_of_request > 0 ? "✅ Đã ban hành" : "❌ Đã hủy"}
                       </span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 text-sm">
@@ -562,7 +523,7 @@ export default function RequestsPage() {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
-                          Duyệt
+                          Ban hành
                         </button>
                         <button 
                           onClick={() => handleOpenCancelModal(request)}
@@ -583,7 +544,7 @@ export default function RequestsPage() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
-                      Xuất file
+                      Xuất tệp
                     </button>
                     <button 
                       onClick={() => handleViewDetail(request)}
@@ -784,46 +745,25 @@ export default function RequestsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Duyệt yêu cầu vật tư</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Ban hành yêu cầu vật tư</h3>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                 <p className="text-sm text-blue-800">
-                  <span className="font-semibold">Yêu cầu:</span> {processingRequest.project} - {processingRequest.maintenance_tier}/{processingRequest.maintenance_number}
+                  <span className="font-semibold">Đợt sửa chữa:</span> {processingRequest.project} - {processingRequest.maintenance_tier}/{processingRequest.maintenance_number}
                 </p>
                 <p className="text-sm text-blue-800">
                   <span className="font-semibold">Ngành:</span> {processingRequest.sector}
                 </p>
                 <p className="text-sm text-blue-800">
-                  <span className="font-semibold">Người yêu cầu:</span> {processingRequest.requested_by}
+                  <span className="font-semibold">Người lập yêu cầu:</span> {processingRequest.requested_by}
                 </p>
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Số yêu cầu vật tư <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={requestNumber}
-                  onChange={(e) => setRequestNumber(e.target.value)}
-                  placeholder="Nhập số yêu cầu (VD: 1, 2, 3...)"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg font-semibold text-gray-900"
-                  autoFocus
-                />
-                <p className="text-xs text-gray-600 mt-2 flex items-start">
-                  <svg className="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>
-                    Số phiếu được gợi ý dựa trên phiếu lớn nhất của dự án này. 
-                    Bạn có thể thay đổi nếu cần.
-                  </span>
-                </p>
-              </div>
+              <p className="text-sm text-gray-700">
+                Khi ban hành, hệ thống sẽ cấp số phiếu tiếp theo và đồng thời ghi nhận số lượng vật tư vào thực tế.
+              </p>
               <div className="flex justify-end gap-2 mt-6">
                 <button
                   onClick={() => {
                     setShowApproveModal(false);
-                    setRequestNumber("");
                     setProcessingRequest(null);
                   }}
                   disabled={loading}
@@ -839,7 +779,7 @@ export default function RequestsPage() {
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  {loading ? "Đang duyệt..." : "Xác nhận duyệt"}
+                  {loading ? "Đang ban hành..." : "Xác nhận ban hành"}
                 </button>
               </div>
             </div>

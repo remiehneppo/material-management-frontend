@@ -132,7 +132,7 @@ export default function AboutPage() {
                 <li>Xem danh sách vật tư có sẵn trong kho</li>
                 <li>Thêm mới vật tư với thông tin chi tiết</li>
                 <li>Cập nhật số lượng tồn kho</li>
-                <li>Upload dự trù vật tư từ file Excel</li>
+                <li>Nhập dự trù vật tư từ tệp Excel</li>
                 <li>Quản lý thiết bị và máy móc</li>
               </ul>
             </div>
@@ -142,9 +142,9 @@ export default function AboutPage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-2">4. Yêu cầu vật tư</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
                 <li>Tạo yêu cầu vật tư mới cho dự án</li>
-                <li>Theo dõi trạng thái yêu cầu (Chờ duyệt, Đã duyệt, Từ chối)</li>
+                <li>Theo dõi trạng thái yêu cầu (Chờ ban hành, Đã ban hành, Đã hủy)</li>
                 <li>Xem chi tiết và lịch sử yêu cầu</li>
-                <li>Phê duyệt hoặc từ chối yêu cầu</li>
+                <li>Ban hành hoặc hủy yêu cầu</li>
               </ul>
             </div>
 
@@ -180,12 +180,12 @@ export default function AboutPage() {
               <p className="text-gray-700 text-sm">Theo dõi tồn kho, nhập xuất vật tư tự động</p>
             </div>
             <div className="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-xl">
-              <h3 className="font-semibold text-gray-900 mb-2">📄 Upload Excel</h3>
-              <p className="text-gray-700 text-sm">Import dữ liệu dự trù vật tư từ file Excel nhanh chóng</p>
+              <h3 className="font-semibold text-gray-900 mb-2">📄 Nhập dữ liệu từ Excel</h3>
+              <p className="text-gray-700 text-sm">Nhập nhanh dữ liệu dự trù vật tư từ tệp Excel</p>
             </div>
             <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
-              <h3 className="font-semibold text-gray-900 mb-2">✅ Workflow phê duyệt</h3>
-              <p className="text-gray-700 text-sm">Quy trình phê duyệt yêu cầu vật tư rõ ràng, minh bạch</p>
+              <h3 className="font-semibold text-gray-900 mb-2">✅ Quy trình ban hành</h3>
+              <p className="text-gray-700 text-sm">Quy trình ban hành yêu cầu vật tư rõ ràng, minh bạch</p>
             </div>
             <div className="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl">
               <h3 className="font-semibold text-gray-900 mb-2">📱 Responsive Design</h3>

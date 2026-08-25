@@ -28,7 +28,7 @@ export default function LoginPage() {
         setLoading(false);
       }
     } catch (err) {
-      setError('Có lỗi xảy ra. Vui lòng thử lại.');
+      setError('Không thể đăng nhập. Vui lòng thử lại.');
       console.error('Login error:', err);
       setLoading(false);
     }
@@ -43,7 +43,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <main className="min-h-screen flex">
       {/* Left side - Login Form */}
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-md w-full space-y-8">
@@ -54,9 +54,9 @@ export default function LoginPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
             </div>
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            <h1 className="mt-6 text-3xl font-extrabold text-gray-900">
               Chào mừng trở lại
-            </h2>
+            </h1>
             <p className="mt-2 text-sm text-gray-600">
               Đăng nhập để tiếp tục vào hệ thống
             </p>
@@ -116,6 +116,8 @@ export default function LoginPage() {
                     type="button"
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                     onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                    aria-pressed={showPassword}
                   >
                     {showPassword ? (
                       <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -179,14 +181,14 @@ export default function LoginPage() {
       </div>
 
       {/* Right side - Decorative Background */}
-      <div className="hidden lg:block relative w-0 flex-1">
+      <div className="hidden lg:block relative w-0 flex-1" aria-hidden="true">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600">
           <div className="absolute inset-0 bg-black opacity-20"></div>
           <div className="absolute inset-0 flex items-center justify-center p-12">
             <div className="text-center text-white">
-              <h1 className="text-5xl font-bold mb-6 drop-shadow-lg">
+              <p className="text-5xl font-bold mb-6 drop-shadow-lg">
                 Hệ thống Quản lý Vật tư
-              </h1>
+              </p>
               <p className="text-xl mb-8 drop-shadow-md opacity-90">
                 Giải pháp toàn diện cho việc quản lý dự án và vật tư
               </p>
@@ -194,6 +196,6 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

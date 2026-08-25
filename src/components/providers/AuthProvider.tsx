@@ -73,7 +73,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const checkAuth = async () => {
     try {
-      const authenticated = authService.isAuthenticated();
+      const authenticated = await authService.restoreSession();
       setIsAuthenticated(authenticated);
     } catch (error) {
       console.error('Auth check failed:', error);

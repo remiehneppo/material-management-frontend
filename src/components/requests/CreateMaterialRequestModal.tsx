@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { maintenanceService, materialsProfileService, materialRequestService } from "@/services";
 import { Maintenance, MaterialsProfile, Material, SECTORS } from "@/types/api";
+import { estimateVariance, toCreatePayload } from "@/domain/materialRequest/editor";
 
 interface CreateMaterialRequestModalProps {
   isOpen: boolean;
@@ -43,11 +44,6 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
   const [showAddMaterialModal, setShowAddMaterialModal] = useState(false);
   const [currentEquipmentId, setCurrentEquipmentId] = useState<string | null>(null);
   const [materialType, setMaterialType] = useState<"consumable" | "replacement">("consumable");
-  
-  // New material form
-  const [newMaterialName, setNewMaterialName] = useState("");
-  const [newMaterialQuantity, setNewMaterialQuantity] = useState("");
-  const [newMaterialUnit, setNewMaterialUnit] = useState("");
   
   // For multiple selection from estimate
   const [selectedEstimateMaterials, setSelectedEstimateMaterials] = useState<Record<string, Material & { requestQuantity: number }>>({});
@@ -213,46 +209,6 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
     setShowAddMaterialModal(false);
   };
 
-  const handleAddNewMaterial = () => {
-    if (!currentEquipmentId || !newMaterialName || !newMaterialQuantity || !newMaterialUnit) {
-      alert("Vui lòng điền đầy đủ thông tin vật tư");
-      return;
-    }
-
-    const equipment = selectedEquipments[currentEquipmentId];
-    if (!equipment) return;
-
-    const updatedEquipment = { ...equipment };
-    const material: SelectedMaterial = {
-      name: newMaterialName,
-      quantity: parseFloat(newMaterialQuantity),
-      unit: newMaterialUnit
-    };
-
-    if (materialType === "consumable") {
-      updatedEquipment.consumable_supplies = {
-        ...updatedEquipment.consumable_supplies,
-        [material.name]: material
-      };
-    } else {
-      updatedEquipment.replacement_materials = {
-        ...updatedEquipment.replacement_materials,
-        [material.name]: material
-      };
-    }
-
-    setSelectedEquipments({
-      ...selectedEquipments,
-      [currentEquipmentId]: updatedEquipment
-    });
-
-    // Reset form
-    setNewMaterialName("");
-    setNewMaterialQuantity("");
-    setNewMaterialUnit("");
-    setShowAddMaterialModal(false);
-  };
-
   const handleRemoveMaterial = (equipmentId: string, materialName: string, type: "consumable" | "replacement") => {
     const equipment = selectedEquipments[equipmentId];
     if (!equipment) return;
@@ -384,21 +340,16 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
         };
       });
 
-      const requestData = {
-        maintenance_instance_id: selectedMaintenance.id,
-        sector: selectedSector,
-        materials_for_equipment,
-        description
-      };
+      const requestData = toCreatePayload(selectedMaintenance.id, selectedSector, description, materials_for_equipment);
       console.log("Submitting request data:", requestData);
       await materialRequestService.create(requestData);
       
-      alert("Tạo yêu cầu vật tư thành công!");
+      alert("Đã tạo yêu cầu vật tư.");
       onSuccess();
       onClose();
     } catch (error) {
       console.error("Error creating material request:", error);
-      alert("Có lỗi xảy ra khi tạo yêu cầu vật tư");
+      alert("Không thể tạo yêu cầu vật tư. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -796,9 +747,6 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
               <button
                 onClick={() => {
                   setShowAddMaterialModal(false);
-                  setNewMaterialName("");
-                  setNewMaterialQuantity("");
-                  setNewMaterialUnit("");
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
@@ -913,6 +861,11 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
                                     step="0.01"
                                   />
                                   <span className="text-xs text-gray-600">{material.unit}</span>
+                                  {estimateVariance(selectedEstimateMaterials[material.name].requestQuantity, material) > 0 && (
+                                    <span className="text-xs font-medium text-amber-700">
+                                      Vượt dự toán +{estimateVariance(selectedEstimateMaterials[material.name].requestQuantity, material)}
+                                    </span>
+                                  )}
                                 </div>
                               )}
                             </div>
@@ -932,56 +885,6 @@ export default function CreateMaterialRequestModal({ isOpen, onClose, onSuccess 
                 )}
               </div>
 
-              {/* Add New */}
-              <div>
-                <h4 className="font-medium text-gray-900 mb-3">Hoặc nhập vật tư mới</h4>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Tên vật tư <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={newMaterialName}
-                      onChange={(e) => setNewMaterialName(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
-                      placeholder="Nhập tên vật tư"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Số lượng <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        value={newMaterialQuantity}
-                        onChange={(e) => setNewMaterialQuantity(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
-                        placeholder="0"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Đơn vị <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={newMaterialUnit}
-                        onChange={(e) => setNewMaterialUnit(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 font-medium"
-                        placeholder="cái, kg, m..."
-                      />
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleAddNewMaterial}
-                    className="w-full bg-cyan-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-600 transition-colors"
-                  >
-                    Thêm vật tư
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         </div>

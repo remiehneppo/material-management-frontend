@@ -61,7 +61,7 @@ export default function ProfilePage() {
       }
     } catch (err: unknown) {
       console.error('Error fetching user profile:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Có lỗi xảy ra khi tải thông tin người dùng';
+      const errorMessage = err instanceof Error ? err.message : 'Không thể tải thông tin người dùng. Vui lòng thử lại.';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -94,7 +94,7 @@ export default function ProfilePage() {
       }
     } catch (err: unknown) {
       console.error('Error updating profile:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Có lỗi xảy ra khi cập nhật thông tin';
+      const errorMessage = err instanceof Error ? err.message : 'Không thể cập nhật thông tin. Vui lòng thử lại.';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -126,7 +126,7 @@ export default function ProfilePage() {
               <XCircleIcon className="h-12 w-12 text-red-500" />
             </div>
             <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent mb-3">
-              Có lỗi xảy ra
+              Không thể tải thông tin
             </h2>
             <p className="text-gray-600 mb-6">{error}</p>
             <button 
@@ -192,7 +192,7 @@ export default function ProfilePage() {
                 <XCircleIcon className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-red-900 mb-1">Có lỗi xảy ra</h3>
+                <h3 className="text-lg font-bold text-red-900 mb-1">Không thể cập nhật thông tin</h3>
                 <p className="text-red-800">{error}</p>
               </div>
             </div>
@@ -487,7 +487,7 @@ function ChangePasswordForm() {
       }
     } catch (err: unknown) {
       console.error('Error changing password:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Có lỗi xảy ra khi đổi mật khẩu';
+      const errorMessage = err instanceof Error ? err.message : 'Không thể đổi mật khẩu. Vui lòng thử lại.';
       setError(errorMessage);
     } finally {
       setLoading(false);

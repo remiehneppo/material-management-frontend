@@ -1,5 +1,7 @@
 # 🏗️ Material Management Frontend
 
+Business terminology and lifecycle rules are maintained in the backend [`CONTEXT.md`](../material-management-backend/CONTEXT.md) and [`docs/adr`](../material-management-backend/docs/adr).
+
 > **Hệ thống quản lý vật tư sửa chữa** - Giao diện người dùng hiện đại được xây dựng với **Vibe Coding** và Next.js
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { materialRequestService } from "@/services";
 import { MaterialRequest, MaterialsForEquipment } from "@/types/api";
+import { toEditableMaterials } from "@/domain/materialRequest/editor";
 
 interface RequestDetailModalProps {
   request: MaterialRequest | null;
@@ -60,21 +61,13 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
   const [editedMaterials, setEditedMaterials] = useState<Record<string, MaterialsForEquipment>>({});
   const [loading, setLoading] = useState(false);
   const [showApproveModal, setShowApproveModal] = useState(false);
-  const [requestNumber, setRequestNumber] = useState("");
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   useEffect(() => {
     if (request) {
       setEditedDescription(request.description || "");
       // Convert MaterialsForEquipmentRes to MaterialsForEquipment for editing
-      const materials: Record<string, MaterialsForEquipment> = {};
-      Object.entries(request.materials_for_equipment).forEach(([id, equipment]) => {
-        materials[id] = {
-          consumable_supplies: equipment.consumable_supplies,
-          replacement_materials: equipment.replacement_materials
-        };
-      });
-      setEditedMaterials(materials);
+      setEditedMaterials(toEditableMaterials(request.materials_for_equipment));
     }
   }, [request]);
 
@@ -88,14 +81,14 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
         description: editedDescription,
         materials_for_equipment: editedMaterials
       });
-      alert("Cập nhật yêu cầu vật tư thành công!");
+      alert("Đã cập nhật yêu cầu vật tư.");
       setIsEditing(false);
       if (onUpdate) {
         onUpdate();
       }
     } catch (error) {
       console.error("Error updating material request:", error);
-      alert("Có lỗi xảy ra khi cập nhật yêu cầu vật tư");
+      alert("Không thể cập nhật yêu cầu vật tư. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -104,14 +97,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
   const handleCancelEdit = () => {
     setEditedDescription(request.description || "");
     // Reset materials
-    const materials: Record<string, MaterialsForEquipment> = {};
-    Object.entries(request.materials_for_equipment).forEach(([id, equipment]) => {
-      materials[id] = {
-        consumable_supplies: equipment.consumable_supplies,
-        replacement_materials: equipment.replacement_materials
-      };
-    });
-    setEditedMaterials(materials);
+    setEditedMaterials(toEditableMaterials(request.materials_for_equipment));
     setIsEditing(false);
   };
 
@@ -136,33 +122,18 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
 
 
   const handleApproveRequest = async () => {
-    if (!requestNumber || requestNumber.trim() === "") {
-      alert("Vui lòng nhập số yêu cầu vật tư");
-      return;
-    }
-
-    const numOfRequest = parseInt(requestNumber);
-    if (isNaN(numOfRequest) || numOfRequest <= 0) {
-      alert("Số yêu cầu vật tư phải là số nguyên dương");
-      return;
-    }
-
     try {
       setLoading(true);
-      await materialRequestService.updateNumber({
-        material_request_id: request.id,
-        num_of_request: numOfRequest
-      });
-      alert("Duyệt yêu cầu vật tư thành công!");
+      const response = await materialRequestService.issue(request.id);
+      alert(`Đã ban hành yêu cầu vật tư số ${response.data?.request_number}.`);
       setShowApproveModal(false);
-      setRequestNumber("");
       if (onUpdate) {
         onUpdate();
       }
       onClose();
     } catch (error) {
       console.error("Error approving material request:", error);
-      alert("Có lỗi xảy ra khi duyệt yêu cầu vật tư");
+      alert("Không thể ban hành yêu cầu vật tư. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -172,7 +143,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
     try {
       setLoading(true);
       await materialRequestService.cancelMaterialRequest(request.id);
-      alert("Hủy yêu cầu vật tư thành công!");
+      alert("Đã hủy yêu cầu vật tư.");
       setShowCancelModal(false);
       if (onUpdate) {
         onUpdate();
@@ -180,7 +151,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
       onClose();
     } catch (error) {
       console.error("Error canceling material request:", error);
-      alert("Có lỗi xảy ra khi hủy yêu cầu vật tư");
+      alert("Không thể hủy yêu cầu vật tư. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -191,10 +162,10 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
       setLoading(true);
       const filename = `YCVT-${request.project}-${request.maintenance_tier}-${request.sector}-${request.year}${request.num_of_request > 0 ? `-${request.num_of_request}` : ""}.docx`;
       await materialRequestService.downloadExport(request.id, filename);
-      alert("Xuất file thành công!");
+      alert("Đã xuất tệp yêu cầu vật tư.");
     } catch (error) {
       console.error("Error exporting material request:", error);
-      alert("Có lỗi xảy ra khi xuất file");
+      alert("Không thể xuất tệp yêu cầu vật tư. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -210,7 +181,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
         text: 'text-yellow-800',
         border: 'border-yellow-200',
         icon: '⏳',
-        label: 'Chờ duyệt'
+        label: 'Chờ ban hành'
       };
     } else if (request.num_of_request > 0) {
       return {
@@ -218,7 +189,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
         text: 'text-green-800',
         border: 'border-green-200',
         icon: '✅',
-        label: 'Đã duyệt'
+        label: 'Đã ban hành'
       };
     } else {
       return {
@@ -502,7 +473,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
                   className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-bold transform hover:scale-105"
                 >
                   <DownloadIcon />
-                  {loading ? "Đang xuất..." : "📄 Xuất file DOCX"}
+                  {loading ? "Đang xuất..." : "📄 Xuất tệp DOCX"}
                 </button>
                 {request.num_of_request === 0 && (
                   <>
@@ -511,7 +482,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
                       className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl font-bold transform hover:scale-105"
                     >
                       <CheckIcon />
-                      ✅ Duyệt yêu cầu
+                      ✅ Ban hành yêu cầu
                     </button>
                     <button 
                       onClick={() => setShowCancelModal(true)}
@@ -553,28 +524,18 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
               <h3 className="text-2xl font-bold text-white relative z-10 flex items-center gap-3">
                 <CheckIcon />
-                ✅ Duyệt yêu cầu vật tư
+                ✅ Ban hành yêu cầu vật tư
               </h3>
             </div>
 
             <div className="p-6">
               <p className="text-gray-700 mb-6 font-medium text-lg">
-                Nhập số yêu cầu vật tư để xác nhận duyệt:
+                Khi ban hành, hệ thống sẽ cấp số phiếu tiếp theo và đồng thời ghi nhận số lượng vật tư vào thực tế.
               </p>
-              <input
-                type="number"
-                min="1"
-                value={requestNumber}
-                onChange={(e) => setRequestNumber(e.target.value)}
-                placeholder="Nhập số yêu cầu (VD: 1, 2, 3...)"
-                className="w-full px-5 py-4 border-2 border-green-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-green-50 text-xl font-bold text-gray-900 transition-all duration-300"
-                autoFocus
-              />
               <div className="flex justify-end gap-3 mt-6">
                 <button
                   onClick={() => {
                     setShowApproveModal(false);
-                    setRequestNumber("");
                   }}
                   disabled={loading}
                   className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-bold shadow-lg transform hover:scale-105"
@@ -587,7 +548,7 @@ export default function RequestDetailModal({ request, isOpen, onClose, onUpdate 
                   className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-bold shadow-lg transform hover:scale-105"
                 >
                   <CheckIcon />
-                  {loading ? "Đang duyệt..." : "Xác nhận duyệt"}
+                  {loading ? "Đang ban hành..." : "Xác nhận ban hành"}
                 </button>
               </div>
             </div>

@@ -4,7 +4,8 @@ import type {
   MaterialsProfile,
   UploadMaterialsEstimateRequest,
   PaginatedResponse,
-  CreateMaterialsProfileReq
+  CreateMaterialsProfileReq,
+  Material
 } from '../types/api';
 
 export interface MaterialsProfileFilterParams {
@@ -17,6 +18,15 @@ export class MaterialsProfileService {
 
   async create(request: CreateMaterialsProfileReq): Promise<ApiResponse<string>> {
     const response = await apiClient.post<ApiResponse<string>>('/materials-profiles/create', request);
+    return response.data;
+  }
+
+  async upsertEstimatedMaterial(
+    profileId: string,
+    category: 'consumable_supplies' | 'replacement_materials',
+    material: Material,
+  ): Promise<ApiResponse> {
+    const response = await apiClient.post<ApiResponse>(`/materials-profiles/${profileId}/materials`, { category, material });
     return response.data;
   }
 

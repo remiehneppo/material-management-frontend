@@ -71,7 +71,7 @@ export default function CreateProjectModal({
       const response = await maintenanceService.create(formData);
       
       if (response.status) {
-        alert('Tạo dự án thành công!');
+        alert('Đã tạo dự án.');
         // Reset form
         setFormData({
           project: '',
@@ -86,7 +86,7 @@ export default function CreateProjectModal({
       }
     } catch (err) {
       console.error('Error creating project:', err);
-      setError('Đã xảy ra lỗi khi tạo dự án');
+      setError('Không thể tạo dự án. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }

@@ -21,7 +21,7 @@ const navigation = [
   { name: "Dự án", href: "/projects", icon: DocumentTextIcon },
   { name: "Vật tư", href: "/materials", icon: CubeIcon },
   { name: "Yêu cầu vật tư", href: "/requests", icon: DocumentCheckIcon },
-  { name: "Thông tin", href: "/profile", icon: UserIcon },
+  { name: "Hồ sơ cá nhân", href: "/profile", icon: UserIcon },
   { name: "Giới thiệu", href: "/about", icon: InformationCircleIcon },
 ];
 
@@ -51,7 +51,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         onClick={() => setIsCollapsed(!isCollapsed)}
         className="absolute top-4 sm:top-6 -right-2.5 sm:-right-3 z-10 w-6 h-6 sm:w-7 sm:h-7 bg-white rounded-full shadow-xl flex items-center justify-center text-cyan-600 hover:bg-cyan-50 hover:scale-110 transition-all duration-200 border-2 border-cyan-100"
         title={isCollapsed ? "Mở rộng" : "Thu nhỏ"}
-        aria-label={isCollapsed ? "Mở rộng sidebar" : "Thu nhỏ sidebar"}
+        aria-label={isCollapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"}
       >
         {isCollapsed ? (
           <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -64,25 +64,25 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       <div className="flex-shrink-0 flex items-center justify-center h-16 sm:h-20 px-2 sm:px-4 border-b border-white/20 backdrop-blur-sm bg-white/10">
         <div className="flex items-center space-x-2">
           {isCollapsed ? (
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl flex items-center justify-center transform hover:scale-105 transition-transform overflow-hidden">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl flex items-center justify-center transform hover:scale-105 transition-transform overflow-hidden">
               <Image 
                 src="/logo.png" 
                 alt="Logo" 
-                width={44}
-                height={44}
-                className="w-full h-full object-contain"
+                fill
+                sizes="(min-width: 640px) 44px, 36px"
+                className="object-contain"
                 priority
               />
             </div>
           ) : (
             <div className="flex items-center gap-2 transform hover:scale-105 transition-transform">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden">
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden">
                 <Image 
                   src="/logo.png" 
                   alt="Logo Quản lý vật tư" 
-                  width={48}
-                  height={48}
-                  className="w-full h-full object-contain"
+                  fill
+                  sizes="(min-width: 640px) 48px, 40px"
+                  className="object-contain"
                   priority
                 />
               </div>

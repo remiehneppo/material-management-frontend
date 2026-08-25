@@ -17,7 +17,7 @@ export class UserService {
         if ('id' in response.data && 'username' in response.data) {
           return {
             status: true,
-            message: 'Success',
+            message: 'Đã tải thông tin người dùng.',
             data: response.data as unknown as User
           };
         }
@@ -30,7 +30,7 @@ export class UserService {
       // Fallback
       return {
         status: false,
-        message: 'Invalid response format',
+        message: 'Dữ liệu người dùng trả về không đúng định dạng.',
         data: undefined
       };
     } catch (error) {
@@ -54,7 +54,7 @@ export class UserService {
         if ('id' in response.data && 'username' in response.data) {
           return {
             status: true,
-            message: 'Profile updated successfully',
+            message: 'Đã cập nhật thông tin người dùng.',
             data: response.data as unknown as User
           };
         }
@@ -67,7 +67,7 @@ export class UserService {
       // Fallback for successful response without proper format
       return {
         status: true,
-        message: 'Profile updated successfully',
+        message: 'Đã cập nhật thông tin người dùng.',
         data: undefined
       };
     } catch (error) {
@@ -94,13 +94,13 @@ export class UserService {
         // Fallback for successful response
         return {
           status: true,
-          message: 'Password changed successfully'
+          message: 'Đã đổi mật khẩu.'
         };
       }
       
       return {
         status: false,
-        message: 'Failed to change password'
+        message: 'Không thể đổi mật khẩu.'
       };
     } catch (error) {
       console.error('Error in changePassword:', error);
